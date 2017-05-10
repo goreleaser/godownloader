@@ -123,6 +123,24 @@ func makeName(target string) (string, error) {
 	return out.String(), err
 }
 
+func readURL(loc string) ([]byte, error) {
+	resp, err := http.Get(loc)
+	if err != nil {
+		return nil, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+
+	// to make errcheck be happy
+	errc := resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	if errc != nil {
+		return nil, errc
+	}
+	return body, err
+}
+
 func Load(repo string, file string) (*config.Project, error) {
 	if repo == "" && file == "" {
 		return nil, fmt.Errorf("Need a repo or file")
@@ -132,14 +150,9 @@ func Load(repo string, file string) (*config.Project, error) {
 	}
 	var body []byte
 	var err error
+	log.Printf("Reading %s", file)
 	if strings.HasPrefix(file, "http") {
-		log.Printf("Downloading %s", file)
-		resp, err := http.Get(file)
-		if err != nil {
-			return nil, err
-		}
-		defer resp.Body.Close()
-		body, err = ioutil.ReadAll(resp.Body)
+		body, err = readURL(file)
 	} else {
 		body, err = ioutil.ReadFile(file)
 	}
