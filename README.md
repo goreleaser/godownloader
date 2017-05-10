@@ -56,6 +56,7 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 * Zip support and format over-rides.
 * Should `VERSION` be set via ENV not arg `$1`
 * Checksum support
+* Add LICENSE
 * Adjustment of default `TMPDIR` and `BINDIR` (install directory)
 * Vendor dependencies
 * Figure out how to write tests
