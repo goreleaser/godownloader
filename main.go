@@ -140,14 +140,11 @@ func Load(repo string, file string) (*config.Project, error) {
 		}
 		defer resp.Body.Close()
 		body, err = ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return nil, err
-		}
 	} else {
 		body, err = ioutil.ReadFile(file)
-		if err != nil {
-			return nil, err
-		}
+	}
+	if err != nil {
+		return nil, err
 	}
 	project := &config.Project{}
 	err = yaml.Unmarshal(body, project)
@@ -163,7 +160,21 @@ func Load(repo string, file string) (*config.Project, error) {
 		project.Release.GitHub.Owner = path.Dir(repo)
 		project.Release.GitHub.Name = path.Base(repo)
 	}
-	var uname = map[string]string{
+
+	// set default archive format
+	if project.Archive.Format == "" {
+		project.Archive.Format = "tar.gz"
+	}
+
+	// set default binary name
+	if project.Build.Binary == "" {
+		project.Build.Binary = path.Base(repo)
+	}
+
+	// Convert replacements from GOOS/GOARCH to uname.
+
+	// map of golang OS/ARCH identifier to what uname uses
+	uname := map[string]string{
 		"darwin":  "Darwin",
 		"linux":   "Linux",
 		"freebsd": "FreeBSD",
@@ -173,26 +184,25 @@ func Load(repo string, file string) (*config.Project, error) {
 		"386":     "i386",
 		"amd64":   "x86_64",
 	}
-
 	rmap := make(map[string]string)
 	for k, v := range project.Archive.Replacements {
 		newk := uname[k]
+
+		// if unknown, keep
 		if newk == "" {
 			rmap[k] = v
 			continue
 		}
-		if newk != v {
-			rmap[newk] = v
+
+		// if mapping is an idenity, then ignore
+		if newk == v {
+			continue
 		}
+
+		rmap[newk] = v
 	}
 	project.Archive.Replacements = rmap
 
-	if project.Archive.Format == "" {
-		project.Archive.Format = "tar.gz"
-	}
-	if project.Build.Binary == "" {
-		project.Build.Binary = path.Base(repo)
-	}
 	return project, nil
 }
 
