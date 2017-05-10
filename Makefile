@@ -53,6 +53,7 @@ samples:
 .PHONY: samples
 
 clean:
+	rm -f godownloader
 	rm -rf ./bin
 	git gc --aggressive
 
