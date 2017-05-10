@@ -10,11 +10,19 @@ TMPDIR=${TMPDIR:-/tmp}
 
 VERSION=$1
 if [ -z "${VERSION}" ]; then
-  echo ""
-  echo "Usage: $0 [version]"
-  echo ""
-  exit 1
+echo "specify version number or 'latest'"
+exit 1
 fi
+
+if [ "${VERSION}" = "latest" ]; then
+  echo "Checking GitHub for latest version of ${OWNER}/${REPO}"
+  VERSION=$(curl -s https://api.github.com/repos/${OWNER}/${REPO}/releases/latest | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
+  if [ -z "${VERSION}" ]; then
+    echo "Unable to determine latest release for ${OWNER}/${REPO}"
+    exit 1
+   fi
+fi
+
 VERSION=${VERSION#v}
 
 OS=$(uname -s)
@@ -38,5 +46,6 @@ fi
 
 ${WGET} ${TMPDIR}/${TARBALL} ${URL}
 tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
-install ${TMPDIR}/${BINARY} ${BINDIR}
+install -d ${BINDIR}
+install ${TMPDIR}/${BINARY} ${BINDIR}/
 
