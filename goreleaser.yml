@@ -1,0 +1,34 @@
+homepage: &homepage https://github.com/client9/godownloader
+description: &description Download Go binaries as fast and easily as possible
+build:
+  goos:
+    - linux
+    - darwin
+    - windows
+  goarch:
+    - 386
+    - amd64
+    - arm
+    - arm64
+archive:
+  format_overrides:
+    - goos: windows
+      format: zip
+brew:
+  github:
+    owner: godownloader
+    name: homebrew-tap
+  folder: Formula
+  homepage: *homepage
+  description: *description
+  dependencies:
+    - git
+fpm:
+  homepage: *homepage
+  description: *description
+  maintainer: Nick Galbreath <nickg@client9.com>
+  vendor: GoDownloader
+  formats:
+    - deb
+  dependencies:
+    - git
