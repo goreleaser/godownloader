@@ -94,6 +94,7 @@ esac
 TARBALL=${NAME}.${FORMAT}
 URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
 
+rm -f ${TMPDIR}/${TARBALL}
 download ${TMPDIR}/${TARBALL} ${URL}
 tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
 install -d ${BINDIR}
