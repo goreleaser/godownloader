@@ -57,6 +57,7 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 * Should `VERSION` be set via ENV not arg `$1`
 * Checksum support
 * Add LICENSE
+* Figure out how to use an existing GITHUB token so `latest` doesn't fail on CI systems
 * Adjustment of default `TMPDIR` and `BINDIR` (install directory)
 * Vendor dependencies
 * Figure out how to write tests
