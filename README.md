@@ -1,5 +1,5 @@
 # godownloader
-Download go binaries as fast and easily as possible.
+Download Go binaries as fast and easily as possible.
 
 This is the inverse of [goreleaser](https://github.com/goreleaser/goreleaser).  The goreleaser YAML file is read and creates a custom shell script that can download the right package and the right version for the existing machine.  (sometimes this is known as "curl bash")
 
@@ -16,7 +16,7 @@ Your old `.travis.yml` file might have
 
 ```
 install:
-  - go get github.com spf13/hugo
+  - go get github.com/spf13/hugo
 ```
 
 This can take up to 30 seconds!  To fix this up first do:
