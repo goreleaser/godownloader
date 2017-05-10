@@ -1,4 +1,4 @@
-homepage: &homepage https://github.com/client9/godownloader
+homepage: &homepage https://github.com/goreleaser/godownloader
 description: &description Download Go binaries as fast and easily as possible
 build:
   goos:
