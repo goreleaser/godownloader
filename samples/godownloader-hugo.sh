@@ -6,7 +6,7 @@ FORMAT=tar.gz
 OWNER=spf13
 REPO=hugo
 BINDIR=${BINDIR:-./bin}
-TMPDIR=${TMPDIR:-/tmp}
+test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 
 VERSION=$1
 if [ -z "${VERSION}" ]; then
@@ -83,6 +83,8 @@ NAME=${BINARY}_${VERSION}_${OS}-${ARCH}
 TARBALL=${NAME}.${FORMAT}
 URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
 
+mkdir -p ${TMPDIR}
+rm -f ${TMPDIR}/${TARBALL}
 download ${TMPDIR}/${TARBALL} ${URL}
 tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
 install -d ${BINDIR}

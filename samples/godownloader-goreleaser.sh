@@ -6,7 +6,7 @@ FORMAT=tar.gz
 OWNER=goreleaser
 REPO=goreleaser
 BINDIR=${BINDIR:-./bin}
-TMPDIR=${TMPDIR:-/tmp}
+test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 
 VERSION=$1
 if [ -z "${VERSION}" ]; then
@@ -66,6 +66,8 @@ NAME=${BINARY}_${OS}_${ARCH}${ARM}
 TARBALL=${NAME}.${FORMAT}
 URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
 
+mkdir -p ${TMPDIR}
+rm -f ${TMPDIR}/${TARBALL}
 download ${TMPDIR}/${TARBALL} ${URL}
 tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
 install -d ${BINDIR}
