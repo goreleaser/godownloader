@@ -14,7 +14,7 @@ Let's say you are using [hugo](https://gohugo.io), the static website generator,
 
 Your old `.travis.yml` file might have 
 
-```
+```yaml
 install:
   - go get github.com/spf13/hugo
 ```
