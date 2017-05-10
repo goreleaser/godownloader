@@ -14,31 +14,35 @@ echo "specify version number or 'latest'"
 exit 1
 fi
 
+# download dest source
+# if dest is "-", then output to stdout
+# if source is api.github.com add auth token
 download() {
   DEST=$1
   SOURCE=$2
+
+  HEADER=""
+  case $SOURCE in 
+  https://api.github.com*)
+     test -z "$GITHUB_TOKEN" || HEADER="Authorization: token $GITHUB_TOKEN"
+     ;;
+  esac
+
   if which curl > /dev/null; then
     WGET="curl -sSL"
+    test -z "$GITHUB_TOKEN" || WGET="${WGET} -H \"${HEADER}\""
     if [ "${DEST}" != "-" ]; then
       WGET="$WGET -o $DEST"
     fi
   elif which wget > /dev/null; then
     WGET="wget -q -O $DEST"
+    test -z "$GITHUB_TOKEN" || WGET="${WGET} --header \"${HEADER}\""
   else
     echo "Unable to find wget or curl.  Exit"
     exit 1
   fi
 
-  # TODO: if source starts with github
-  #  and we have env auth token
-  #  then add it
-  HEADER=""
-  case $SOURCE in 
-  https://api.github.com*)
-     HEADER=""
-     ;;
-  esac
-  ${WGET} $HEADER $SOURCE
+  ${WGET} ${SOURCE}
 }
 
 if [ "${VERSION}" = "latest" ]; then

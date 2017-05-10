@@ -65,8 +65,6 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 * #3 Zip support 
 * #4 and format over-rides.
 * #5 Checksum support
-* #6 Move curl/wget abstraction to top of script
-* #7 Figure out how to use an existing GITHUB token so `latest` doesn't fail on CI systems
 * #8 Setup travis.ci
 * #10 Adjustment of default `TMPDIR` and `BINDIR` (install directory)
 * #11 Use goreleaser to release godownloader
