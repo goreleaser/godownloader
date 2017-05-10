@@ -1,33 +1,120 @@
 package main
 
 import (
-	"text/template"
+	"bytes"
+	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"path"
+	"strings"
+	"text/template"
 
 	"github.com/goreleaser/goreleaser/config"
+	yaml "gopkg.in/yaml.v1"
 )
+
+var tplsrc = `#!/bin/sh
+set -e
+
+BINARY={{ .Build.Binary }}
+FORMAT={{ .Archive.Format }}
+OWNER={{ $.Release.GitHub.Owner }}
+REPO={{ $.Release.GitHub.Name }}
+BINDIR=${BINDIR:-./bin}
+TMPDIR=${TMPDIR:-/tmp}
+
+VERSION=$1
+if [ -z "${VERSION}" ]; then
+echo "specify version number or 'latest'"
+exit 1
+fi
+
+if [ "${VERSION}" = "latest" ]; then
+  echo "Checking GitHub for latest version of ${OWNER}/${REPO}"
+  VERSION=$(curl -s https://api.github.com/repos/${OWNER}/${REPO}/releases/latest | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
+  if [ -z "${VERSION}" ]; then
+    echo "Unable to determine latest release for ${OWNER}/${REPO}"
+    exit 1
+   fi
+fi
+
+VERSION=${VERSION#v}
+
+OS=$(uname -s)
+ARCH=$(uname -m)
+
+{{ with .Archive.Replacements }}
+case ${OS} in 
+{{- range $k, $v := . }}
+{{ $k }}) OS={{ $v }} ;;
+{{- end }}
+esac
+
+case ${ARCH} in
+{{- range $k, $v := . }}
+{{ $k }}) ARCH={{ $v }} ;;
+{{- end }}
+esac
+{{ end }}
+
+{{ .Archive.NameTemplate }}
+TARBALL=${NAME}.${FORMAT}
+URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
+
+if which curl > /dev/null; then
+  WGET="curl -sSL -o"
+elif which wget > /dev/null; then
+  WGET="wget -q -O"
+else
+  echo "Unable to find wget or curl.  Exit"
+  exit 1
+fi
+
+${WGET} ${TMPDIR}/${TARBALL} ${URL}
+tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
+install -d ${BINDIR}
+install ${TMPDIR}/${BINARY} ${BINDIR}/
+`
+
+func makeShell(cfg *config.Project) (string, error) {
+	var out bytes.Buffer
+	t, err := template.New("shell").Parse(tplsrc)
+	if err != nil {
+		return "", err
+	}
+	err = t.Execute(&out, cfg)
+	return out.String(), err
+}
 
 // converts the given name template to it's equivalent in shell
 // except for the default goreleaser templates, templates with
 // conditionals will return an error
 //
-// {{ .Binary }} --->  ${BINARY}, etc.
+// {{ .Binary }} --->  NAME=${BINARY}, etc.
 //
-func nameTplInShell(target buildTarget) (string, error) {
+func makeName(target string) (string, error) {
+	prefix := ""
 	// TODO: error on conditionals
-	if target == "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}" {
+	if target == "" || target == "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}" {
 		prefix = "if [ ! -z \"${ARM}\" ]; then ARM=\"v$ARM\"; fi"
 		target = "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
-	var varmap  = map[string]string{
-		"Os": "${OS}",
-		"Arch": "${ARCH}",
-		"Arm": "${ARM}",
-		"Version": "${VERSION}",
-		"Tag": "${TAG}",
-		"Binary": ${BINARY}",
 	}
-	
+	var varmap = map[string]string{
+		"Os":      "${OS}",
+		"Arch":    "${ARCH}",
+		"Arm":     "${ARM}",
+		"Version": "${VERSION}",
+		"Tag":     "${TAG}",
+		"Binary":  "${BINARY}",
+	}
+
 	var out bytes.Buffer
+	if prefix != "" {
+		out.WriteString(prefix + "\n")
+	}
+	out.WriteString("NAME=")
 	t, err := template.New("name").Parse(target)
 	if err != nil {
 		return "", err
@@ -36,51 +123,102 @@ func nameTplInShell(target buildTarget) (string, error) {
 	return out.String(), err
 }
 
-var tplsrc = `#!/bin/sh
-set -e
+func Load(repo string, file string) (*config.Project, error) {
+	if repo == "" && file == "" {
+		return nil, fmt.Errorf("Need a repo or file")
+	}
+	if file == "" {
+		file = "https://raw.githubusercontent.com/" + repo + "/master/goreleaser.yml"
+	}
+	var body []byte
+	var err error
+	if strings.HasPrefix(file, "http") {
+		log.Printf("Downloading %s", file)
+		resp, err := http.Get(file)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+		body, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		body, err = ioutil.ReadFile(file)
+		if err != nil {
+			return nil, err
+		}
+	}
+	project := &config.Project{}
+	err = yaml.Unmarshal(body, project)
+	if err != nil {
+		return nil, err
+	}
 
-BINARY={{ .Binary }}
+	// if not specified add in GitHub owner/repo info
+	if project.Release.GitHub.Owner == "" {
+		if repo == "" {
+			return nil, fmt.Errorf("Need to provide owner/name repo!")
+		}
+		project.Release.GitHub.Owner = path.Dir(repo)
+		project.Release.GitHub.Name = path.Base(repo)
+	}
+	var uname = map[string]string{
+		"darwin":  "Darwin",
+		"linux":   "Linux",
+		"freebsd": "FreeBSD",
+		"openbsd": "OpenBSD",
+		"netbsd":  "NetBSD",
+		"windows": "Windows",
+		"386":     "i386",
+		"amd64":   "x86_64",
+	}
 
-VERSION=$1
-if [ -z "${VERSION}" ]; then
-  echo ""
-  echo "Usage: $0 [version]"
-  echo ""
-  exit 1
-fi
+	rmap := make(map[string]string)
+	for k, v := range project.Archive.Replacements {
+		newk := uname[k]
+		if newk == "" {
+			rmap[k] = v
+			continue
+		}
+		if newk != v {
+			rmap[newk] = v
+		}
+	}
+	project.Archive.Replacements = rmap
 
-OS=$(uname -s)
-ARCH=$(uname -m)
-VERSION=${VERSION#v}
-BINDIR=${BINDIR:-./bin}
-EXE=${BINDIR}/${BINARY}
-TMPDIR=${TMPDIR:-/tmp}
-
-case ${OS} in 
-
-esac
-
-case ${ARCH} in
-
-esac
-
-if [ ! -d "${BINDIR}" ]; then
-  mkdir -p ${BINDIR}
-fi
-
-NAME={{ .Name }}
-
-TARBALL=${NAME}.tar.gz
-REPO=spf13/hugo
-URL=https://github.com/${REPO}/releases/download/v${VERSION}/${TARBALL}
-echo "Downloading ${TARBALL}"
-curl -sSL -o ${TMPDIR}/${TARBALL} ${URL}
-tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
-cp ${TMPDIR}/hugo ${HUGO}
-`
+	if project.Archive.Format == "" {
+		project.Archive.Format = "tar.gz"
+	}
+	if project.Build.Binary == "" {
+		project.Build.Binary = path.Base(repo)
+	}
+	return project, nil
+}
 
 func main() {
+	repo := flag.String("repo", "", "owner/name of repository")
+	flag.Parse()
+	args := flag.Args()
+	file := ""
+	if len(args) > 0 {
+		file = args[0]
+	}
+	cfg, err := Load(*repo, file)
+	if err != nil {
+		log.Fatalf("Unable to parse: %s", err)
+	}
 
-	
+	// get name template
+	name, err := makeName(cfg.Archive.NameTemplate)
+	cfg.Archive.NameTemplate = name
+	if err != nil {
+		log.Fatalf("Unable generate name: %s", err)
+	}
 
+	shell, err := makeShell(cfg)
+	if err != nil {
+		log.Fatalf("Unable to generate shell: %s", err)
+	}
+	fmt.Println(shell)
 }
