@@ -26,7 +26,10 @@ fi
 # portable sha256sum
 checksum() {
   TARGET=$1
-  if which sha256sum > /dev/null; then
+  if which gsha256sum > /dev/null; then
+    # mac homebrew, others
+    gsha256sum $TARGET | cut -d ' ' -f 1
+  elif which sha256sum > /dev/null; then
     # gnu, busybox
     sha256sum $TARGET | cut -d ' ' -f 1
   elif which shasum > /dev/null; then
@@ -112,6 +115,9 @@ download ${TMPDIR}/${TARBALL} ${TARBALL_URL}
 if [ 1 -eq 1 ]; then
   rm -f ${TMPDIR}/${CHECKSUM}
   download ${TMPDIR}/${CHECKSUM} ${CHECKSUM_URL}
+  # remove tabs:  old version of goreleaser used them
+  # https://github.com/goreleaser/goreleaser/issues/233
+  # fixed 2017-05-11
   WANT=$(grep ${TARBALL} ${TMPDIR}/${CHECKSUM} | tr '\t' ' ' | cut -d ' ' -f 1)
   GOT=$(checksum $TMPDIR/$TARBALL)
   if [ "$GOT" != "$WANT" ]; then
