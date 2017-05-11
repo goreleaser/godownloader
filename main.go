@@ -122,7 +122,18 @@ test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 mkdir -p ${TMPDIR}
 rm -f ${TMPDIR}/${TARBALL}
 download ${TMPDIR}/${TARBALL} ${URL}
-tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
+case ${FORMAT} in
+  tar.gz)
+   tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
+   ;;
+  zip)
+   (cd ${TMPDIR} && unzip ${TARBALL})
+   ;;
+  *)
+   echo "unknown format '${FORMAT}' - exiting"
+   exit 1
+   ;;
+esac
 install -d ${BINDIR}
 install ${TMPDIR}/${BINARY} ${BINDIR}/
 `
