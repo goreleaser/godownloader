@@ -41,16 +41,16 @@ fi
 # portable sha256sum
 checksum() {
   TARGET=$1
-  if which gsha256sum > /dev/null; then
+  if type gsha256sum &> /dev/null; then
     # mac homebrew, others
     gsha256sum $TARGET | cut -d ' ' -f 1
-  elif which sha256sum > /dev/null; then
+  elif type sha256sum &> /dev/null; then
     # gnu, busybox
     sha256sum $TARGET | cut -d ' ' -f 1
-  elif which shasum > /dev/null; then
+  elif type shasum &> /dev/null; then
     # darwin, freebsd?
     shasum -a 256 $TARGET | cut -d ' ' -f 1
-  elif which openssl > /dev/null; then
+  elif type openssl &> /dev/null; then
     openssl -dst openssl dgst -sha256 $TARGET | cut -d ' ' -f a
   else
     echo "Unable to compute hash. exiting"
@@ -66,19 +66,19 @@ download() {
   SOURCE=$2
 
   HEADER=""
-  case $SOURCE in 
+  case $SOURCE in
   https://api.github.com*)
      test -z "$GITHUB_TOKEN" || HEADER="Authorization: token $GITHUB_TOKEN"
      ;;
   esac
 
-  if which curl > /dev/null; then
+  if type curl &> /dev/null; then
     WGET="curl --fail -sSL"
     test -z "$GITHUB_TOKEN" || WGET="${WGET} -H \"${HEADER}\""
     if [ "${DEST}" != "-" ]; then
       WGET="$WGET -o $DEST"
     fi
-  elif which wget > /dev/null; then
+  elif type wget &> /dev/null; then
     WGET="wget -q -O $DEST"
     test -z "$GITHUB_TOKEN" || WGET="${WGET} --header \"${HEADER}\""
   else
@@ -115,7 +115,7 @@ esac
 
 # adjust archive name based on OS
 {{- with .Archive.Replacements }}
-case ${OS} in 
+case ${OS} in
 {{- range $k, $v := . }}
 {{ $k }}) OS={{ $v }} ;;
 {{- end }}
@@ -241,6 +241,7 @@ func loadFile(file string) (*config.Project, error) {
 	return &p, err
 }
 
+// Load project configuration from a given repo name or filepath/url.
 func Load(repo string, file string) (project *config.Project, err error) {
 	if repo == "" && file == "" {
 		return nil, fmt.Errorf("Need a repo or file")
@@ -262,7 +263,7 @@ func Load(repo string, file string) (project *config.Project, err error) {
 	// if not specified add in GitHub owner/repo info
 	if project.Release.GitHub.Owner == "" {
 		if repo == "" {
-			return nil, fmt.Errorf("Need to provide owner/name repo!")
+			return nil, fmt.Errorf("need to provide owner/name repo")
 		}
 		project.Release.GitHub.Owner = path.Dir(repo)
 		project.Release.GitHub.Name = path.Base(repo)
