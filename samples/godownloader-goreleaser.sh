@@ -58,7 +58,7 @@ download() {
   esac
 
   if which curl > /dev/null; then
-    WGET="curl -sSL"
+    WGET="curl --fail -sSL"
     test -z "$GITHUB_TOKEN" || WGET="${WGET} -H \"${HEADER}\""
     if [ "${DEST}" != "-" ]; then
       WGET="$WGET -o $DEST"
