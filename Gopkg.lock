@@ -1,0 +1,13 @@
+memo = "fe1f2fbcb03129c1ad722f6f712550bad7fe95c09a55cba70af54295f6dc4faa"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/goreleaser/goreleaser"
+  packages = ["config"]
+  revision = "cb179e040bd3d2b990fb0c39b1551ad7bdb27594"
+
+[[projects]]
+  branch = "v1"
+  name = "gopkg.in/yaml.v1"
+  packages = ["."]
+  revision = "9f9df34309c04878acc86042b16630b0f696e1de"
