@@ -62,7 +62,6 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 
 ## TODO
 
-* #3 Zip support 
 * #5 Checksum support
 * #8 Setup travis.ci
 * #10 Adjustment of default `BINDIR` (install directory)
