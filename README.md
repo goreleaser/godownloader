@@ -1,7 +1,7 @@
 # godownloader
 Download Go binaries as fast and easily as possible
 
-This is the inverse of [goreleaser](https://github.com/goreleaser/goreleaser).  The goreleaser YAML file is read and creates a custom shell script that can download the right package and the right version for the existing machine.  Sometimes this is known as "curl bash" script.
+This is the inverse of [goreleaser](https://github.com/goreleaser/goreleaser).  The goreleaser YAML file is read and creates a custom shell script that can download the right package and the right version for the existing machine.
 
 If you use goreleaser already, this will create script suitable for "curl bash" style downloads.
 
@@ -58,7 +58,7 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 * Only GitHub Releases are supported right now.
 * Binares are installed using `tar.gz` or `zip`. 
 * No support for Windows anything.  I just don't know enough about it.
-* No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via .tar.gz.  Typically OS installs are done differently anyways.
+* No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via a `tar.gz` or `zip`.  Typically OS installs are done differently anyways (e.g. yum, apt-get, etc).
 
 ## TODO
 
