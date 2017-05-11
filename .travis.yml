@@ -1,0 +1,7 @@
+language: go
+go: 1.8.1
+install:
+  - make setup
+script:
+  - make ci
+  - make samples
