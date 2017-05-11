@@ -55,18 +55,17 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 
 ## Status
 
-* Only GitHub Releases are supported right now
-* Binares are installed using `tar.gz` (`zip` support is coming)
+* Only GitHub Releases are supported right now.
+* Binares are installed using `tar.gz` or `zip`. 
 * No support for Windows anything.  I just don't know enough about it.
 * No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via .tar.gz.  Typically OS installs are done differently anyways.
 
 ## TODO
 
 * #3 Zip support 
-* #4 and format over-rides.
 * #5 Checksum support
 * #8 Setup travis.ci
-* #10 Adjustment of default `TMPDIR` and `BINDIR` (install directory)
+* #10 Adjustment of default `BINDIR` (install directory)
 * #11 Use goreleaser to release godownloader
 * #12 Use godownloader to download godownloader
 * Vendor dependencies

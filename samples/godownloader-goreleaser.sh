@@ -7,7 +7,6 @@ FORMAT=tar.gz
 OWNER=goreleaser
 REPO=goreleaser
 BINDIR=${BINDIR:-./bin}
-test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 
 VERSION=$1
 if [ -z "${VERSION}" ]; then
@@ -64,18 +63,28 @@ if [ "${VERSION}" = "latest" ]; then
    fi
 fi
 
+# if version starts with 'v', remove it
 VERSION=${VERSION#v}
 
 OS=$(uname -s)
 ARCH=$(uname -m)
 
+# change format (tar.gz or zip) based on arch
+case ${ARCH} in
+Windows) FORMAT=zip ;;
+esac
 
+# adjust archive name based on OS
 
 if [ ! -z "${ARM}" ]; then ARM="v$ARM"; fi
 NAME=${BINARY}_${OS}_${ARCH}${ARM}
 TARBALL=${NAME}.${FORMAT}
 URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
 
+# Destructive operations start here
+#
+#
+test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 mkdir -p ${TMPDIR}
 rm -f ${TMPDIR}/${TARBALL}
 download ${TMPDIR}/${TARBALL} ${URL}

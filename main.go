@@ -24,7 +24,6 @@ FORMAT={{ .Archive.Format }}
 OWNER={{ $.Release.GitHub.Owner }}
 REPO={{ $.Release.GitHub.Name }}
 BINDIR=${BINDIR:-./bin}
-test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 
 VERSION=$1
 if [ -z "${VERSION}" ]; then
@@ -81,29 +80,45 @@ if [ "${VERSION}" = "latest" ]; then
    fi
 fi
 
+# if version starts with 'v', remove it
 VERSION=${VERSION#v}
 
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-{{ with .Archive.Replacements }}
+# change format (tar.gz or zip) based on ARCH
+{{- with .Archive.FormatOverrides }}
+case ${ARCH} in
+{{- range . }}
+{{ .Goos }}) FORMAT={{ .Format }} ;;
+esac
+{{- end }}
+{{- end }}
+
+# adjust archive name based on OS
+{{- with .Archive.Replacements }}
 case ${OS} in 
 {{- range $k, $v := . }}
 {{ $k }}) OS={{ $v }} ;;
 {{- end }}
 esac
 
+# adjust archive name based on ARCH
 case ${ARCH} in
 {{- range $k, $v := . }}
 {{ $k }}) ARCH={{ $v }} ;;
 {{- end }}
 esac
-{{ end }}
+{{- end }}
 
 {{ .Archive.NameTemplate }}
 TARBALL=${NAME}.${FORMAT}
 URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
 
+# Destructive operations start here
+#
+#
+test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 mkdir -p ${TMPDIR}
 rm -f ${TMPDIR}/${TARBALL}
 download ${TMPDIR}/${TARBALL} ${URL}
@@ -250,6 +265,14 @@ func Load(repo string, file string) (*config.Project, error) {
 	}
 	project.Archive.Replacements = rmap
 
+	// do something similar for format over-rides
+	for i := 0; i < len(project.Archive.FormatOverrides); i++ {
+		goos := project.Archive.FormatOverrides[i].Goos
+		newos := uname[goos]
+		if newos != "" {
+			project.Archive.FormatOverrides[i].Goos = newos
+		}
+	}
 	return project, nil
 }
 

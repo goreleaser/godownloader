@@ -7,7 +7,6 @@ FORMAT=tar.gz
 OWNER=spf13
 REPO=hugo
 BINDIR=${BINDIR:-./bin}
-test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 
 VERSION=$1
 if [ -z "${VERSION}" ]; then
@@ -64,12 +63,18 @@ if [ "${VERSION}" = "latest" ]; then
    fi
 fi
 
+# if version starts with 'v', remove it
 VERSION=${VERSION#v}
 
 OS=$(uname -s)
 ARCH=$(uname -m)
 
+# change format (tar.gz or zip) based on arch
+case ${ARCH} in
+Windows) FORMAT=zip ;;
+esac
 
+# adjust archive name based on OS
 case ${OS} in
 Darwin) OS=macOS ;;
 arm) OS=ARM ;;
@@ -79,6 +84,7 @@ i386) OS=32bit ;;
 x86_64) OS=64bit ;;
 esac
 
+# adjust archive name based on ARCH
 case ${ARCH} in
 Darwin) ARCH=macOS ;;
 arm) ARCH=ARM ;;
@@ -88,11 +94,14 @@ i386) ARCH=32bit ;;
 x86_64) ARCH=64bit ;;
 esac
 
-
 NAME=${BINARY}_${VERSION}_${OS}-${ARCH}
 TARBALL=${NAME}.${FORMAT}
 URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
 
+# Destructive operations start here
+#
+#
+test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
 mkdir -p ${TMPDIR}
 rm -f ${TMPDIR}/${TARBALL}
 download ${TMPDIR}/${TARBALL} ${URL}
