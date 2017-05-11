@@ -63,11 +63,9 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 ## TODO
 
 * #5 Checksum support
-* #8 Setup travis.ci
 * #10 Adjustment of default `BINDIR` (install directory)
 * #11 Use goreleaser to release godownloader
 * #12 Use godownloader to download godownloader
-* Vendor dependencies
 * Figure out how to write tests
 * Add a ton of comments
 * Should `VERSION` be set via ENV not arg `$1` ?
