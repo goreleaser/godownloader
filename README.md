@@ -3,7 +3,7 @@ Download Go binaries as fast and easily as possible
 
 This is the inverse of [goreleaser](https://github.com/goreleaser/goreleaser).  The goreleaser YAML file is read and creates a custom shell script that can download the right package and the right version for the existing machine.
 
-If you use goreleaser already, this will create script suitable for "curl bash" style downloads.
+If you use goreleaser already, this will create scripts suitable for "curl bash" style downloads.
 
 * Run godownloader on your `goreleaser.yaml` file
 * Add the `godownloader.sh` file to your repo
