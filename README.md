@@ -27,7 +27,7 @@ install:
 
 This can take up to 30 seconds! 
 
-Hugo doesn't have (yet!) a godownloader.sh file.  So we will make our own:
+Hugo doesn't have (yet) a `godownloader.sh` file.  So we will make our own:
 
 
 ```
@@ -49,7 +49,7 @@ install:
   - ./godownloader-hugo.sh latest
 ```
 
-Typical download time is 0.3 seconds, or 100x improvement.
+Typical download time is 0.3 seconds, or 100x improvement. 
 
 Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `./bin/hugo`. 
 
@@ -58,7 +58,7 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 * Only GitHub Releases are supported right now.
 * Binares are installed using `tar.gz` or `zip`. 
 * No support for Windows anything.  I just don't know enough about it.
-* No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via a `tar.gz` or `zip`.  Typically OS installs are done differently anyways (e.g. yum, apt-get, etc).
+* No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via a `tar.gz` or `zip`.  Typically OS installs are done differently anyways (e.g. brew, apt-get, yum, etc).
 
 ## TODO
 
