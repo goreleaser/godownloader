@@ -54,7 +54,3 @@
 [[dependencies]]
   branch = "master"
   name = "github.com/goreleaser/goreleaser"
-
-[[dependencies]]
-  branch = "v1"
-  name = "gopkg.in/yaml.v1"

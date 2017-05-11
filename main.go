@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"path"
@@ -12,7 +11,6 @@ import (
 	"text/template"
 
 	"github.com/goreleaser/goreleaser/config"
-	yaml "gopkg.in/yaml.v1"
 )
 
 var tplsrc = `#!/bin/sh
@@ -183,44 +181,40 @@ func makeName(target string) (string, error) {
 	return out.String(), err
 }
 
-func readURL(loc string) ([]byte, error) {
-	resp, err := http.Get(loc)
+func loadURL(file string) (*config.Project, error) {
+	resp, err := http.Get(file)
 	if err != nil {
 		return nil, err
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	p, err := config.LoadReader(resp.Body)
 
-	// to make errcheck be happy
+	// to make errcheck happy
 	errc := resp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
 	if errc != nil {
 		return nil, errc
 	}
-	return body, err
+	return &p, err
 }
 
-func Load(repo string, file string) (*config.Project, error) {
+func loadFile(file string) (*config.Project, error) {
+	p, err := config.Load(file)
+	return &p, err
+}
+
+func Load(repo string, file string) (project *config.Project, err error) {
 	if repo == "" && file == "" {
 		return nil, fmt.Errorf("Need a repo or file")
 	}
 	if file == "" {
 		file = "https://raw.githubusercontent.com/" + repo + "/master/goreleaser.yml"
 	}
-	var body []byte
-	var err error
+
 	log.Printf("Reading %s", file)
 	if strings.HasPrefix(file, "http") {
-		body, err = readURL(file)
+		project, err = loadURL(file)
 	} else {
-		body, err = ioutil.ReadFile(file)
+		project, err = loadFile(file)
 	}
-	if err != nil {
-		return nil, err
-	}
-	project := &config.Project{}
-	err = yaml.Unmarshal(body, project)
 	if err != nil {
 		return nil, err
 	}
@@ -284,6 +278,7 @@ func Load(repo string, file string) (*config.Project, error) {
 			project.Archive.FormatOverrides[i].Goos = newos
 		}
 	}
+
 	return project, nil
 }
 
