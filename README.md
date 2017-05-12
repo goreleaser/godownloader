@@ -56,18 +56,17 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 ## Status
 
 * Only GitHub Releases are supported right now.
+* Checksums are checked.
 * Binares are installed using `tar.gz` or `zip`. 
 * No support for Windows anything.  I just don't know enough about it.
 * No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via a `tar.gz` or `zip`.  Typically OS installs are done differently anyways (e.g. brew, apt-get, yum, etc).
 
 ## TODO
 
-* #5 Checksum support
 * #10 Adjustment of default `BINDIR` (install directory)
 * #11 Use goreleaser to release godownloader
 * #12 Use godownloader to download godownloader
 * Figure out how to write tests
-* Add a ton of comments
 * Should `VERSION` be set via ENV not arg `$1` ?
 
 ## Yes, it's true.
