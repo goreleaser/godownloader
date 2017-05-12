@@ -26,6 +26,7 @@ cat \
   mktmpdir.sh \
   http_download.sh \
   github_api.sh \
+  github_last_release.sh \
   hash_sha256.sh \
   license_end.sh | \
   grep -v '^#' |grep -v ' #' | tr -s '\n'

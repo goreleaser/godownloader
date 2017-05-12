@@ -39,13 +39,8 @@ fi
 
 if [ "${VERSION}" = "latest" ]; then
   echo "Checking GitHub for latest version of ${OWNER}/${REPO}"
-  VERSION=$(github_api - https://api.github.com/repos/${OWNER}/${REPO}/releases/latest | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
-  if [ -z "${VERSION}" ]; then
-    echo "Unable to determine latest release for ${OWNER}/${REPO}"
-    exit 1
-   fi
+  VERSION=$(github_last_release "$OWNER/$REPO")
 fi
-
 # if version starts with 'v', remove it
 VERSION=${VERSION#v}
 
@@ -86,7 +81,7 @@ CHECKSUM_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/$
 # Destructive operations start here
 #
 #
-mktmpdir
+TMPDIR=$(mktmpdir)
 http_download ${TMPDIR}/${TARBALL} ${TARBALL_URL}
 
 # checksum goes here

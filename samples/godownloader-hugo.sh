@@ -42,6 +42,7 @@ untar() {
 mktmpdir() {
    test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
    mkdir -p ${TMPDIR}
+   echo ${TMPDIR}
 }
 http_download() {
   DEST=$1
@@ -75,6 +76,15 @@ github_api() {
      ;;
   esac
   http_download $DEST $SOURCE $HEADER
+}
+github_last_release() {
+  OWNER_REPO=$1
+  VERSION=$(github_api - https://api.github.com/repos/${OWNER_REPO}/releases/latest | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
+  if [ -z "${VERSION}" ]; then
+    echo "Unable to determine latest release for ${OWNER_REPO}"
+    return 1
+  fi
+  echo ${VERSION}
 }
 hash_sha256() {
   TARGET=${1:-$(</dev/stdin)};
@@ -133,13 +143,8 @@ fi
 
 if [ "${VERSION}" = "latest" ]; then
   echo "Checking GitHub for latest version of ${OWNER}/${REPO}"
-  VERSION=$(github_api - https://api.github.com/repos/${OWNER}/${REPO}/releases/latest | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
-  if [ -z "${VERSION}" ]; then
-    echo "Unable to determine latest release for ${OWNER}/${REPO}"
-    exit 1
-   fi
+  VERSION=$(github_last_release "$OWNER/$REPO")
 fi
-
 # if version starts with 'v', remove it
 VERSION=${VERSION#v}
 
@@ -190,7 +195,7 @@ CHECKSUM_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/$
 # Destructive operations start here
 #
 #
-mktmpdir
+TMPDIR=$(mktmpdir)
 http_download ${TMPDIR}/${TARBALL} ${TARBALL_URL}
 
 # checksum goes here
