@@ -26,21 +26,64 @@ fi
 # portable sha256sum
 checksum() {
   TARGET=$1
-  if which gsha256sum > /dev/null; then
+  if type gsha256sum &> /dev/null; then
     # mac homebrew, others
     gsha256sum $TARGET | cut -d ' ' -f 1
-  elif which sha256sum > /dev/null; then
+  elif type sha256sum &> /dev/null; then
     # gnu, busybox
     sha256sum $TARGET | cut -d ' ' -f 1
-  elif which shasum > /dev/null; then
+  elif type shasum &> /dev/null; then
     # darwin, freebsd?
     shasum -a 256 $TARGET | cut -d ' ' -f 1
-  elif which openssl > /dev/null; then
+  elif type openssl &> /dev/null; then
     openssl -dst openssl dgst -sha256 $TARGET | cut -d ' ' -f a
   else
     echo "Unable to compute hash. exiting"
     exit 1
   fi
+}
+
+verify_checksum() {
+  TARGET=$1
+  SUMS=$2
+
+  # http://stackoverflow.com/questions/2664740/extract-file-basename-without-path-and-extension-in-bash
+  BASENAME=${TARGET##*/}
+
+  # remove tabs:  old version of goreleaser used them
+  # https://github.com/goreleaser/goreleaser/issues/233
+  # fixed 2017-05-11
+  WANT=$(grep ${BASENAME} ${SUMS} | tr '\t' ' ' | cut -d ' ' -f 1)
+  GOT=$(checksum $TARGET)
+  if [ "$GOT" != "$WANT" ]; then
+     echo "Checksum for $TARGET did not verify"
+     echo "WANT: ${WANT}"
+     echo "GOT : ${GOT}"
+     exit 1
+  fi
+}
+
+mktmpdir() {
+   test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
+   mkdir -p ${TMPDIR}
+}
+
+untar() {
+  TARBALL=$1
+  case ${TARBALL} in
+  *.tar.gz|*.tgz)
+    tar -xzf ${TARBALL}
+    ;;
+  *.tar)
+    tar -xf ${TARBALL}
+    ;;
+  *.zip)
+    unzip ${TARBALL}
+    ;;
+  *)
+    echo "Unknown archive format for ${TARBALL}"
+    exit 1
+  esac
 }
 
 # download dest source
@@ -51,19 +94,19 @@ download() {
   SOURCE=$2
 
   HEADER=""
-  case $SOURCE in 
+  case $SOURCE in
   https://api.github.com*)
      test -z "$GITHUB_TOKEN" || HEADER="Authorization: token $GITHUB_TOKEN"
      ;;
   esac
 
-  if which curl > /dev/null; then
+  if type curl &> /dev/null; then
     WGET="curl --fail -sSL"
     test -z "$GITHUB_TOKEN" || WGET="${WGET} -H \"${HEADER}\""
     if [ "${DEST}" != "-" ]; then
       WGET="$WGET -o $DEST"
     fi
-  elif which wget > /dev/null; then
+  elif type wget &> /dev/null; then
     WGET="wget -q -O $DEST"
     test -z "$GITHUB_TOKEN" || WGET="${WGET} --header \"${HEADER}\""
   else
@@ -71,6 +114,9 @@ download() {
     exit 1
   fi
 
+  if [ "${DEST}" != "-" ]; then
+    rm -f "${DEST}"
+  fi
   ${WGET} ${SOURCE}
 }
 
@@ -106,40 +152,16 @@ CHECKSUM_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/$
 # Destructive operations start here
 #
 #
-test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
-mkdir -p ${TMPDIR}
-rm -f ${TMPDIR}/${TARBALL}
+mktmpdir
 download ${TMPDIR}/${TARBALL} ${TARBALL_URL}
 
 # checksum goes here
 if [ 1 -eq 1 ]; then
-  rm -f ${TMPDIR}/${CHECKSUM}
   download ${TMPDIR}/${CHECKSUM} ${CHECKSUM_URL}
-  # remove tabs:  old version of goreleaser used them
-  # https://github.com/goreleaser/goreleaser/issues/233
-  # fixed 2017-05-11
-  WANT=$(grep ${TARBALL} ${TMPDIR}/${CHECKSUM} | tr '\t' ' ' | cut -d ' ' -f 1)
-  GOT=$(checksum $TMPDIR/$TARBALL)
-  if [ "$GOT" != "$WANT" ]; then
-     echo "Checksum for $TMPDIR/$TARBALL did not verify"
-     echo "WANT: ${WANT}"
-     echo "GOT : ${GOT}"
-     exit 1
-  fi
+  verify_checksum ${TMPDIR}/${TARBALL} ${TMPDIR}/${CHECKSUM}
 fi
 
-case ${FORMAT} in
-  tar.gz)
-   tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
-   ;;
-  zip)
-   (cd ${TMPDIR} && unzip ${TARBALL})
-   ;;
-  *)
-   echo "unknown format '${FORMAT}' - exiting"
-   exit 1
-   ;;
-esac
+(cd ${TMPDIR} && untar ${TARBALL})
 install -d ${BINDIR}
 install ${TMPDIR}/${BINARY} ${BINDIR}/
 

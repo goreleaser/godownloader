@@ -58,6 +58,49 @@ checksum() {
   fi
 }
 
+verify_checksum() {
+  TARGET=$1
+  SUMS=$2
+
+  # http://stackoverflow.com/questions/2664740/extract-file-basename-without-path-and-extension-in-bash
+  BASENAME=${TARGET##*/}
+
+  # remove tabs:  old version of goreleaser used them
+  # https://github.com/goreleaser/goreleaser/issues/233
+  # fixed 2017-05-11
+  WANT=$(grep ${BASENAME} ${SUMS} | tr '\t' ' ' | cut -d ' ' -f 1)
+  GOT=$(checksum $TARGET)
+  if [ "$GOT" != "$WANT" ]; then
+     echo "Checksum for $TARGET did not verify"
+     echo "WANT: ${WANT}"
+     echo "GOT : ${GOT}"
+     exit 1
+  fi
+}
+
+mktmpdir() {
+   test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
+   mkdir -p ${TMPDIR}
+}
+
+untar() {
+  TARBALL=$1
+  case ${TARBALL} in
+  *.tar.gz|*.tgz)
+    tar -xzf ${TARBALL}
+    ;;
+  *.tar)
+    tar -xf ${TARBALL}
+    ;;
+  *.zip)
+    unzip ${TARBALL}
+    ;;
+  *)
+    echo "Unknown archive format for ${TARBALL}"
+    exit 1
+  esac
+}
+
 # download dest source
 # if dest is "-", then output to stdout
 # if source is api.github.com add auth token
@@ -86,6 +129,9 @@ download() {
     exit 1
   fi
 
+  if [ "${DEST}" != "-" ]; then
+    rm -f "${DEST}"
+  fi
   ${WGET} ${SOURCE}
 }
 
@@ -138,40 +184,16 @@ CHECKSUM_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/$
 # Destructive operations start here
 #
 #
-test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
-mkdir -p ${TMPDIR}
-rm -f ${TMPDIR}/${TARBALL}
+mktmpdir
 download ${TMPDIR}/${TARBALL} ${TARBALL_URL}
 
 # checksum goes here
 if [ 1 -eq 1 ]; then
-  rm -f ${TMPDIR}/${CHECKSUM}
   download ${TMPDIR}/${CHECKSUM} ${CHECKSUM_URL}
-  # remove tabs:  old version of goreleaser used them
-  # https://github.com/goreleaser/goreleaser/issues/233
-  # fixed 2017-05-11
-  WANT=$(grep ${TARBALL} ${TMPDIR}/${CHECKSUM} | tr '\t' ' ' | cut -d ' ' -f 1)
-  GOT=$(checksum $TMPDIR/$TARBALL)
-  if [ "$GOT" != "$WANT" ]; then
-     echo "Checksum for $TMPDIR/$TARBALL did not verify"
-     echo "WANT: ${WANT}"
-     echo "GOT : ${GOT}"
-     exit 1
-  fi
+  verify_checksum ${TMPDIR}/${TARBALL} ${TMPDIR}/${CHECKSUM}
 fi
 
-case ${FORMAT} in
-  tar.gz)
-   tar -C ${TMPDIR} -xzf ${TMPDIR}/${TARBALL}
-   ;;
-  zip)
-   (cd ${TMPDIR} && unzip ${TARBALL})
-   ;;
-  *)
-   echo "unknown format '${FORMAT}' - exiting"
-   exit 1
-   ;;
-esac
+(cd ${TMPDIR} && untar ${TARBALL})
 install -d ${BINDIR}
 install ${TMPDIR}/${BINARY} ${BINDIR}/
 `
