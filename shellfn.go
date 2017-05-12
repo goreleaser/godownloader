@@ -14,7 +14,7 @@ is_command() {
   type $1 > /dev/null 2> /dev/null
 }
 uname_arch() {
-  local arch=$(uname -m)
+  arch=$(uname -m)
   case $arch in
     x86_64) arch="amd64" ;;
     x86)    arch="386" ;;
@@ -24,17 +24,17 @@ uname_arch() {
   echo ${arch}
 }
 uname_os() {
-  local os=$(uname -s | tr '[:upper:]' '[:lower:]')
+  os=$(uname -s | tr '[:upper:]' '[:lower:]')
   echo ${os}
 }
 untar() {
-  TARBALL=$1
-  case ${TARBALL} in
-  *.tar.gz|*.tgz) tar -xzf ${TARBALL} ;;
-  *.tar) tar -xf ${TARBALL} ;;
-  *.zip) unzip ${TARBALL} ;;
+  tarball=$1
+  case ${tarball} in
+  *.tar.gz|*.tgz) tar -xzf ${tarball} ;;
+  *.tar) tar -xf ${tarball} ;;
+  *.zip) unzip ${tarball} ;;
   *)
-    echo "Unknown archive format for ${TARBALL}"
+    echo "Unknown archive format for ${tarball}"
     return 1
   esac
 }
