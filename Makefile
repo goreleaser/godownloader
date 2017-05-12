@@ -38,6 +38,7 @@ lint: ## Run all the linters
 ci: lint test ## Run all the tests and code checks
 
 build: ## Build a beta version of goreleaser
+	./makeshellfn.sh > shellfn.go
 	go build
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
@@ -47,9 +48,9 @@ help:
 .DEFAULT_GOAL := build
 
 
-samples:
-	go run main.go -repo spf13/hugo > samples/godownloader-hugo.sh
-	go run main.go -repo goreleaser/goreleaser > samples/godownloader-goreleaser.sh
+samples: build
+	./godownloader -repo spf13/hugo > samples/godownloader-hugo.sh
+	./godownloader -repo goreleaser/goreleaser > samples/godownloader-goreleaser.sh
 .PHONY: samples
 
 clean:
