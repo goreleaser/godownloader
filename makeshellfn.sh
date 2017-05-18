@@ -21,7 +21,8 @@ echo 'const shellfn = `'
 cat \
   license.sh \
   is_command.sh \
-  uname.sh \
+  uname_os.sh \
+  uname_arch.sh \
   untar.sh \
   mktmpdir.sh \
   http_download.sh \

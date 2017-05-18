@@ -13,6 +13,10 @@ EOF
 is_command() {
   type $1 > /dev/null 2> /dev/null
 }
+uname_os() {
+  os=$(uname -s | tr '[:upper:]' '[:lower:]')
+  echo ${os}
+}
 uname_arch() {
   arch=$(uname -m)
   case $arch in
@@ -22,10 +26,6 @@ uname_arch() {
     i386)   arch="386" ;;
   esac
   echo ${arch}
-}
-uname_os() {
-  os=$(uname -s | tr '[:upper:]' '[:lower:]')
-  echo ${os}
 }
 untar() {
   tarball=$1
