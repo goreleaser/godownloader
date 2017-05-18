@@ -176,6 +176,22 @@ windows) FORMAT=zip ;;
 esac
 
 # adjust archive name based on OS
+case ${OS} in
+386) OS=i386 ;;
+amd64) OS=x86_64 ;;
+darwin) OS=Darwin ;;
+linux) OS=Linux ;;
+windows) OS=Windows ;;
+esac
+
+# adjust archive name based on ARCH
+case ${ARCH} in
+386) ARCH=i386 ;;
+amd64) ARCH=x86_64 ;;
+darwin) ARCH=Darwin ;;
+linux) ARCH=Linux ;;
+windows) ARCH=Windows ;;
+esac
 
 if [ ! -z "${ARM}" ]; then ARM="v$ARM"; fi
 NAME=${BINARY}_${OS}_${ARCH}${ARM}
