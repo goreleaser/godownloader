@@ -59,7 +59,7 @@ uname_os_check() {
    solaris)   return 0 ;;
    windows)   return 0 ;;
   esac
-  echo "$0: uname_os_check: internal error '$(uname -s)' got coverted to '$os' which is not a GOOS value. Please file bug at https://github.com/client9/posixshell"
+  echo "$0: uname_os_check: internal error '$(uname -s)' got converted to '$os' which is not a GOOS value. Please file bug at https://github.com/client9/posixshell"
   return 1
 }
 uname_arch_check() {
@@ -78,7 +78,7 @@ uname_arch_check() {
    s390x)    return 0 ;;
    amd64p32) return 0 ;;
   esac
-  echo "$0: uname_arch_check: internal error '$(uname -m)' got coverted to '$arch' which is not a GOARCH value.  Please file bug report at https://github.com/client9/posixshell"
+  echo "$0: uname_arch_check: internal error '$(uname -m)' got converted to '$arch' which is not a GOARCH value.  Please file bug report at https://github.com/client9/posixshell"
   return 1
 }
 untar() {
@@ -133,13 +133,11 @@ github_api() {
   http_download "$local_file" "$source_url" "$header"
 }
 github_last_release() {
-  OWNER_REPO=$1
-  VERSION=$(github_api - https://api.github.com/repos/${OWNER_REPO}/releases/latest | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
-  if [ -z "${VERSION}" ]; then
-    echo "Unable to determine latest release for ${OWNER_REPO}"
-    return 1
-  fi
-  echo ${VERSION}
+  owner_repo=$1
+  html=$(github_api - https://api.github.com/repos/${owner_repo}/releases/latest)
+  version=$(echo "$html" | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
+  test -z "$version" && return 1
+  echo "$version"
 }
 hash_sha256() {
   TARGET=${1:-/dev/stdin};

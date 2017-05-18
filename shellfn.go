@@ -116,13 +116,11 @@ github_api() {
   http_download "$local_file" "$source_url" "$header"
 }
 github_last_release() {
-  OWNER_REPO=$1
-  VERSION=$(github_api - https://api.github.com/repos/${OWNER_REPO}/releases/latest | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
-  if [ -z "${VERSION}" ]; then
-    echo "Unable to determine latest release for ${OWNER_REPO}"
-    return 1
-  fi
-  echo ${VERSION}
+  owner_repo=$1
+  html=$(github_api - https://api.github.com/repos/${owner_repo}/releases/latest)
+  version=$(echo "$html" | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
+  test -z "$version" && return 1
+  echo "$version"
 }
 hash_sha256() {
   TARGET=${1:-/dev/stdin};
