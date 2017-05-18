@@ -39,6 +39,9 @@ BINARY={{ .Build.Binary }}
 FORMAT={{ .Archive.Format }}
 BINDIR=${BINDIR:-./bin}
 
+uname_os_check
+uname_arch_check
+
 VERSION=$1
 case "${VERSION}" in
  latest)

@@ -23,6 +23,8 @@ cat \
   is_command.sh \
   uname_os.sh \
   uname_arch.sh \
+  uname_os_check.sh \
+  uname_arch_check.sh \
   untar.sh \
   mktmpdir.sh \
   http_download.sh \
