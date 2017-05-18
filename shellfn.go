@@ -44,37 +44,39 @@ mktmpdir() {
    echo ${TMPDIR}
 }
 http_download() {
-  DEST=$1
-  SOURCE=$2
-  HEADER=$3
+  local_file=$1
+  source_url=$2
+  header=$3
+  headerflag=''
+  destflag=''
   if is_command curl; then
-    WGET="curl --fail -sSL"
-    test -z "${HEADER}" || WGET="${WGET} -H \"${HEADER}\""
-    if [ "${DEST}" != "-" ]; then
-      WGET="$WGET -o $DEST"
-    fi
-  elif is_command wget &> /dev/null; then
-    WGET="wget -q -O $DEST"
-    test -z "${HEADER}" || WGET="${WGET} --header \"${HEADER}\""
+    cmd='curl --fail -sSL'
+    destflag='-o'
+    headerflag='-H'
+  elif is_command wget; then
+    cmd='wget -q'
+    destflag='-O'
+    headerflag='--header'
   else
-    echo "Unable to find wget or curl.  Exit"
-    exit 1
+    echo "http_download: unable to find wget or curl"
+    return 1
   fi
-  if [ "${DEST}" != "-" ]; then
-    rm -f "${DEST}"
+  if [ -z "$header" ]; then
+    $cmd $destflag "$local_file" "$source_url"
+  else
+    $cmd $headerflag "$header" $destflag "$local_file" "$source_url"
   fi
-  ${WGET} ${SOURCE}
 }
 github_api() {
-  DEST=$1
-  SOURCE=$2
-  HEADER=""
-  case $SOURCE in
+  local_file=$1
+  source_url=$2
+  header=""
+  case "$source_url" in
   https://api.github.com*)
-     test -z "$GITHUB_TOKEN" || HEADER="Authorization: token $GITHUB_TOKEN"
+     test -z "$GITHUB_TOKEN" || header="Authorization: token $GITHUB_TOKEN"
      ;;
   esac
-  http_download $DEST $SOURCE $HEADER
+  http_download "$local_file" "$source_url" "$header"
 }
 github_last_release() {
   OWNER_REPO=$1

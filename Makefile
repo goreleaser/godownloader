@@ -48,7 +48,7 @@ help:
 .DEFAULT_GOAL := build
 
 
-samples: build
+samples:
 	./godownloader -repo spf13/hugo > samples/godownloader-hugo.sh
 	./godownloader -repo goreleaser/goreleaser > samples/godownloader-goreleaser.sh
 .PHONY: samples
