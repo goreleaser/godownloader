@@ -30,6 +30,10 @@ EOF
 is_command() {
   type $1 > /dev/null 2> /dev/null
 }
+uname_os() {
+  os=$(uname -s | tr '[:upper:]' '[:lower:]')
+  echo ${os}
+}
 uname_arch() {
   arch=$(uname -m)
   case $arch in
@@ -39,10 +43,6 @@ uname_arch() {
     i386)   arch="386" ;;
   esac
   echo ${arch}
-}
-uname_os() {
-  os=$(uname -s | tr '[:upper:]' '[:lower:]')
-  echo ${os}
 }
 untar() {
   tarball=$1
@@ -155,13 +155,20 @@ FORMAT=tar.gz
 BINDIR=${BINDIR:-./bin}
 
 VERSION=$1
-if [ -z "${VERSION}" ]; then
-  usage $0
-  exit 1
-fi
+case "${VERSION}" in
+ latest)
+    VERSION=""
+    ;;
+ -h|-?|*help*)
+   usage $0
+   exit 1
+   ;;
+esac
 
-if [ "${VERSION}" = "latest" ]; then
-  echo "Checking GitHub for latest version of ${OWNER}/${REPO}"
+PREFIX="$OWNER/$REPO"
+
+if [ -z "${VERSION}" ]; then
+  echo "$PREFIX: checking GitHub for latest version"
   VERSION=$(github_last_release "$OWNER/$REPO")
 fi
 # if version starts with 'v', remove it
@@ -205,6 +212,8 @@ openbsd) ARCH=OpenBSD ;;
 windows) ARCH=Windows ;;
 esac
 
+echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
+
 NAME=${BINARY}_${VERSION}_${OS}-${ARCH}
 TARBALL=${NAME}.${FORMAT}
 TARBALL_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
@@ -217,14 +226,17 @@ CHECKSUM_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/$
 # out preventing half-done work
 execute() {
   TMPDIR=$(mktmpdir)
+  echo "$PREFIX: downloading ${TARBALL_URL}"
   http_download ${TMPDIR}/${TARBALL} ${TARBALL_URL}
 
+  echo "$PREFIX: verifying checksums"
   http_download ${TMPDIR}/${CHECKSUM} ${CHECKSUM_URL}
   hash_sha256_verify ${TMPDIR}/${TARBALL} ${TMPDIR}/${CHECKSUM}
 
   (cd ${TMPDIR} && untar ${TARBALL})
   install -d ${BINDIR}
   install ${TMPDIR}/${BINARY} ${BINDIR}/
+  echo "$PREFIX: installed as ${BINDIR}/${BINARY}"
 }
 
 execute

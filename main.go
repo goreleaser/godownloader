@@ -40,13 +40,20 @@ FORMAT={{ .Archive.Format }}
 BINDIR=${BINDIR:-./bin}
 
 VERSION=$1
-if [ -z "${VERSION}" ]; then
-  usage $0
-  exit 1
-fi
+case "${VERSION}" in
+ latest)
+    VERSION=""
+    ;;
+ -h|-?|*help*)
+   usage $0
+   exit 1
+   ;;
+esac
 
-if [ "${VERSION}" = "latest" ]; then
-  echo "Checking GitHub for latest version of ${OWNER}/${REPO}"
+PREFIX="$OWNER/$REPO"
+
+if [ -z "${VERSION}" ]; then
+  echo "$PREFIX: checking GitHub for latest version"
   VERSION=$(github_last_release "$OWNER/$REPO")
 fi
 # if version starts with 'v', remove it
@@ -80,6 +87,8 @@ case ${ARCH} in
 esac
 {{- end }}
 
+echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
+
 {{ .Archive.NameTemplate }}
 TARBALL=${NAME}.${FORMAT}
 TARBALL_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
@@ -92,14 +101,17 @@ CHECKSUM_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/$
 # out preventing half-done work
 execute() {
   TMPDIR=$(mktmpdir)
+  echo "$PREFIX: downloading ${TARBALL_URL}"
   http_download ${TMPDIR}/${TARBALL} ${TARBALL_URL}
 
+  echo "$PREFIX: verifying checksums"
   http_download ${TMPDIR}/${CHECKSUM} ${CHECKSUM_URL}
   hash_sha256_verify ${TMPDIR}/${TARBALL} ${TMPDIR}/${CHECKSUM}
 
   (cd ${TMPDIR} && untar ${TARBALL})
   install -d ${BINDIR}
   install ${TMPDIR}/${BINARY} ${BINDIR}/
+  echo "$PREFIX: installed as ${BINDIR}/${BINARY}"
 }
 
 execute
