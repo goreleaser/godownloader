@@ -35,10 +35,9 @@ lint: ## Run all the linters
 		--deadline=10m \
 		./...
 
-ci: lint test ## Run all the tests and code checks
+ci: build lint test samples ## Run all the tests and code checks as travis-ci does
 
 build: ## Build a beta version of goreleaser
-	./makeshellfn.sh > shellfn.go
 	go build
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
@@ -47,13 +46,17 @@ help:
 
 .DEFAULT_GOAL := build
 
+generate: ## regenerate shell code from client9/posixshell
+	./makeshellfn.sh > shellfn.go
 
-samples:
+samples: ## make sample donwloaders
 	./godownloader -repo spf13/hugo > samples/godownloader-hugo.sh
 	./godownloader -repo goreleaser/goreleaser > samples/godownloader-goreleaser.sh
-.PHONY: samples
 
-clean:
+.PHONY: ci help generate samples clean
+
+clean: ## clean up everything
+	go clean ./...
 	rm -f godownloader
 	rm -rf ./bin
 	git gc --aggressive
