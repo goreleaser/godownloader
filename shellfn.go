@@ -86,31 +86,41 @@ github_last_release() {
   echo ${VERSION}
 }
 hash_sha256() {
-  TARGET=${1:-$(</dev/stdin)};
+  TARGET=${1:-/dev/stdin};
   if is_command gsha256sum; then
-    gsha256sum $TARGET | cut -d ' ' -f 1
+    hash=$(gsha256sum $TARGET) || return 1
+    echo $hash | cut -d ' ' -f 1
   elif is_command sha256sum; then
-    sha256sum $TARGET | cut -d ' ' -f 1
+    hash=$(sha256sum $TARGET) || return 1
+    echo $hash | cut -d ' ' -f 1
   elif is_command shasum; then
-    shasum -a 256 $TARGET | cut -d ' ' -f 1
+    hash=$(shasum -a 256 $TARGET 2>/dev/null) || return 1
+    echo $hash | cut -d ' ' -f 1
   elif is_command openssl; then
-    openssl -dst openssl dgst -sha256 $TARGET | cut -d ' ' -f a
+    hash=$(openssl -dst openssl dgst -sha256 $TARGET) || return 1
+    echo $hash | cut -d ' ' -f a
   else
-    echo "Unable to compute hash. exiting"
-    exit 1
+    echo "hash_sha256: unable to find command to compute sha-256 hash"
+    return 1
   fi
 }
 hash_sha256_verify() {
   TARGET=$1
-  SUMS=$2
+  checksums=$2
+  if [ -z "$checksums" ]; then
+     echo "hash_sha256_verify: checksum file not specified in arg2"
+     return 1
+  fi
   BASENAME=${TARGET##*/}
-  WANT=$(grep ${BASENAME} ${SUMS} | tr '\t' ' ' | cut -d ' ' -f 1)
-  GOT=$(hash_sha256 $TARGET)
-  if [ "$GOT" != "$WANT" ]; then
-     echo "Checksum for $TARGET did not verify"
-     echo "WANT: ${WANT}"
-     echo "GOT : ${GOT}"
-     exit 1
+  want=$(grep ${BASENAME} "${checksums}" 2> /dev/null | tr '\t' ' ' | cut -d ' ' -f 1)
+  if [ -z "$want" ]; then
+     echo "hash_sha256_verify: unable to find checksum for '${TARGET}' in '${checksums}'"
+     return 1
+  fi
+  got=$(hash_sha256 $TARGET)
+  if [ "$want" != "$got" ]; then
+     echo "hash_sha256_verify: checksum for '$TARGET' did not verify ${want} vs $got"
+     return 1
   fi
 }
 cat /dev/null << EOF
