@@ -1,5 +1,13 @@
 language: go
 go: 1.8.1
+
+addons:
+  apt:
+    sources:
+    - debian-sid
+    packages:
+    - shellcheck
+
 script:
   - make setup
   - make ci
