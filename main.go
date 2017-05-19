@@ -48,7 +48,7 @@ case "${VERSION}" in
     VERSION=""
     ;;
  -h|-?|*help*)
-   usage $0
+   usage "$0"
    exit 1
    ;;
 esac
@@ -105,15 +105,15 @@ CHECKSUM_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/$
 execute() {
   TMPDIR=$(mktmpdir)
   echo "$PREFIX: downloading ${TARBALL_URL}"
-  http_download ${TMPDIR}/${TARBALL} ${TARBALL_URL}
+  http_download "${TMPDIR}/${TARBALL}" "${TARBALL_URL}"
 
   echo "$PREFIX: verifying checksums"
-  http_download ${TMPDIR}/${CHECKSUM} ${CHECKSUM_URL}
-  hash_sha256_verify ${TMPDIR}/${TARBALL} ${TMPDIR}/${CHECKSUM}
+  http_download "${TMPDIR}/${CHECKSUM}" "${CHECKSUM_URL}"
+  hash_sha256_verify "${TMPDIR}/${TARBALL}" "${TMPDIR}/${CHECKSUM}"
 
-  (cd ${TMPDIR} && untar ${TARBALL})
-  install -d ${BINDIR}
-  install ${TMPDIR}/${BINARY} ${BINDIR}/
+  (cd "${TMPDIR}" && untar "${TARBALL}")
+  install -d "${BINDIR}"
+  install "${TMPDIR}/${BINARY}" "${BINDIR}/"
   echo "$PREFIX: installed as ${BINDIR}/${BINARY}"
 }
 
