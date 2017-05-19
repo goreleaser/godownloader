@@ -12,6 +12,7 @@ setup: ## Install all the build and lint dependencies
 
 test: ## Run all the tests
 	gotestcover $(TEST_OPTIONS) -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=30s
+	shellcheck samples/godownloader-goreleaser.sh
 
 cover: test ## Run all the tests and opens the coverage report
 	go tool cover -html=coverage.txt
@@ -35,7 +36,13 @@ lint: ## Run all the linters
 		--deadline=10m \
 		./...
 
-ci: build lint test samples ## Run all the tests and code checks as travis-ci does
+lint_shell:  ## shellcheck the shell scripts
+	shellcheck -s sh samples/godownloader-goreleaser.sh
+	shellcheck -s bash samples/godownloader-goreleaser.sh
+	shellcheck -s dash samples/godownloader-goreleaser.sh
+	shellcheck -s ksh samples/godownloader-goreleaser.sh
+
+ci: build samples lint test lint_shell ## Run all the tests and code checks as travis-ci does
 
 build: ## Build a beta version of goreleaser
 	go build

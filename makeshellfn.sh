@@ -2,13 +2,13 @@
 set -e
 
 git_clone_or_update() {
-  URL=$1
-  REPO=${URL##*/}   # foo.git
-  REPO=${REPO%.git} # foo
-  if [ ! -d "$REPO" ]; then
-    git clone ${URL} 
+  giturl=$1
+  gitrepo=${giturl##*/}   # foo.git
+  gitrepo=${gitrepo%.git} # foo
+  if [ ! -d "$gitrepo" ]; then
+    git clone "$giturl"
   else
-    (cd ${REPO} && git pull > /dev/null)
+    (cd "$gitrepo" && git pull > /dev/null)
   fi
 }
 
