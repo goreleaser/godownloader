@@ -52,6 +52,8 @@ generate: ## regenerate shell code from client9/posixshell
 samples: ## make sample donwloaders
 	./godownloader -repo spf13/hugo > samples/godownloader-hugo.sh
 	./godownloader -repo goreleaser/goreleaser > samples/godownloader-goreleaser.sh
+	./godownloader -repo client9/misspell > samples/godownloader-misspell.sh
+
 
 .PHONY: ci help generate samples clean
 
