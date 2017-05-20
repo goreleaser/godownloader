@@ -241,7 +241,7 @@ esac
 
 echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
 
-if [ ! -z "${ARM}" ]; then ARM="v$ARM"; fi
+test -z "$ARM" || ARM="v$ARM"
 NAME=${BINARY}_${OS}_${ARCH}${ARM}
 TARBALL=${NAME}.${FORMAT}
 TARBALL_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}

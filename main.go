@@ -11,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/goreleaser/goreleaser/config"
+	"github.com/goreleaser/goreleaser/pipeline/defaults"
 )
 
 // given a template, and a config, generate shell script
@@ -32,11 +33,28 @@ func makeShell(tplsrc string, cfg *config.Project) (string, error) {
 //
 func makeName(target string) (string, error) {
 	prefix := ""
-	// TODO: error on conditionals
-	if target == "" || target == "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}" {
-		prefix = "if [ ! -z \"${ARM}\" ]; then ARM=\"v$ARM\"; fi"
-		target = "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
+
+	if target == "" {
+		target = defaults.NameTemplate
 	}
+
+	// handle common conditionals that were used as defaults
+	// in goreleaser
+	switch target {
+	case "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}":
+		prefix = "test -z \"$ARM\" || ARM=\"v$ARM\""
+		target = "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
+	case "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}":
+		prefix = "test -z \"$ARM\" || ARM=\"v$ARM\""
+		target = "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
+	}
+
+	// otherwise if it contains a conditional, we can't (easily)
+	// translate that to bash.  Ask for bug report.
+	if strings.Contains(target, "{{ if") || strings.Contains(target, "{{if") {
+		return "", fmt.Errorf("name_template %q contains unknown conditional.  Please file bug at https://github.com/goreleaser/godownloader", target)
+	}
+
 	var varmap = map[string]string{
 		"Os":      "${OS}",
 		"Arch":    "${ARCH}",
@@ -139,23 +157,23 @@ func processGodownloader(repo string, filename string) {
 	fmt.Println(shell)
 }
 
-// processEquinoxio create a fake goreleaser config for equinox.io 
+// processEquinoxio create a fake goreleaser config for equinox.io
 // and use a similar template.
 func processEquinoxio(repo string) {
 	if repo == "" {
 		log.Fatalf("Must have repo")
 	}
-        project := config.Project{}
-        project.Release.GitHub.Owner = path.Dir(repo)
-        project.Release.GitHub.Name = path.Base(repo)  
-  	project.Build.Binary = path.Base(repo)
+	project := config.Project{}
+	project.Release.GitHub.Owner = path.Dir(repo)
+	project.Release.GitHub.Name = path.Base(repo)
+	project.Build.Binary = path.Base(repo)
 	project.Archive.Format = "tgz"
 
-        shell, err := makeShell(shellEquinoxio, &project)
-        if err != nil {
-                log.Fatalf("Unable to generate shell: %s", err)
-        }
-        fmt.Println(shell)
+	shell, err := makeShell(shellEquinoxio, &project)
+	if err != nil {
+		log.Fatalf("Unable to generate shell: %s", err)
+	}
+	fmt.Println(shell)
 }
 
 func main() {
@@ -169,8 +187,10 @@ func main() {
 	}
 
 	switch *source {
-	case "godownloader": processGodownloader(*repo, file)
-	case "equinoxio": processEquinoxio(*repo)
+	case "godownloader":
+		processGodownloader(*repo, file)
+	case "equinoxio":
+		processEquinoxio(*repo)
 	default:
 		log.Fatalf("Unknown source %q", *source)
 	}
