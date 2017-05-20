@@ -66,8 +66,6 @@ Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `
 * #10 Adjustment of default `BINDIR` (install directory)
 * #11 Use goreleaser to release godownloader
 * #12 Use godownloader to download godownloader
-* Figure out how to write tests
-* Should `VERSION` be set via ENV not arg `$1` ?
 
 ## Yes, it's true.
 
