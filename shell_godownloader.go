@@ -23,16 +23,22 @@ EOF
 is_supported_platform() {
   platform=$1
   found=1
-  case "$platform" in 
-    {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}
-    {{ $goos }}/{{ $goarch }}) found=0 ;;
-    {{- end }}{{ end }}
+  case "$platform" in
+  {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}
+    {{ if not (eq $goarch "arm") }}{{ $goos }}/{{ $goarch }}) found=0 ;; {{ end }}
+  {{- end }}{{ end }}
+  {{- if $.Build.Goarm }}
+  {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}{{ range $goarm := $.Build.Goarm }}
+  {{- if eq $goarch "arm" }}{{ $goos }}/armv{{ $goarm }}) found=0 ;;
+{{ end }}
+  {{- end }}{{ end }}{{ end }}
+  {{- end }}
   esac
   {{- if $.Build.Ignore }}
   case "$platform" in 
     {{- range $ignore := $.Build.Ignore }}
-    {{ $ignore.Goos }}/{{ $ignore.Goarch }}) found=1 ;; 
-    {{- end }}
+    {{ $ignore.Goos }}/{{ $ignore.Goarch }}{{ if $ignore.Goarm }}v{{ $ignore.Goarm }}{{ end }}) found=1 ;; 
+    {{- end -}}
   esac
   {{- end }}
   return $found

@@ -32,42 +32,30 @@ func makeShell(tplsrc string, cfg *config.Project) (string, error) {
 // {{ .Binary }} --->  NAME=${BINARY}, etc.
 //
 func makeName(target string) (string, error) {
-	prefix := ""
-
 	if target == "" {
 		target = defaults.NameTemplate
 	}
 
-	// handle common conditionals that were used as defaults
-	// in goreleaser
-	switch target {
-	case "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}":
-		prefix = "test -z \"$ARM\" || ARM=\"v$ARM\""
-		target = "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
-	case "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}":
-		prefix = "test -z \"$ARM\" || ARM=\"v$ARM\""
-		target = "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
-	}
+	// armv6 is the default in the shell script
+	// so do not need special template condition for ARM
+	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+	target = strings.Replace(target, armversion, "{{ .Arch }}", -1)
 
 	// otherwise if it contains a conditional, we can't (easily)
 	// translate that to bash.  Ask for bug report.
-	if strings.Contains(target, "{{ if") || strings.Contains(target, "{{if") {
-		return "", fmt.Errorf("name_template %q contains unknown conditional.  Please file bug at https://github.com/goreleaser/godownloader", target)
+	if strings.Contains(target, "{{ if") || strings.Contains(target, "{{if") || strings.Contains(target, "{{ .Arm") || strings.Contains(target, "{{.Arm") {
+		return "", fmt.Errorf("name_template %q contains unknown conditional or ARM format.  Please file bug at https://github.com/goreleaser/godownloader", target)
 	}
 
 	var varmap = map[string]string{
 		"Os":      "${OS}",
 		"Arch":    "${ARCH}",
-		"Arm":     "${ARM}",
 		"Version": "${VERSION}",
 		"Tag":     "${TAG}",
 		"Binary":  "${BINARY}",
 	}
 
 	var out bytes.Buffer
-	if prefix != "" {
-		out.WriteString(prefix + "\n")
-	}
 	out.WriteString("NAME=")
 	t, err := template.New("name").Parse(target)
 	if err != nil {

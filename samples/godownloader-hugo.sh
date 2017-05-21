@@ -184,14 +184,47 @@ End of functions from https://github.com/client9/posixshell
 ------------------------------------------------------------------------
 EOF
 
+is_supported_platform() {
+  platform=$1
+  found=1
+  case "$platform" in
+    darwin/amd64) found=0 ;; 
+    darwin/386) found=0 ;; 
+    
+    darwin/arm64) found=0 ;; 
+    linux/amd64) found=0 ;; 
+    linux/386) found=0 ;; 
+    
+    linux/arm64) found=0 ;; 
+    windows/amd64) found=0 ;; 
+    windows/386) found=0 ;; 
+    
+    windows/arm64) found=0 ;; 
+    freebsd/amd64) found=0 ;; 
+    freebsd/386) found=0 ;; 
+    
+    freebsd/arm64) found=0 ;; 
+    netbsd/amd64) found=0 ;; 
+    netbsd/386) found=0 ;; 
+    
+    netbsd/arm64) found=0 ;; 
+    openbsd/amd64) found=0 ;; 
+    openbsd/386) found=0 ;; 
+    
+    openbsd/arm64) found=0 ;; 
+    dragonfly/amd64) found=0 ;; 
+    dragonfly/386) found=0 ;; 
+    
+    dragonfly/arm64) found=0 ;; 
+  esac
+  return $found
+}
+
 OWNER=spf13
 REPO=hugo
 BINARY=hugo
 FORMAT=tar.gz
 BINDIR=${BINDIR:-./bin}
-
-uname_os_check
-uname_arch_check
 
 VERSION=$1
 case "${VERSION}" in
@@ -204,7 +237,20 @@ case "${VERSION}" in
    ;;
 esac
 
+uname_os_check
+uname_arch_check
+
+OS=$(uname_os)
+ARCH=$(uname_arch)
 PREFIX="$OWNER/$REPO"
+PLATFORM="${OS}/${ARCH}"
+if  is_supported_platform "$PLATFORM"; then
+  # optional logging goes here
+  true
+else
+  echo "${PREFIX}: platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
+  exit 1
+fi
 
 if [ -z "${VERSION}" ]; then
   echo "$PREFIX: checking GitHub for latest version"
@@ -213,8 +259,6 @@ fi
 # if version starts with 'v', remove it
 VERSION=${VERSION#v}
 
-OS=$(uname_os)
-ARCH=$(uname_arch)
 
 # change format (tar.gz or zip) based on ARCH
 case ${ARCH} in
