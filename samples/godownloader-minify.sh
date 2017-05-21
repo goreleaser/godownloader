@@ -40,6 +40,10 @@ uname_arch() {
     x86)    arch="386" ;;
     i686)   arch="386" ;;
     i386)   arch="386" ;;
+    aarch64) arch="arm64" ;;
+    armv5*)  arch="arm5" ;;
+    armv6*)  arch="arm6" ;;
+    armv7*)  arch="arm7" ;;
   esac
   echo ${arch}
 }
@@ -67,7 +71,9 @@ uname_arch_check() {
    386)      return 0 ;;
    amd64)    return 0 ;;
    arm64)    return 0 ;;
-   arm)      return 0 ;;
+   armv5)    return 0 ;;
+   armv6)    return 0 ;;
+   armv7)    return 0 ;;
    ppc64)    return 0 ;;
    ppc64le)  return 0 ;;
    mips)     return 0 ;;
