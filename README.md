@@ -42,30 +42,26 @@ install:
   - ./godownloader-hugo.sh 0.20.6
 ```
 
-There is even experimental download latest function:
+Without a version number, GitHub is queried to get the latest version number.  This is subject to the usual [GitHub rate limits](https://developer.github.com/v3/#rate-limiting).  If working on a public machine (like travis-ci), be sure to set `GITHUB_TOKEN`.
 
 ```yaml
 install:
-  - ./godownloader-hugo.sh latest
+  - ./godownloader-hugo.sh
 ```
 
 Typical download time is 0.3 seconds, or 100x improvement. 
 
 Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `./bin/hugo`. 
 
-## Status
+The default installation directory can be changed with the `-b` flag.
+
+## Notes on Functionality
 
 * Only GitHub Releases are supported right now.
 * Checksums are checked.
 * Binares are installed using `tar.gz` or `zip`. 
 * No support for Windows anything.  I just don't know enough about it.
 * No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via a `tar.gz` or `zip`.  Typically OS installs are done differently anyways (e.g. brew, apt-get, yum, etc).
-
-## TODO
-
-* #10 Adjustment of default `BINDIR` (install directory)
-* #11 Use goreleaser to release godownloader
-* #12 Use godownloader to download godownloader
 
 ## Yes, it's true.
 
