@@ -1,6 +1,10 @@
 language: go
 go: 1.8.1
 
+install:
+  - make setup
+  - gem install fpm
+
 addons:
   apt:
     sources:
@@ -9,5 +13,4 @@ addons:
     - shellcheck
 
 script:
-  - make setup
   - make ci

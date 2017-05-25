@@ -3,4 +3,4 @@ godownloader
 vendor/
 posixshell/
 tmp/
-
+dist/

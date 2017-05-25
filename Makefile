@@ -70,6 +70,6 @@ samples: ## make sample donwloaders
 clean: ## clean up everything
 	go clean ./...
 	rm -f godownloader
-	rm -rf ./bin
+	rm -rf ./bin ./dist
 	git gc --aggressive
 
