@@ -43,6 +43,8 @@ lint_shell:  ## shellcheck the shell scripts
 	shellcheck -s ksh samples/godownloader-goreleaser.sh
 
 ci: build samples lint test lint_shell ## Run all the tests and code checks as travis-ci does
+	./samples/godownloader-goreleaser.sh
+	./bin/goreleaser --snapshot
 
 build: ## Build a beta version of goreleaser
 	go build
@@ -61,7 +63,7 @@ samples: ## make sample donwloaders
 	./godownloader -repo goreleaser/goreleaser > samples/godownloader-goreleaser.sh
 	./godownloader -repo client9/misspell > samples/godownloader-misspell.sh$
 	./godownloader -source equinoxio -repo tdewolff/minify > samples/godownloader-minify.sh
-
+	chmod a+x samples/*.sh
 
 .PHONY: ci help generate samples clean
 
