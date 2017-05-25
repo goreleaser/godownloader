@@ -44,6 +44,7 @@ lint_shell:  ## shellcheck the shell scripts
 
 ci: build samples lint test lint_shell ## Run all the tests and code checks as travis-ci does
 	./samples/godownloader-goreleaser.sh
+	git diff .
 	./bin/goreleaser --snapshot
 
 build: ## Build a beta version of goreleaser
