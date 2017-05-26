@@ -46,11 +46,11 @@ is_supported_platform() {
   found=1
   case "$platform" in
   {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}
-    {{ if not (eq $goarch "arm") }}{{ $goos }}/{{ $goarch }}) found=0 ;;{{ end }}
+{{ if not (eq $goarch "arm") }}    {{ $goos }}/{{ $goarch }}) found=0 ;;{{ end }}
   {{- end }}{{ end }}
   {{- if $.Build.Goarm }}
   {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}{{ range $goarm := $.Build.Goarm }}
-  {{- if eq $goarch "arm" }}{{ $goos }}/armv{{ $goarm }}) found=0 ;;
+{{- if eq $goarch "arm" }}  {{ $goos }}/armv{{ $goarm }}) found=0 ;;
 {{ end }}
   {{- end }}{{ end }}{{ end }}
   {{- end }}
@@ -107,7 +107,6 @@ if [ -z "${VERSION}" ]; then
 fi
 # if version starts with 'v', remove it
 VERSION=${VERSION#v}
-
 
 # change format (tar.gz or zip) based on ARCH
 {{- with .Archive.FormatOverrides }}

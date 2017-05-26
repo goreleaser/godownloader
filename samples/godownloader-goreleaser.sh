@@ -198,15 +198,15 @@ is_supported_platform() {
   case "$platform" in
     linux/386) found=0 ;;
     linux/amd64) found=0 ;;
-    
+
     linux/arm64) found=0 ;;
     darwin/386) found=0 ;;
     darwin/amd64) found=0 ;;
-    
+
     darwin/arm64) found=0 ;;
     windows/386) found=0 ;;
     windows/amd64) found=0 ;;
-    
+
     windows/arm64) found=0 ;;
   esac
   return $found
@@ -255,7 +255,6 @@ if [ -z "${VERSION}" ]; then
 fi
 # if version starts with 'v', remove it
 VERSION=${VERSION#v}
-
 
 # change format (tar.gz or zip) based on ARCH
 case ${ARCH} in

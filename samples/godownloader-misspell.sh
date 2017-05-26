@@ -249,7 +249,6 @@ fi
 # if version starts with 'v', remove it
 VERSION=${VERSION#v}
 
-
 # change format (tar.gz or zip) based on ARCH
 
 # adjust archive name based on OS
