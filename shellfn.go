@@ -1,13 +1,12 @@
 package main
 
 const shellfn = `
-
 cat /dev/null <<EOF
 ------------------------------------------------------------------------
-https://github.com/client9/posixshell - portable posix shell functions
+https://github.com/client9/shlib - portable posix shell functions
 Public domain - http://unlicense.org
-https://github.com/client9/posixshell/blob/master/LICENSE.md
-but credits (and pull requests) appreciated.
+https://github.com/client9/shlib/blob/master/LICENSE.md
+but credit (and pull requests) appreciated.
 ------------------------------------------------------------------------
 EOF
 is_command() {
@@ -170,7 +169,7 @@ hash_sha256_verify() {
 }
 cat /dev/null <<EOF
 ------------------------------------------------------------------------
-End of functions from https://github.com/client9/posixshell 
+End of functions from https://github.com/client9/shlib
 ------------------------------------------------------------------------
 EOF
 `

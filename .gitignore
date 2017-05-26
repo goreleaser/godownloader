@@ -1,6 +1,6 @@
 bin/
 godownloader
 vendor/
-posixshell/
+shlib/
 tmp/
 dist/
