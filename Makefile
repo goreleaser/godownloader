@@ -44,7 +44,7 @@ clean: ## clean up everything
 	git gc --aggressive
 
 install_hooks:  ## install precommit hooks for git
-	cp -f scripts/lint.sh .git/hooks/precommit
+	cp -f scripts/lint.sh .git/hooks/pre-commit
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
