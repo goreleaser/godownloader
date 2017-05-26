@@ -273,7 +273,7 @@ fi
 VERSION=${VERSION#v}
 
 # Adjust binary name if windows
-if [ "$OS" == "windows" ]; then
+if [ "$OS" = "windows" ]; then
   BINARY="${BINARY}.exe"
 fi
 

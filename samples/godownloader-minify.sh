@@ -216,7 +216,7 @@ OS=$(uname_os)
 
 parse_args "$@"
 
-if [ "$OS" == "windows" ]; then
+if [ "$OS" = "windows" ]; then
   BINARY="${BINARY}.exe"
 fi
 

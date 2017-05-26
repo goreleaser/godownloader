@@ -226,7 +226,7 @@ fi
 VERSION=${VERSION#v}
 
 NAME=${BINARY}_v${VERSION}_${OS}_${ARCH}
-if [ "$OS" == "windows" ]; then
+if [ "$OS" = "windows" ]; then
   NAME="${NAME}.exe"
   BINARY="${BINARY}.exe"
 fi

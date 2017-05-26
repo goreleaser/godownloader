@@ -91,7 +91,7 @@ fi
 VERSION=${VERSION#v}
 
 {{ .Archive.NameTemplate }}
-if [ "$OS" == "windows" ]; then
+if [ "$OS" = "windows" ]; then
   NAME="${NAME}.exe"
   BINARY="${BINARY}.exe"
 fi
