@@ -140,21 +140,29 @@ func main() {
 	if len(args) > 0 {
 		file = args[0]
 	}
-
+	var (
+		out string
+		err error
+	)
 	switch *source {
 	case "godownloader":
 		// https://github.com/goreleaser/godownloader
-		processGodownloader(*repo, file)
+		out, err = processGodownloader(*repo, file)
 	case "equinoxio":
 		// https://equinox.io
-		processEquinoxio(*repo)
+		out, err = processEquinoxio(*repo)
 	case "raw":
 		// raw mode is when people upload direct binaries
 		// to GitHub releases that are not  not tar'ed or zip'ed.
 		// For example:
 		//   https://github.com/mvdan/sh/releases
-		processRaw(*repo, *exe, *nametpl)
+		out, err = processRaw(*repo, *exe, *nametpl)
 	default:
 		log.Fatalf("Unknown source %q", *source)
 	}
+
+	if err != nil {
+		log.Fatalf("failed: %s", err)
+	}
+	fmt.Print(out)
 }

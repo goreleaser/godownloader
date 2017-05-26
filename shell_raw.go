@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"path"
 
 	"github.com/goreleaser/goreleaser/config"
@@ -10,9 +9,9 @@ import (
 
 // processEquinoxio create a fake goreleaser config for equinox.io
 // and use a similar template.
-func processRaw(repo string, exe string, nametpl string) {
+func processRaw(repo string, exe string, nametpl string) (string, error) {
 	if repo == "" {
-		log.Fatalf("Must have GitHub owner/repo")
+		return "", fmt.Errorf("must have GitHub owner/repo")
 	}
 	if exe == "" {
 		exe = path.Base(repo)
@@ -24,7 +23,7 @@ func processRaw(repo string, exe string, nametpl string) {
 	// translate golang template to shell string
 	name, err := makeName(nametpl)
 	if err != nil {
-		log.Fatalf("failed: %s", err)
+		return "", err
 	}
 
 	project := config.Project{}
@@ -33,11 +32,7 @@ func processRaw(repo string, exe string, nametpl string) {
 	project.Build.Binary = exe
 	project.Archive.NameTemplate = name
 
-	shell, err := makeShell(shellRaw, &project)
-	if err != nil {
-		log.Fatalf("Unable to generate shell: %s", err)
-	}
-	fmt.Println(shell)
+	return makeShell(shellRaw, &project)
 }
 
 var shellRaw = `#!/bin/sh

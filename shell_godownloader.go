@@ -2,26 +2,21 @@ package main
 
 import (
 	"fmt"
-	"log"
 )
 
-func processGodownloader(repo string, filename string) {
+func processGodownloader(repo string, filename string) (string, error) {
 	cfg, err := Load(repo, filename)
 	if err != nil {
-		log.Fatalf("Unable to parse: %s", err)
+		return "", fmt.Errorf("unable to parse: %s", err)
 	}
 	// get name template
 	name, err := makeName(cfg.Archive.NameTemplate)
 	cfg.Archive.NameTemplate = name
 	if err != nil {
-		log.Fatalf("Unable generate name: %s", err)
+		return "", fmt.Errorf("unable generate name: %s", err)
 	}
 
-	shell, err := makeShell(shellGodownloader, cfg)
-	if err != nil {
-		log.Fatalf("Unable to generate shell: %s", err)
-	}
-	fmt.Println(shell)
+	return makeShell(shellGodownloader, cfg)
 }
 
 var shellGodownloader = `#!/bin/sh

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"path"
 
 	"github.com/goreleaser/goreleaser/config"
@@ -10,9 +9,9 @@ import (
 
 // processEquinoxio create a fake goreleaser config for equinox.io
 // and use a similar template.
-func processEquinoxio(repo string) {
+func processEquinoxio(repo string) (string, error) {
 	if repo == "" {
-		log.Fatalf("Must have repo")
+		return "", fmt.Errorf("must have repo")
 	}
 	project := config.Project{}
 	project.Release.GitHub.Owner = path.Dir(repo)
@@ -20,11 +19,7 @@ func processEquinoxio(repo string) {
 	project.Build.Binary = path.Base(repo)
 	project.Archive.Format = "tgz"
 
-	shell, err := makeShell(shellEquinoxio, &project)
-	if err != nil {
-		log.Fatalf("Unable to generate shell: %s", err)
-	}
-	fmt.Println(shell)
+	return makeShell(shellEquinoxio, &project)
 }
 
 var shellEquinoxio = `#!/bin/sh
