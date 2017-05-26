@@ -188,7 +188,6 @@ cat /dev/null <<EOF
 End of functions from https://github.com/client9/shlib
 ------------------------------------------------------------------------
 EOF
- 
 OWNER=tdewolff
 REPO=minify
 BINARY=minify
@@ -201,13 +200,13 @@ OS=$(uname_os)
 
 VERSION=$1
 case "$VERSION" in
- latest)
+  latest)
     VERSION=""
     ;;
- -h|-?|*help*)
-   usage "$0"
-   exit 1
-   ;;
+  -h | -? | *help*)
+    usage "$0"
+    exit 1
+    ;;
 esac
 
 TARGET=https://dl.equinox.io/${OWNER}/${REPO}/${CHANNEL}
