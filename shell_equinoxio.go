@@ -56,25 +56,7 @@ parse_args() {
   done
   shift $((OPTIND - 1))
   VERSION=$1
-}` + shellfn + `OWNER={{ .Release.GitHub.Owner }}
-REPO={{ .Release.GitHub.Name }}
-BINARY={{ .Build.Binary }}
-FORMAT={{ .Archive.Format }}
-BINDIR=${BINDIR:-./bin}
-CHANNEL=stable
-PREFIX="$OWNER/$REPO"
-ARCH=$(uname_arch)
-OS=$(uname_os)
-
-parse_args "$@"
-
-if [ "$OS" = "windows" ]; then
-  BINARY="${BINARY}.exe"
-fi
-
-TARGET=https://dl.equinox.io/${OWNER}/${REPO}/${CHANNEL}
-TARBALL="${BINARY}-${CHANNEL}-${OS}-${ARCH}.${FORMAT}"
-
+}
 # wrap all destructive operations into a function
 # to prevent curl|bash network truncation and disaster
 execute() {
@@ -90,10 +72,27 @@ execute() {
   install -d "${BINDIR}"
   install "${TMPDIR}/${BINARY}" "${BINDIR}/"
   echo "$PREFIX: installed ${BINDIR}/${BINARY}"
-}
+}` + shellfn + `OWNER={{ .Release.GitHub.Owner }}
+REPO={{ .Release.GitHub.Name }}
+BINARY={{ .Build.Binary }}
+FORMAT={{ .Archive.Format }}
+BINDIR=${BINDIR:-./bin}
+CHANNEL=stable
+PREFIX="$OWNER/$REPO"
+OS=$(uname_os)
+ARCH=$(uname_arch)
 
-uname_os_check
-uname_arch_check
+uname_os_check "$OS"
+uname_arch_check "$ARCH"
+
+parse_args "$@"
+
+TARGET=https://dl.equinox.io/${OWNER}/${REPO}/${CHANNEL}
+TARBALL="${BINARY}-${CHANNEL}-${OS}-${ARCH}.${FORMAT}"
+
+if [ "$OS" = "windows" ]; then
+  BINARY="${BINARY}.exe"
+fi
 
 execute
 `

@@ -33,6 +33,22 @@ parse_args() {
   shift $((OPTIND - 1))
   VERSION=$1
 }
+# wrap all destructive operations into a function
+# to prevent curl|bash network truncation and disaster
+execute() {
+  TMPDIR=$(mktmpdir)
+
+  echo "$PREFIX: seeking $CHANNEL latest from $TARGET"
+  TARBALL_URL=$(http_download - "$TARGET" | grep "$TARBALL" | cut -d '"' -f 2)
+
+  echo "$PREFIX: downloading from ${TARBALL_URL}"
+  http_download "${TMPDIR}/${TARBALL}" "$TARBALL_URL"
+
+  (cd "$TMPDIR" && untar "$TARBALL")
+  install -d "${BINDIR}"
+  install "${TMPDIR}/${BINARY}" "${BINDIR}/"
+  echo "$PREFIX: installed ${BINDIR}/${BINARY}"
+}
 cat /dev/null <<EOF
 ------------------------------------------------------------------------
 https://github.com/client9/shlib - portable posix shell functions
@@ -211,36 +227,19 @@ FORMAT=tgz
 BINDIR=${BINDIR:-./bin}
 CHANNEL=stable
 PREFIX="$OWNER/$REPO"
-ARCH=$(uname_arch)
 OS=$(uname_os)
+ARCH=$(uname_arch)
+
+uname_os_check "$OS"
+uname_arch_check "$ARCH"
 
 parse_args "$@"
-
-if [ "$OS" = "windows" ]; then
-  BINARY="${BINARY}.exe"
-fi
 
 TARGET=https://dl.equinox.io/${OWNER}/${REPO}/${CHANNEL}
 TARBALL="${BINARY}-${CHANNEL}-${OS}-${ARCH}.${FORMAT}"
 
-# wrap all destructive operations into a function
-# to prevent curl|bash network truncation and disaster
-execute() {
-  TMPDIR=$(mktmpdir)
-
-  echo "$PREFIX: seeking $CHANNEL latest from $TARGET"
-  TARBALL_URL=$(http_download - "$TARGET" | grep "$TARBALL" | cut -d '"' -f 2)
-
-  echo "$PREFIX: downloading from ${TARBALL_URL}"
-  http_download "${TMPDIR}/${TARBALL}" "$TARBALL_URL"
-
-  (cd "$TMPDIR" && untar "$TARBALL")
-  install -d "${BINDIR}"
-  install "${TMPDIR}/${BINARY}" "${BINDIR}/"
-  echo "$PREFIX: installed ${BINDIR}/${BINARY}"
-}
-
-uname_os_check
-uname_arch_check
+if [ "$OS" = "windows" ]; then
+  BINARY="${BINARY}.exe"
+fi
 
 execute

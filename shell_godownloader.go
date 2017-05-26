@@ -55,7 +55,25 @@ parse_args() {
   done
   shift $((OPTIND - 1))
   VERSION=$1
-}` + shellfn + `
+}
+# this function wraps all the destructive operations
+# if a curl|bash cuts off the end of the script due to
+# network, either nothing will happen or will syntax error
+# out preventing half-done work
+execute() {
+  TMPDIR=$(mktmpdir)
+  echo "$PREFIX: downloading ${TARBALL_URL}"
+  http_download "${TMPDIR}/${TARBALL}" "${TARBALL_URL}"
+
+  echo "$PREFIX: verifying checksums"
+  http_download "${TMPDIR}/${CHECKSUM}" "${CHECKSUM_URL}"
+  hash_sha256_verify "${TMPDIR}/${TARBALL}" "${TMPDIR}/${CHECKSUM}"
+
+  (cd "${TMPDIR}" && untar "${TARBALL}")
+  install -d "${BINDIR}"
+  install "${TMPDIR}/${BINARY}" "${BINDIR}/"
+  echo "$PREFIX: installed as ${BINDIR}/${BINARY}"
+}
 is_supported_platform() {
   platform=$1
   found=1
@@ -78,7 +96,55 @@ is_supported_platform() {
   {{- end }}
   return $found
 }
-
+check_platform() {
+  if is_supported_platform "$PLATFORM"; then
+    # optional logging goes here
+    true
+  else
+    echo "${PREFIX}: platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
+    exit 1
+  fi
+}
+adjust_version() {
+  if [ -z "${VERSION}" ]; then
+    echo "$PREFIX: checking GitHub for latest version"
+    VERSION=$(github_last_release "$OWNER/$REPO")
+  fi
+  # if version starts with 'v', remove it
+  VERSION=${VERSION#v}
+}
+adjust_format() {
+  # change format (tar.gz or zip) based on ARCH
+  {{- with .Archive.FormatOverrides }}
+  case ${ARCH} in
+  {{- range . }}
+    {{ .Goos }}) FORMAT={{ .Format }} ;;
+  esac
+  {{- end }}
+  {{- end }}
+  true
+}
+adjust_os() {
+  # adjust archive name based on OS
+  {{- with .Archive.Replacements }}
+  case ${OS} in
+  {{- range $k, $v := . }}
+    {{ $k }}) OS={{ $v }} ;;
+  {{- end }}
+  esac
+  true
+}
+adjust_arch() {
+  # adjust archive name based on ARCH
+  case ${ARCH} in
+  {{- range $k, $v := . }}
+    {{ $k }}) ARCH={{ $v }} ;;
+  {{- end }}
+  esac
+  {{- end }}
+  true
+}
+` + shellfn + `
 OWNER={{ $.Release.GitHub.Owner }}
 REPO={{ $.Release.GitHub.Name }}
 BINARY={{ .Build.Binary }}
@@ -87,83 +153,35 @@ OS=$(uname_os)
 ARCH=$(uname_arch)
 PREFIX="$OWNER/$REPO"
 PLATFORM="${OS}/${ARCH}"
+GITHUB_DOWNLOAD=https://github.com/${OWNER}/${REPO}/releases/download
+
+uname_os_check "$OS"
+uname_arch_check "$ARCH"
 
 parse_args "$@"
 
-uname_os_check
-uname_arch_check
+check_platform
 
-if is_supported_platform "$PLATFORM"; then
-  # optional logging goes here
-  true
-else
-  echo "${PREFIX}: platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
-  exit 1
-fi
+adjust_version
 
-if [ -z "${VERSION}" ]; then
-  echo "$PREFIX: checking GitHub for latest version"
-  VERSION=$(github_last_release "$OWNER/$REPO")
-fi
-# if version starts with 'v', remove it
-VERSION=${VERSION#v}
+adjust_format
 
-# Adjust binary name if windows
-if [ "$OS" = "windows" ]; then
-  BINARY="${BINARY}.exe"
-fi
+adjust_os
 
-# change format (tar.gz or zip) based on ARCH
-{{- with .Archive.FormatOverrides }}
-case ${ARCH} in
-{{- range . }}
-  {{ .Goos }}) FORMAT={{ .Format }} ;;
-esac
-{{- end }}
-{{- end }}
-
-# adjust archive name based on OS
-{{- with .Archive.Replacements }}
-case ${OS} in
-{{- range $k, $v := . }}
-  {{ $k }}) OS={{ $v }} ;;
-{{- end }}
-esac
-
-# adjust archive name based on ARCH
-case ${ARCH} in
-{{- range $k, $v := . }}
-  {{ $k }}) ARCH={{ $v }} ;;
-{{- end }}
-esac
-{{- end }}
+adjust_arch
 
 echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
 
 {{ .Archive.NameTemplate }}
 TARBALL=${NAME}.${FORMAT}
-TARBALL_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${TARBALL}
+TARBALL_URL=${GITHUB_DOWNLOAD}/v${VERSION}/${TARBALL}
 CHECKSUM=${REPO}_checksums.txt
-CHECKSUM_URL=https://github.com/${OWNER}/${REPO}/releases/download/v${VERSION}/${CHECKSUM}
+CHECKSUM_URL=${GITHUB_DOWNLOAD}/v${VERSION}/${CHECKSUM}
 
-# this function wraps all the destructive operations
-# if a curl|bash cuts off the end of the script due to
-# network, either nothing will happen or will syntax error
-# out preventing half-done work
-execute() {
-  TMPDIR=$(mktmpdir)
-  echo "$PREFIX: downloading ${TARBALL_URL}"
-  http_download "${TMPDIR}/${TARBALL}" "${TARBALL_URL}"
-
-  echo "$PREFIX: verifying checksums"
-  http_download "${TMPDIR}/${CHECKSUM}" "${CHECKSUM_URL}"
-  hash_sha256_verify "${TMPDIR}/${TARBALL}" "${TMPDIR}/${CHECKSUM}"
-
-  (cd "${TMPDIR}" && untar "${TARBALL}")
-  install -d "${BINDIR}"
-  install "${TMPDIR}/${BINARY}" "${BINDIR}/"
-  echo "$PREFIX: installed as ${BINDIR}/${BINARY}"
-}
+# Adjust binary name if windows
+if [ "$OS" = "windows" ]; then
+  BINARY="${BINARY}.exe"
+fi
 
 execute
 `
