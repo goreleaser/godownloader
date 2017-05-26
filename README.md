@@ -12,7 +12,7 @@ If you use goreleaser already, this will create scripts suitable for "curl bash"
 This is also useful in CI/CD systems such as [travis-ci.org](https://travis-ci.org).
 
 * Much faster then 'go get' (sometimes up to 100x)
-* Make sure your local environment (macOS) and CI enviroment (Linux) are using the exact same versions of your go binaries.
+* Make sure your local environment (macOS) and CI environment (Linux) are using the exact same versions of your go binaries.
 
 ## CI/CD Example
 
@@ -79,7 +79,7 @@ A naked release is just the raw binary put on GitHub releases.  Limited support 
 
 Where `exe` is the final binary name, and `tpl` is the same type of name template that Goreleaser uses.
 
-An example repo is at [mvdan/sh](https://github.com/mvdan/sh/releases). Note how repo is different than binary  "sh" vs. "shfmt").
+An example repo is at [mvdan/sh](https://github.com/mvdan/sh/releases). Note how repo `sh` is different than binary `shfmt`.
 
 ### Equinox.io
 
