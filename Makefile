@@ -21,7 +21,7 @@ lint: ## Run all the linters
 precommit:  ## Run precommit hook
 	./scripts/lint.sh
 
-ci: build lint test  ## Run all the tests and code checks as travis-ci does
+ci: build lint test  ## travis-ci entrypoint
 	./samples/godownloader-goreleaser.sh
 	git diff .
 	./bin/goreleaser --snapshot
@@ -32,7 +32,7 @@ build: install_hooks ## Build a beta version of goreleaser
 
 .DEFAULT_GOAL := build
 
-generate: ## regenerate shell code from client9/posixshell
+generate: ## regenerate shell code from client9/shlib
 	./makeshellfn.sh > shellfn.go
 
 .PHONY: ci help generate samples clean
