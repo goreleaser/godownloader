@@ -237,8 +237,8 @@ parse_args() {
   BINDIR=${BINDIR:-./bin}
   while getopts "b:" arg; do
     case "$arg" in
-    b) BINDIR="$OPTARG";;
-    \?) usage "$0" ;;
+      b) BINDIR="$OPTARG" ;;
+      \?) usage "$0" ;;
     esac
   done
   shift $((OPTIND - 1))
@@ -259,7 +259,7 @@ OS=$(uname_os)
 ARCH=$(uname_arch)
 PREFIX="$OWNER/$REPO"
 PLATFORM="${OS}/${ARCH}"
-if  is_supported_platform "$PLATFORM"; then
+if is_supported_platform "$PLATFORM"; then
   # optional logging goes here
   true
 else
@@ -338,4 +338,3 @@ execute() {
 }
 
 execute
-
