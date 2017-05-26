@@ -196,34 +196,34 @@ is_supported_platform() {
   platform=$1
   found=1
   case "$platform" in
-    darwin/amd64) found=0 ;; 
-    darwin/386) found=0 ;; 
+    darwin/amd64) found=0 ;;
+    darwin/386) found=0 ;;
     
-    darwin/arm64) found=0 ;; 
-    linux/amd64) found=0 ;; 
-    linux/386) found=0 ;; 
+    darwin/arm64) found=0 ;;
+    linux/amd64) found=0 ;;
+    linux/386) found=0 ;;
     
-    linux/arm64) found=0 ;; 
-    windows/amd64) found=0 ;; 
-    windows/386) found=0 ;; 
+    linux/arm64) found=0 ;;
+    windows/amd64) found=0 ;;
+    windows/386) found=0 ;;
     
-    windows/arm64) found=0 ;; 
-    freebsd/amd64) found=0 ;; 
-    freebsd/386) found=0 ;; 
+    windows/arm64) found=0 ;;
+    freebsd/amd64) found=0 ;;
+    freebsd/386) found=0 ;;
     
-    freebsd/arm64) found=0 ;; 
-    netbsd/amd64) found=0 ;; 
-    netbsd/386) found=0 ;; 
+    freebsd/arm64) found=0 ;;
+    netbsd/amd64) found=0 ;;
+    netbsd/386) found=0 ;;
     
-    netbsd/arm64) found=0 ;; 
-    openbsd/amd64) found=0 ;; 
-    openbsd/386) found=0 ;; 
+    netbsd/arm64) found=0 ;;
+    openbsd/amd64) found=0 ;;
+    openbsd/386) found=0 ;;
     
-    openbsd/arm64) found=0 ;; 
-    dragonfly/amd64) found=0 ;; 
-    dragonfly/386) found=0 ;; 
+    openbsd/arm64) found=0 ;;
+    dragonfly/amd64) found=0 ;;
+    dragonfly/386) found=0 ;;
     
-    dragonfly/arm64) found=0 ;; 
+    dragonfly/arm64) found=0 ;;
   esac
   return $found
 }
@@ -275,37 +275,37 @@ VERSION=${VERSION#v}
 
 # change format (tar.gz or zip) based on ARCH
 case ${ARCH} in
-windows) FORMAT=zip ;;
+  windows) FORMAT=zip ;;
 esac
 
 # adjust archive name based on OS
 case ${OS} in
-386) OS=32bit ;;
-amd64) OS=64bit ;;
-arm) OS=ARM ;;
-arm64) OS=ARM64 ;;
-darwin) OS=macOS ;;
-dragonfly) OS=DragonFlyBSD ;;
-freebsd) OS=FreeBSD ;;
-linux) OS=Linux ;;
-netbsd) OS=NetBSD ;;
-openbsd) OS=OpenBSD ;;
-windows) OS=Windows ;;
+  386) OS=32bit ;;
+  amd64) OS=64bit ;;
+  arm) OS=ARM ;;
+  arm64) OS=ARM64 ;;
+  darwin) OS=macOS ;;
+  dragonfly) OS=DragonFlyBSD ;;
+  freebsd) OS=FreeBSD ;;
+  linux) OS=Linux ;;
+  netbsd) OS=NetBSD ;;
+  openbsd) OS=OpenBSD ;;
+  windows) OS=Windows ;;
 esac
 
 # adjust archive name based on ARCH
 case ${ARCH} in
-386) ARCH=32bit ;;
-amd64) ARCH=64bit ;;
-arm) ARCH=ARM ;;
-arm64) ARCH=ARM64 ;;
-darwin) ARCH=macOS ;;
-dragonfly) ARCH=DragonFlyBSD ;;
-freebsd) ARCH=FreeBSD ;;
-linux) ARCH=Linux ;;
-netbsd) ARCH=NetBSD ;;
-openbsd) ARCH=OpenBSD ;;
-windows) ARCH=Windows ;;
+  386) ARCH=32bit ;;
+  amd64) ARCH=64bit ;;
+  arm) ARCH=ARM ;;
+  arm64) ARCH=ARM64 ;;
+  darwin) ARCH=macOS ;;
+  dragonfly) ARCH=DragonFlyBSD ;;
+  freebsd) ARCH=FreeBSD ;;
+  linux) ARCH=Linux ;;
+  netbsd) ARCH=NetBSD ;;
+  openbsd) ARCH=OpenBSD ;;
+  windows) ARCH=Windows ;;
 esac
 
 echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"

@@ -51,7 +51,7 @@ is_supported_platform() {
   found=1
   case "$platform" in
   {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}
-    {{ if not (eq $goarch "arm") }}{{ $goos }}/{{ $goarch }}) found=0 ;; {{ end }}
+    {{ if not (eq $goarch "arm") }}{{ $goos }}/{{ $goarch }}) found=0 ;;{{ end }}
   {{- end }}{{ end }}
   {{- if $.Build.Goarm }}
   {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}{{ range $goarm := $.Build.Goarm }}
@@ -63,8 +63,7 @@ is_supported_platform() {
   {{- if $.Build.Ignore }}
   case "$platform" in 
     {{- range $ignore := $.Build.Ignore }}
-    {{ $ignore.Goos }}/{{ $ignore.Goarch }}{{ if $ignore.Goarm }}v{{ $ignore.Goarm }}{{ end }}) found=1 ;; 
-    {{- end -}}
+    {{ $ignore.Goos }}/{{ $ignore.Goarch }}{{ if $ignore.Goarm }}v{{ $ignore.Goarm }}{{ end }}) found=1 ;;{{ end }}
   esac
   {{- end }}
   return $found
@@ -119,7 +118,7 @@ VERSION=${VERSION#v}
 {{- with .Archive.FormatOverrides }}
 case ${ARCH} in
 {{- range . }}
-{{ .Goos }}) FORMAT={{ .Format }} ;;
+  {{ .Goos }}) FORMAT={{ .Format }} ;;
 esac
 {{- end }}
 {{- end }}
@@ -128,14 +127,14 @@ esac
 {{- with .Archive.Replacements }}
 case ${OS} in
 {{- range $k, $v := . }}
-{{ $k }}) OS={{ $v }} ;;
+  {{ $k }}) OS={{ $v }} ;;
 {{- end }}
 esac
 
 # adjust archive name based on ARCH
 case ${ARCH} in
 {{- range $k, $v := . }}
-{{ $k }}) ARCH={{ $v }} ;;
+  {{ $k }}) ARCH={{ $v }} ;;
 {{- end }}
 esac
 {{- end }}

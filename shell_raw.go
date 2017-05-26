@@ -70,13 +70,13 @@ OS=$(uname_os)
 
 VERSION=$1
 case "$VERSION" in
- latest)
+  latest)
     VERSION=""
     ;;
- -h|-?|*help*)
-   usage "$0"
-   exit 1
-   ;;
+  -h | -? | *help*)
+    usage "$0"
+    exit 1
+    ;;
 esac
 
 if [ -z "${VERSION}" ]; then

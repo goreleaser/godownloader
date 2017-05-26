@@ -196,11 +196,12 @@ is_supported_platform() {
   platform=$1
   found=1
   case "$platform" in
-    darwin/amd64) found=0 ;; 
-    linux/amd64) found=0 ;; 
+    darwin/amd64) found=0 ;;
+    linux/amd64) found=0 ;;
   esac
   case "$platform" in
-    darwin/386) found=1 ;;esac
+    darwin/386) found=1 ;;
+  esac
   return $found
 }
 
@@ -253,16 +254,16 @@ VERSION=${VERSION#v}
 
 # adjust archive name based on OS
 case ${OS} in
-386) OS=32bit ;;
-amd64) OS=64bit ;;
-darwin) OS=mac ;;
+  386) OS=32bit ;;
+  amd64) OS=64bit ;;
+  darwin) OS=mac ;;
 esac
 
 # adjust archive name based on ARCH
 case ${ARCH} in
-386) ARCH=32bit ;;
-amd64) ARCH=64bit ;;
-darwin) ARCH=mac ;;
+  386) ARCH=32bit ;;
+  amd64) ARCH=64bit ;;
+  darwin) ARCH=mac ;;
 esac
 
 echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
