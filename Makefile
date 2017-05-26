@@ -21,7 +21,7 @@ lint: ## Run all the linters
 precommit:  ## Run precommit hook
 	./scripts/lint.sh
 
-ci: build samples lint test lint_shell ## Run all the tests and code checks as travis-ci does
+ci: build lint test  ## Run all the tests and code checks as travis-ci does
 	./samples/godownloader-goreleaser.sh
 	git diff .
 	./bin/goreleaser --snapshot
