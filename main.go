@@ -126,47 +126,14 @@ func Load(repo string, file string) (project *config.Project, err error) {
 	return project, nil
 }
 
-func processGodownloader(repo string, filename string) {
-	cfg, err := Load(repo, filename)
-	if err != nil {
-		log.Fatalf("Unable to parse: %s", err)
-	}
-	// get name template
-	name, err := makeName(cfg.Archive.NameTemplate)
-	cfg.Archive.NameTemplate = name
-	if err != nil {
-		log.Fatalf("Unable generate name: %s", err)
-	}
-
-	shell, err := makeShell(shellGodownloader, cfg)
-	if err != nil {
-		log.Fatalf("Unable to generate shell: %s", err)
-	}
-	fmt.Println(shell)
-}
-
-// processEquinoxio create a fake goreleaser config for equinox.io
-// and use a similar template.
-func processEquinoxio(repo string) {
-	if repo == "" {
-		log.Fatalf("Must have repo")
-	}
-	project := config.Project{}
-	project.Release.GitHub.Owner = path.Dir(repo)
-	project.Release.GitHub.Name = path.Base(repo)
-	project.Build.Binary = path.Base(repo)
-	project.Archive.Format = "tgz"
-
-	shell, err := makeShell(shellEquinoxio, &project)
-	if err != nil {
-		log.Fatalf("Unable to generate shell: %s", err)
-	}
-	fmt.Println(shell)
-}
-
 func main() {
-	source := flag.String("source", "godownloader", "download source")
-	repo := flag.String("repo", "", "owner/name of repository")
+	var (
+		source  = flag.String("source", "godownloader", "download source")
+		exe     = flag.String("exe", "", "name of binary, used only in raw")
+		nametpl = flag.String("nametpl", "", "name template, used only in raw")
+		repo    = flag.String("repo", "", "owner/name of repository")
+	)
+
 	flag.Parse()
 	args := flag.Args()
 	file := ""
@@ -176,9 +143,17 @@ func main() {
 
 	switch *source {
 	case "godownloader":
+		// https://github.com/goreleaser/godownloader
 		processGodownloader(*repo, file)
 	case "equinoxio":
+		// https://equinox.io
 		processEquinoxio(*repo)
+	case "raw":
+		// raw mode is when people upload direct binaries
+		// to GitHub releases that are not  not tar'ed or zip'ed.
+		// For example:
+		//   https://github.com/mvdan/sh/releases
+		processRaw(*repo, *exe, *nametpl)
 	default:
 		log.Fatalf("Unknown source %q", *source)
 	}

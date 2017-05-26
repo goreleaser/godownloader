@@ -141,7 +141,7 @@ github_last_release() {
   owner_repo=$1
   giturl="https://api.github.com/repos/${owner_repo}/releases/latest"
   html=$(github_api - "$giturl")
-  version=$(echo "$html" | grep -m 1 "\"name\":" | cut -d ":" -f 2 | tr -d ' ",')
+  version=$(echo "$html" | grep -m 1 "\"tag_name\":" | cut -f4 -d'"')
   test -z "$version" && return 1
   echo "$version"
 }
@@ -172,7 +172,7 @@ hash_sha256_verify() {
      return 1
   fi
   BASENAME=${TARGET##*/}
-  want=$(grep "${BASENAME}" "${checksums}" 2> /dev/null | cut -d ' ' -f 1)
+  want=$(grep "${BASENAME}" "${checksums}" 2> /dev/null | tr '\t' ' ' | cut -d ' ' -f 1)
   if [ -z "$want" ]; then
      echo "hash_sha256_verify: unable to find checksum for '${TARGET}' in '${checksums}'"
      return 1
