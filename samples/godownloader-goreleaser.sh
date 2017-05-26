@@ -21,7 +21,6 @@ EOF
   exit 2
 }
 
-
 cat /dev/null <<EOF
 ------------------------------------------------------------------------
 https://github.com/client9/posixshell - portable posix shell functions
@@ -310,3 +309,4 @@ execute() {
 }
 
 execute
+

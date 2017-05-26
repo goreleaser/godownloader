@@ -167,4 +167,5 @@ execute() {
   echo "$PREFIX: installed as ${BINDIR}/${BINARY}"
 }
 
-execute`
+execute
+`
