@@ -22,7 +22,7 @@ EOF
 }
 
 
-cat /dev/null << EOF
+cat /dev/null <<EOF
 ------------------------------------------------------------------------
 https://github.com/client9/posixshell - portable posix shell functions
 Public domain - http://unlicense.org
@@ -31,7 +31,7 @@ but credits (and pull requests) appreciated.
 ------------------------------------------------------------------------
 EOF
 is_command() {
-  command -v "$1" > /dev/null
+  command -v "$1" >/dev/null
 }
 uname_os() {
   os=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -41,30 +41,30 @@ uname_arch() {
   arch=$(uname -m)
   case $arch in
     x86_64) arch="amd64" ;;
-    x86)    arch="386" ;;
-    i686)   arch="386" ;;
-    i386)   arch="386" ;;
+    x86) arch="386" ;;
+    i686) arch="386" ;;
+    i386) arch="386" ;;
     aarch64) arch="arm64" ;;
-    armv5*)  arch="arm5" ;;
-    armv6*)  arch="arm6" ;;
-    armv7*)  arch="arm7" ;;
+    armv5*) arch="arm5" ;;
+    armv6*) arch="arm6" ;;
+    armv7*) arch="arm7" ;;
   esac
   echo ${arch}
 }
 uname_os_check() {
   os=$(uname_os)
   case "$os" in
-   darwin)    return 0 ;;
-   dragonfly) return 0 ;;
-   freebsd)   return 0 ;;
-   linux)     return 0 ;;
-   android)   return 0 ;;
-   nacl)      return 0 ;;
-   netbsd)    return 0 ;;
-   openbsd)   return 0 ;;
-   plan9)     return 0 ;;
-   solaris)   return 0 ;;
-   windows)   return 0 ;;
+    darwin) return 0 ;;
+    dragonfly) return 0 ;;
+    freebsd) return 0 ;;
+    linux) return 0 ;;
+    android) return 0 ;;
+    nacl) return 0 ;;
+    netbsd) return 0 ;;
+    openbsd) return 0 ;;
+    plan9) return 0 ;;
+    solaris) return 0 ;;
+    windows) return 0 ;;
   esac
   echo "$0: uname_os_check: internal error '$(uname -s)' got converted to '$os' which is not a GOOS value. Please file bug at https://github.com/client9/posixshell"
   return 1
@@ -72,20 +72,20 @@ uname_os_check() {
 uname_arch_check() {
   arch=$(uname_arch)
   case "$arch" in
-   386)      return 0 ;;
-   amd64)    return 0 ;;
-   arm64)    return 0 ;;
-   armv5)    return 0 ;;
-   armv6)    return 0 ;;
-   armv7)    return 0 ;;
-   ppc64)    return 0 ;;
-   ppc64le)  return 0 ;;
-   mips)     return 0 ;;
-   mipsle)   return 0 ;;
-   mips64)   return 0 ;;
-   mips64le) return 0 ;;
-   s390x)    return 0 ;;
-   amd64p32) return 0 ;;
+    386) return 0 ;;
+    amd64) return 0 ;;
+    arm64) return 0 ;;
+    armv5) return 0 ;;
+    armv6) return 0 ;;
+    armv7) return 0 ;;
+    ppc64) return 0 ;;
+    ppc64le) return 0 ;;
+    mips) return 0 ;;
+    mipsle) return 0 ;;
+    mips64) return 0 ;;
+    mips64le) return 0 ;;
+    s390x) return 0 ;;
+    amd64p32) return 0 ;;
   esac
   echo "$0: uname_arch_check: internal error '$(uname -m)' got converted to '$arch' which is not a GOARCH value.  Please file bug report at https://github.com/client9/posixshell"
   return 1
@@ -93,18 +93,19 @@ uname_arch_check() {
 untar() {
   tarball=$1
   case "${tarball}" in
-  *.tar.gz|*.tgz) tar -xzf "${tarball}" ;;
-  *.tar) tar -xf "${tarball}" ;;
-  *.zip) unzip "${tarball}" ;;
-  *)
-    echo "Unknown archive format for ${tarball}"
-    return 1
+    *.tar.gz | *.tgz) tar -xzf "${tarball}" ;;
+    *.tar) tar -xf "${tarball}" ;;
+    *.zip) unzip "${tarball}" ;;
+    *)
+      echo "Unknown archive format for ${tarball}"
+      return 1
+      ;;
   esac
 }
 mktmpdir() {
-   test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
-   mkdir -p "${TMPDIR}"
-   echo "${TMPDIR}"
+  test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
+  mkdir -p "${TMPDIR}"
+  echo "${TMPDIR}"
 }
 http_download() {
   local_file=$1
@@ -135,9 +136,9 @@ github_api() {
   source_url=$2
   header=""
   case "$source_url" in
-  https://api.github.com*)
-     test -z "$GITHUB_TOKEN" || header="Authorization: token $GITHUB_TOKEN"
-     ;;
+    https://api.github.com*)
+      test -z "$GITHUB_TOKEN" || header="Authorization: token $GITHUB_TOKEN"
+      ;;
   esac
   http_download "$local_file" "$source_url" "$header"
 }
@@ -150,7 +151,7 @@ github_last_release() {
   echo "$version"
 }
 hash_sha256() {
-  TARGET=${1:-/dev/stdin};
+  TARGET=${1:-/dev/stdin}
   if is_command gsha256sum; then
     hash=$(gsha256sum "$TARGET") || return 1
     echo "$hash" | cut -d ' ' -f 1
@@ -172,22 +173,22 @@ hash_sha256_verify() {
   TARGET=$1
   checksums=$2
   if [ -z "$checksums" ]; then
-     echo "hash_sha256_verify: checksum file not specified in arg2"
-     return 1
+    echo "hash_sha256_verify: checksum file not specified in arg2"
+    return 1
   fi
   BASENAME=${TARGET##*/}
-  want=$(grep "${BASENAME}" "${checksums}" 2> /dev/null | tr '\t' ' ' | cut -d ' ' -f 1)
+  want=$(grep "${BASENAME}" "${checksums}" 2>/dev/null | tr '\t' ' ' | cut -d ' ' -f 1)
   if [ -z "$want" ]; then
-     echo "hash_sha256_verify: unable to find checksum for '${TARGET}' in '${checksums}'"
-     return 1
+    echo "hash_sha256_verify: unable to find checksum for '${TARGET}' in '${checksums}'"
+    return 1
   fi
   got=$(hash_sha256 "$TARGET")
   if [ "$want" != "$got" ]; then
-     echo "hash_sha256_verify: checksum for '$TARGET' did not verify ${want} vs $got"
-     return 1
+    echo "hash_sha256_verify: checksum for '$TARGET' did not verify ${want} vs $got"
+    return 1
   fi
 }
-cat /dev/null << EOF
+cat /dev/null <<EOF
 ------------------------------------------------------------------------
 End of functions from https://github.com/client9/posixshell 
 ------------------------------------------------------------------------
