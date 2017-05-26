@@ -91,7 +91,7 @@ There is no API, so godownloader scripts screen scrapes to figure out the latest
 ./goreleaser -source equinoxio -repo [owner/repo]
 ```
 
-While Equionox.io supports the concepts of channels, this is hardwired to `stable` for now.
+While Equinox.io supports the concepts of channels, it is hardwired to `stable` for now.
 
 An example is [tdewolff/minify](https://github.com/tdewolff/minify) on [dl.equinox.io](https://dl.equinox.io/tdewolff/minify/stable).
 
