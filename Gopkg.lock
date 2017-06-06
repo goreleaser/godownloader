@@ -5,8 +5,8 @@ memo = "2af96fafb6bc41f924841266269ea097eceb439054028bc77918d59d9ad12913"
 [[projects]]
   name = "github.com/goreleaser/goreleaser"
   packages = ["config","context","pipeline/defaults"]
-  revision = "c97c9c093033d652d43f198943701b8a53933e1e"
-  version = "v0.20.0"
+  revision = "fbcae4b5bec60816e6ed23b22cabd5a12c507d62"
+  version = "v0.20.3"
 
 [[projects]]
   branch = "v1"
