@@ -2,6 +2,9 @@ SOURCE_FILES?=$$(go list ./... | grep -v /vendor/)
 TEST_PATTERN?=.
 TEST_OPTIONS?=
 
+install: build ## build and install
+	go install .
+
 setup: ## Install all the build and lint dependencies
 	./scripts/setup.sh
 
