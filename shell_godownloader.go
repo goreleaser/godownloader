@@ -132,10 +132,12 @@ adjust_os() {
     {{ $k }}) OS={{ $v }} ;;
   {{- end }}
   esac
+  {{- end }}
   true
 }
 adjust_arch() {
   # adjust archive name based on ARCH
+  {{- with .Archive.Replacements }}
   case ${ARCH} in
   {{- range $k, $v := . }}
     {{ $k }}) ARCH={{ $v }} ;;
