@@ -78,19 +78,19 @@ is_supported_platform() {
   platform=$1
   found=1
   case "$platform" in
-  {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}
+  {{- range $goos := (index $.Builds 0).Goos }}{{ range $goarch := (index $.Builds 0).Goarch }}
 {{ if not (eq $goarch "arm") }}    {{ $goos }}/{{ $goarch }}) found=0 ;;{{ end }}
   {{- end }}{{ end }}
-  {{- if $.Build.Goarm }}
-  {{- range $goos := $.Build.Goos }}{{ range $goarch := $.Build.Goarch }}{{ range $goarm := $.Build.Goarm }}
+  {{- if (index $.Builds 0).Goarm }}
+  {{- range $goos := (index $.Builds 0).Goos }}{{ range $goarch := (index $.Builds 0).Goarch }}{{ range $goarm := (index $.Builds 0).Goarm }}
 {{- if eq $goarch "arm" }}  {{ $goos }}/armv{{ $goarm }}) found=0 ;;
 {{ end }}
   {{- end }}{{ end }}{{ end }}
   {{- end }}
   esac
-  {{- if $.Build.Ignore }}
-  case "$platform" in 
-    {{- range $ignore := $.Build.Ignore }}
+  {{- if (index $.Builds 0).Ignore }}
+  case "$platform" in
+    {{- range $ignore := (index $.Builds 0).Ignore }}
     {{ $ignore.Goos }}/{{ $ignore.Goarch }}{{ if $ignore.Goarm }}v{{ $ignore.Goarm }}{{ end }}) found=1 ;;{{ end }}
   esac
   {{- end }}
@@ -149,7 +149,7 @@ adjust_arch() {
 ` + shellfn + `
 OWNER={{ $.Release.GitHub.Owner }}
 REPO={{ $.Release.GitHub.Name }}
-BINARY={{ .Build.Binary }}
+BINARY={{ (index .Builds 0).Binary }}
 FORMAT={{ .Archive.Format }}
 OS=$(uname_os)
 ARCH=$(uname_arch)

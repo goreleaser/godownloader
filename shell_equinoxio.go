@@ -16,7 +16,7 @@ func processEquinoxio(repo string) (string, error) {
 	project := config.Project{}
 	project.Release.GitHub.Owner = path.Dir(repo)
 	project.Release.GitHub.Name = path.Base(repo)
-	project.Build.Binary = path.Base(repo)
+	project.Builds[0].Binary = path.Base(repo)
 	project.Archive.Format = "tgz"
 
 	return makeShell(shellEquinoxio, &project)

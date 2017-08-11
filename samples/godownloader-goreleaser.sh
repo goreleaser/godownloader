@@ -57,18 +57,10 @@ is_supported_platform() {
   platform=$1
   found=1
   case "$platform" in
-    linux/386) found=0 ;;
     linux/amd64) found=0 ;;
-
-    linux/arm64) found=0 ;;
-    darwin/386) found=0 ;;
+    linux/386) found=0 ;;
     darwin/amd64) found=0 ;;
-
-    darwin/arm64) found=0 ;;
-    windows/386) found=0 ;;
-    windows/amd64) found=0 ;;
-
-    windows/arm64) found=0 ;;
+    darwin/386) found=0 ;;
   esac
   return $found
 }
@@ -91,31 +83,14 @@ adjust_version() {
 }
 adjust_format() {
   # change format (tar.gz or zip) based on ARCH
-  case ${ARCH} in
-    windows) FORMAT=zip ;;
-  esac
   true
 }
 adjust_os() {
   # adjust archive name based on OS
-  case ${OS} in
-    386) OS=i386 ;;
-    amd64) OS=x86_64 ;;
-    darwin) OS=Darwin ;;
-    linux) OS=Linux ;;
-    windows) OS=Windows ;;
-  esac
   true
 }
 adjust_arch() {
   # adjust archive name based on ARCH
-  case ${ARCH} in
-    386) ARCH=i386 ;;
-    amd64) ARCH=x86_64 ;;
-    darwin) ARCH=Darwin ;;
-    linux) ARCH=Linux ;;
-    windows) ARCH=Windows ;;
-  esac
   true
 }
 
@@ -318,7 +293,7 @@ adjust_arch
 
 echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
 
-NAME=${BINARY}_${OS}_${ARCH}
+NAME=${BINARY}_${VERSION}_${OS}_${ARCH}
 TARBALL=${NAME}.${FORMAT}
 TARBALL_URL=${GITHUB_DOWNLOAD}/v${VERSION}/${TARBALL}
 CHECKSUM=${BINARY}_checksums.txt

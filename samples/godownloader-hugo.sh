@@ -84,7 +84,17 @@ is_supported_platform() {
     dragonfly/amd64) found=0 ;;
     dragonfly/386) found=0 ;;
 
-    dragonfly/arm64) found=0 ;;
+    dragonfly/arm64) found=0 ;;  darwin/armv6) found=0 ;;
+  linux/armv6) found=0 ;;
+  windows/armv6) found=0 ;;
+  freebsd/armv6) found=0 ;;
+  netbsd/armv6) found=0 ;;
+  openbsd/armv6) found=0 ;;
+  dragonfly/armv6) found=0 ;;
+
+  esac
+  case "$platform" in
+    openbsd/armv6) found=1 ;;
   esac
   return $found
 }

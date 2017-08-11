@@ -29,7 +29,7 @@ func processRaw(repo string, exe string, nametpl string) (string, error) {
 	project := config.Project{}
 	project.Release.GitHub.Owner = path.Dir(repo)
 	project.Release.GitHub.Name = path.Base(repo)
-	project.Build.Binary = exe
+	project.Builds[0].Binary = exe
 	project.Archive.NameTemplate = name
 
 	return makeShell(shellRaw, &project)

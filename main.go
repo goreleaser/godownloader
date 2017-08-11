@@ -10,6 +10,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/goreleaser/goreleaser/context"
+
 	"github.com/goreleaser/goreleaser/config"
 	"github.com/goreleaser/goreleaser/pipeline/defaults"
 )
@@ -113,17 +115,9 @@ func Load(repo string, file string) (project *config.Project, err error) {
 		project.Release.GitHub.Name = path.Base(repo)
 	}
 
-	// set default archive format
-	if project.Archive.Format == "" {
-		project.Archive.Format = "tar.gz"
-	}
-
-	// set default binary name
-	if project.Build.Binary == "" {
-		project.Build.Binary = path.Base(repo)
-	}
-
-	return project, nil
+	var ctx = context.New(*project)
+	err = defaults.Pipe{}.Run(ctx)
+	return &ctx.Config, err
 }
 
 func main() {
