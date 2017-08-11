@@ -16,9 +16,10 @@ func processEquinoxio(repo string) (string, error) {
 	project := config.Project{}
 	project.Release.GitHub.Owner = path.Dir(repo)
 	project.Release.GitHub.Name = path.Base(repo)
-	project.Build.Binary = path.Base(repo)
+	project.Builds = []config.Build{
+		{Binary: path.Base(repo)},
+	}
 	project.Archive.Format = "tgz"
-
 	return makeShell(shellEquinoxio, &project)
 }
 
@@ -78,7 +79,7 @@ execute() {
   echo "$PREFIX: installed ${BINDIR}/${BINARY}"
 }` + shellfn + `OWNER={{ .Release.GitHub.Owner }}
 REPO={{ .Release.GitHub.Name }}
-BINARY={{ .Build.Binary }}
+BINARY={{ (index .Builds 0).Binary }}
 FORMAT={{ .Archive.Format }}
 BINDIR=${BINDIR:-./bin}
 CHANNEL=stable

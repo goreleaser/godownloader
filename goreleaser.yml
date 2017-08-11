@@ -1,5 +1,3 @@
-homepage: &homepage https://github.com/goreleaser/godownloader
-description: &description Download Go binaries as fast and easily as possible
 build:
   goos:
     - linux
@@ -25,13 +23,13 @@ brew:
     owner: godownloader
     name: homebrew-tap
   folder: Formula
-  homepage: *homepage
-  description: *description
+  homepage: https://github.com/goreleaser/godownloader
+  description: Download Go binaries as fast and easily as possible
   dependencies:
     - git
 fpm:
-  homepage: *homepage
-  description: *description
+  homepage: https://github.com/goreleaser/godownloader
+  description: Download Go binaries as fast and easily as possible
   maintainer: Nick Galbreath <nickg@client9.com>
   vendor: GoDownloader
   formats:

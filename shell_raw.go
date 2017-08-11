@@ -29,9 +29,10 @@ func processRaw(repo string, exe string, nametpl string) (string, error) {
 	project := config.Project{}
 	project.Release.GitHub.Owner = path.Dir(repo)
 	project.Release.GitHub.Name = path.Base(repo)
-	project.Build.Binary = exe
+	project.Builds = []config.Build{
+		{Binary: exe},
+	}
 	project.Archive.NameTemplate = name
-
 	return makeShell(shellRaw, &project)
 }
 
@@ -102,7 +103,7 @@ execute() {
 ` + shellfn + `
 OWNER={{ .Release.GitHub.Owner }}
 REPO={{ .Release.GitHub.Name }}
-BINARY={{ .Build.Binary }}
+BINARY={{ (index .Builds 0).Binary }}
 BINDIR=${BINDIR:-./bin}
 PREFIX="$OWNER/$REPO"
 OS=$(uname_os)
