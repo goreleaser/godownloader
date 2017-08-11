@@ -5,8 +5,6 @@ import (
 	"path"
 
 	"github.com/goreleaser/goreleaser/config"
-	"github.com/goreleaser/goreleaser/context"
-	"github.com/goreleaser/goreleaser/pipeline/defaults"
 )
 
 // processEquinoxio create a fake goreleaser config for equinox.io
@@ -22,13 +20,7 @@ func processEquinoxio(repo string) (string, error) {
 		{Binary: path.Base(repo)},
 	}
 	project.Archive.Format = "tgz"
-
-	var ctx = context.New(project)
-	err := defaults.Pipe{}.Run(ctx)
-	if err != nil {
-		return "", err
-	}
-	return makeShell(shellEquinoxio, &ctx.Config)
+	return makeShell(shellEquinoxio, &project)
 }
 
 var shellEquinoxio = `#!/bin/sh
