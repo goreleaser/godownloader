@@ -5,6 +5,8 @@ import (
 	"path"
 
 	"github.com/goreleaser/goreleaser/config"
+	"github.com/goreleaser/goreleaser/context"
+	"github.com/goreleaser/goreleaser/pipeline/defaults"
 )
 
 // processEquinoxio create a fake goreleaser config for equinox.io
@@ -29,9 +31,16 @@ func processRaw(repo string, exe string, nametpl string) (string, error) {
 	project := config.Project{}
 	project.Release.GitHub.Owner = path.Dir(repo)
 	project.Release.GitHub.Name = path.Base(repo)
-	project.Builds[0].Binary = exe
+	project.Builds = []config.Build{
+		{Binary: exe},
+	}
 	project.Archive.NameTemplate = name
 
+	var ctx = context.New(project)
+	err = defaults.Pipe{}.Run(ctx)
+	if err != nil {
+		return "", err
+	}
 	return makeShell(shellRaw, &project)
 }
 
@@ -102,7 +111,7 @@ execute() {
 ` + shellfn + `
 OWNER={{ .Release.GitHub.Owner }}
 REPO={{ .Release.GitHub.Name }}
-BINARY={{ .Build.Binary }}
+BINARY={{ (index .Builds 0).Binary }}
 BINDIR=${BINDIR:-./bin}
 PREFIX="$OWNER/$REPO"
 OS=$(uname_os)
