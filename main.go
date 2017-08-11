@@ -130,10 +130,9 @@ func Load(repo string, file string) (project *config.Project, err error) {
 		project.Release.GitHub.Name = path.Base(repo)
 	}
 
-	// set default archive format
-	if project.Archive.Format == "" {
-		project.Archive.Format = "tar.gz"
-	}
+	var ctx = context.New(*project)
+	err = defaults.Pipe{}.Run(ctx)
+	project = &ctx.Config
 
 	// set default binary name
 	if len(project.Builds) == 0 {
@@ -141,14 +140,11 @@ func Load(repo string, file string) (project *config.Project, err error) {
 			{Binary: path.Base(repo)},
 		}
 	}
-
 	if project.Builds[0].Binary == "" {
 		project.Builds[0].Binary = path.Base(repo)
 	}
 
-	var ctx = context.New(*project)
-	err = defaults.Pipe{}.Run(ctx)
-	return &ctx.Config, err
+	return project, err
 }
 
 func main() {

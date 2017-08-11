@@ -57,10 +57,13 @@ is_supported_platform() {
   platform=$1
   found=1
   case "$platform" in
-    linux/amd64) found=0 ;;
-    linux/386) found=0 ;;
     darwin/amd64) found=0 ;;
-    darwin/386) found=0 ;;
+    linux/amd64) found=0 ;;
+    windows/amd64) found=0 ;;
+  esac
+  case "$platform" in
+    darwin/386) found=1 ;;
+    windows/386) found=1 ;;
   esac
   return $found
 }
