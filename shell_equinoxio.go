@@ -5,6 +5,8 @@ import (
 	"path"
 
 	"github.com/goreleaser/goreleaser/config"
+	"github.com/goreleaser/goreleaser/context"
+	"github.com/goreleaser/goreleaser/pipeline/defaults"
 )
 
 // processEquinoxio create a fake goreleaser config for equinox.io
@@ -16,10 +18,17 @@ func processEquinoxio(repo string) (string, error) {
 	project := config.Project{}
 	project.Release.GitHub.Owner = path.Dir(repo)
 	project.Release.GitHub.Name = path.Base(repo)
-	project.Builds[0].Binary = path.Base(repo)
+	project.Builds = []config.Build{
+		{Binary: path.Base(repo)},
+	}
 	project.Archive.Format = "tgz"
 
-	return makeShell(shellEquinoxio, &project)
+	var ctx = context.New(project)
+	err := defaults.Pipe{}.Run(ctx)
+	if err != nil {
+		return "", err
+	}
+	return makeShell(shellEquinoxio, &ctx.Config)
 }
 
 var shellEquinoxio = `#!/bin/sh
@@ -78,7 +87,7 @@ execute() {
   echo "$PREFIX: installed ${BINDIR}/${BINARY}"
 }` + shellfn + `OWNER={{ .Release.GitHub.Owner }}
 REPO={{ .Release.GitHub.Name }}
-BINARY={{ .Build.Binary }}
+BINARY={{ (index .Builds 0).Binary }}
 FORMAT={{ .Archive.Format }}
 BINDIR=${BINDIR:-./bin}
 CHANNEL=stable
