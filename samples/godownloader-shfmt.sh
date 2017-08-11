@@ -237,7 +237,7 @@ EOF
 
 OWNER=mvdan
 REPO=sh
-BINARY=sh
+BINARY=shfmt
 BINDIR=${BINDIR:-./bin}
 PREFIX="$OWNER/$REPO"
 OS=$(uname_os)
