@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -66,10 +67,27 @@ func makeName(target string) (string, error) {
 	return out.String(), err
 }
 
+func loadURLs(path string) (*config.Project, error) {
+	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml"} {
+		var url = fmt.Sprintf("%s/%s", path, file)
+		log.Printf("Reading %s", url)
+		project, err := loadURL(url)
+		if err == nil {
+			return project, err
+		}
+	}
+	return nil, fmt.Errorf("goreleaser.yml file not found")
+}
+
+var errNotFound = errors.New("404: not found")
+
 func loadURL(file string) (*config.Project, error) {
 	resp, err := http.Get(file)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode == 404 {
+		return nil, errNotFound
 	}
 	p, err := config.LoadReader(resp.Body)
 
@@ -92,13 +110,11 @@ func Load(repo string, file string) (project *config.Project, err error) {
 		return nil, fmt.Errorf("Need a repo or file")
 	}
 	if file == "" {
-		file = "https://raw.githubusercontent.com/" + repo + "/master/goreleaser.yml"
-	}
-
-	log.Printf("Reading %s", file)
-	if strings.HasPrefix(file, "http") {
-		project, err = loadURL(file)
+		project, err = loadURLs(
+			fmt.Sprintf("https://raw.githubusercontent.com/%s/master", repo),
+		)
 	} else {
+		log.Printf("Reading %s", file)
 		project, err = loadFile(file)
 	}
 	if err != nil {
