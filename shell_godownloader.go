@@ -83,8 +83,9 @@ is_supported_platform() {
   {{- end }}{{ end }}
   {{- if (index $.Builds 0).Goarm }}
   {{- range $goos := (index $.Builds 0).Goos }}{{ range $goarch := (index $.Builds 0).Goarch }}{{ range $goarm := (index $.Builds 0).Goarm }}
-{{- if eq $goarch "arm" }}  {{ $goos }}/armv{{ $goarm }}) found=0 ;;
-{{ end }}
+{{- if eq $goarch "arm" }}
+    {{ $goos }}/armv{{ $goarm }}) found=0 ;;
+{{- end }}
   {{- end }}{{ end }}{{ end }}
   {{- end }}
   esac
