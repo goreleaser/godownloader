@@ -2,20 +2,32 @@
 
 
 [[projects]]
-  name = "github.com/goreleaser/goreleaser"
-  packages = ["config","context","pipeline/defaults"]
-  revision = "fbcae4b5bec60816e6ed23b22cabd5a12c507d62"
-  version = "v0.20.3"
+  branch = "master"
+  name = "github.com/apex/log"
+  packages = ["."]
+  revision = "0296d6eb16bb28f8a0c55668affcf4876dc269be"
 
 [[projects]]
-  branch = "v1"
-  name = "gopkg.in/yaml.v1"
+  name = "github.com/goreleaser/goreleaser"
+  packages = ["config","context","pipeline/defaults"]
+  revision = "658d46397f6f6913d767987ab21c2de4d8ed9681"
+  version = "v0.28.5"
+
+[[projects]]
+  name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "9f9df34309c04878acc86042b16630b0f696e1de"
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
+  branch = "v2"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "25c4ec802a7d637f88d584ab26798e94ad14c13b"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b8819a7af455559909afdf1c8ef2ea0b9e06416dedbcc9acd15b46f96ed6cd32"
+  inputs-digest = "163f1c73e044d96155004b33881f1e1c4c4b80eab60b168e228f7e483ce15319"
   solver-name = "gps-cdcl"
   solver-version = 1
