@@ -52,7 +52,7 @@ func makeName(target string) (string, error) {
 	var varmap = map[string]string{
 		"Os":      "${OS}",
 		"Arch":    "${ARCH}",
-		"Version": "${VERSION}",
+		"Version": "${VERSION#v}",
 		"Tag":     "${TAG}",
 		"Binary":  "${BINARY}",
 	}
