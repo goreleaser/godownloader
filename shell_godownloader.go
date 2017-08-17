@@ -111,8 +111,6 @@ adjust_version() {
     echo "$PREFIX: checking GitHub for latest version"
     VERSION=$(github_last_release "$OWNER/$REPO")
   fi
-  # if version starts with 'v', remove it
-  VERSION=${VERSION#v}
 }
 adjust_format() {
   # change format (tar.gz or zip) based on ARCH
@@ -177,9 +175,9 @@ echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
 
 {{ .Archive.NameTemplate }}
 TARBALL=${NAME}.${FORMAT}
-TARBALL_URL=${GITHUB_DOWNLOAD}/v${VERSION}/${TARBALL}
-CHECKSUM=${BINARY}_checksums.txt
-CHECKSUM_URL=${GITHUB_DOWNLOAD}/v${VERSION}/${CHECKSUM}
+TARBALL_URL=${GITHUB_DOWNLOAD}/${VERSION}/${TARBALL}
+CHECKSUM={{.ProjectName}}_checksums.txt
+CHECKSUM_URL=${GITHUB_DOWNLOAD}/${VERSION}/${CHECKSUM}
 
 # Adjust binary name if windows
 if [ "$OS" = "windows" ]; then
