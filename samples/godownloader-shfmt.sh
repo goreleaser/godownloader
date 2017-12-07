@@ -76,6 +76,9 @@ is_command() {
 }
 uname_os() {
   os=$(uname -s | tr '[:upper:]' '[:lower:]')
+  case "$os" in
+    msys_nt) os="windows" ;;
+  esac
   echo "$os"
 }
 uname_arch() {

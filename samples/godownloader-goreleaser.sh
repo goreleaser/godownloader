@@ -133,6 +133,9 @@ is_command() {
 }
 uname_os() {
   os=$(uname -s | tr '[:upper:]' '[:lower:]')
+  case "$os" in
+    msys_nt) os="windows" ;;
+  esac
   echo "$os"
 }
 uname_arch() {
@@ -319,7 +322,7 @@ adjust_arch
 
 echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
 
-NAME=${BINARY}_${OS}_${ARCH}
+NAME=<no value>_${OS}_${ARCH}
 TARBALL=${NAME}.${FORMAT}
 TARBALL_URL=${GITHUB_DOWNLOAD}/${VERSION}/${TARBALL}
 CHECKSUM=goreleaser_checksums.txt

@@ -34,10 +34,6 @@ func makeShell(tplsrc string, cfg *config.Project) (string, error) {
 // {{ .Binary }} --->  NAME=${BINARY}, etc.
 //
 func makeName(target string) (string, error) {
-	if target == "" {
-		target = defaults.NameTemplate
-	}
-
 	// armv6 is the default in the shell script
 	// so do not need special template condition for ARM
 	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
