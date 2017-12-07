@@ -322,7 +322,7 @@ adjust_arch
 
 echo "$PREFIX: found version ${VERSION} for ${OS}/${ARCH}"
 
-NAME=<no value>_${OS}_${ARCH}
+NAME=${BINARY}_${OS}_${ARCH}
 TARBALL=${NAME}.${FORMAT}
 TARBALL_URL=${GITHUB_DOWNLOAD}/${VERSION}/${TARBALL}
 CHECKSUM=goreleaser_checksums.txt

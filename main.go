@@ -46,11 +46,12 @@ func makeName(target string) (string, error) {
 	}
 
 	var varmap = map[string]string{
-		"Os":      "${OS}",
-		"Arch":    "${ARCH}",
-		"Version": "${VERSION}",
-		"Tag":     "${TAG}",
-		"Binary":  "${BINARY}",
+		"Os":          "${OS}",
+		"Arch":        "${ARCH}",
+		"Version":     "${VERSION}",
+		"Tag":         "${TAG}",
+		"Binary":      "${BINARY}",
+		"ProjectName": "${BINARY}",
 	}
 
 	var out bytes.Buffer
