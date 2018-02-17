@@ -22,7 +22,7 @@ Your old `.travis.yml` file might have
 
 ```yaml
 install:
-  - go get github.com/spf13/hugo
+  - go get github.com/gohugoio/hugo
 ```
 
 This can take up to 30 seconds! 
@@ -32,14 +32,14 @@ Hugo doesn't have (yet) a `godownloader.sh` file.  So we will make our own:
 
 ```
 # create a godownloader script
-godownloader -repo spf/hugo > ./godownloader-hugo.sh`
+godownloader -repo gohugoio/hugo > ./godownloader-hugo.sh
 ```
 
 and add `godownloader-hugo.sh` to your GitHub repo.  Edit your `.travis.yml` as such
 
 ```yaml
 install:
-  - ./godownloader-hugo.sh 0.20.6
+  - ./godownloader-hugo.sh v0.33.1
 ```
 
 Without a version number, GitHub is queried to get the latest version number.  This is subject to the usual [GitHub rate limits](https://developer.github.com/v3/#rate-limiting).  If working on a public machine (like travis-ci), be sure to set `GITHUB_TOKEN`.
