@@ -107,6 +107,7 @@ http_download() {
     echo "http_download: unable to find wget or curl"
     return 1
   fi
+  echo "$PREFIX: downloading ${source_url}"
   if [ -z "$header" ]; then
     $cmd $destflag "$local_file" "$source_url"
   else
@@ -128,9 +129,9 @@ github_last_release() {
   owner_repo=$1
   giturl="https://api.github.com/repos/${owner_repo}/releases/latest"
   html=$(github_api - "$giturl")
-  version=$(echo "$html" | grep -m 1 "\"tag_name\":" | cut -f4 -d'"')
-  test -z "$version" && return 1
-  echo "$version"
+  tag=$(echo "$html" | grep -m 1 "\"tag_name\":" | cut -f4 -d'"')
+  test -z "$tag" && return 1
+  echo "$tag"
 }
 hash_sha256() {
   TARGET=${1:-/dev/stdin}
@@ -154,6 +155,7 @@ hash_sha256() {
 hash_sha256_verify() {
   TARGET=$1
   checksums=$2
+  echo "$PREFIX: verifying checksums"
   if [ -z "$checksums" ]; then
     echo "hash_sha256_verify: checksum file not specified in arg2"
     return 1

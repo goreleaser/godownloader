@@ -31,9 +31,9 @@ func makeShell(tplsrc string, cfg *config.Project) (string, error) {
 // except for the default goreleaser templates, templates with
 // conditionals will return an error
 //
-// {{ .Binary }} --->  NAME=${BINARY}, etc.
+// {{ .Binary }} --->  [prefix]${BINARY}, etc.
 //
-func makeName(target string) (string, error) {
+func makeName(prefix, target string) (string, error) {
 	// armv6 is the default in the shell script
 	// so do not need special template condition for ARM
 	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
@@ -55,7 +55,7 @@ func makeName(target string) (string, error) {
 	}
 
 	var out bytes.Buffer
-	out.WriteString("NAME=")
+	out.WriteString(prefix)
 	t, err := template.New("name").Parse(target)
 	if err != nil {
 		return "", err
