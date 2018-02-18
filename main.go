@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -31,9 +30,9 @@ func makeShell(tplsrc string, cfg *config.Project) (string, error) {
 // except for the default goreleaser templates, templates with
 // conditionals will return an error
 //
-// {{ .Binary }} --->  NAME=${BINARY}, etc.
+// {{ .Binary }} --->  [prefix]${BINARY}, etc.
 //
-func makeName(target string) (string, error) {
+func makeName(prefix, target string) (string, error) {
 	// armv6 is the default in the shell script
 	// so do not need special template condition for ARM
 	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
@@ -55,7 +54,7 @@ func makeName(target string) (string, error) {
 	}
 
 	var out bytes.Buffer
-	out.WriteString("NAME=")
+	out.WriteString(prefix)
 	t, err := template.New("name").Parse(target)
 	if err != nil {
 		return "", err
@@ -65,26 +64,28 @@ func makeName(target string) (string, error) {
 }
 
 func loadURLs(path string) (*config.Project, error) {
-	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml"} {
+	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml", "goreleaser.yaml", ".goreleaser.yaml"} {
 		var url = fmt.Sprintf("%s/%s", path, file)
 		log.Printf("Reading %s", url)
 		project, err := loadURL(url)
-		if err == nil {
-			return project, err
+		if err != nil {
+			return nil, err
+		}
+		if project != nil {
+			return project, nil
 		}
 	}
-	return nil, fmt.Errorf("goreleaser.yml file not found")
+	return nil, fmt.Errorf("could not fetch a goreleaser configuration file")
 }
-
-var errNotFound = errors.New("404: not found")
 
 func loadURL(file string) (*config.Project, error) {
 	resp, err := http.Get(file)
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode == 404 {
-		return nil, errNotFound
+	if resp.StatusCode != 200 {
+		log.Printf("Issue reading %s returned: %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
+		return nil, nil
 	}
 	p, err := config.LoadReader(resp.Body)
 
