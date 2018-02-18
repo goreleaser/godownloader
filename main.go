@@ -64,15 +64,18 @@ func makeName(prefix, target string) (string, error) {
 }
 
 func loadURLs(path string) (*config.Project, error) {
-	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml"} {
+	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml", "goreleaser.yaml", ".goreleaser.yaml"} {
 		var url = fmt.Sprintf("%s/%s", path, file)
 		log.Printf("Reading %s", url)
 		project, err := loadURL(url)
-		if err == nil {
-			return project, err
+		if err != nil {
+			return nil, err
+		}
+		if project != nil {
+			return project, nil
 		}
 	}
-	return nil, fmt.Errorf("goreleaser.yml file not found")
+	return nil, fmt.Errorf("could not fetch a goreleaser configuration file")
 }
 
 func loadURL(file string) (*config.Project, error) {
@@ -81,7 +84,8 @@ func loadURL(file string) (*config.Project, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("%d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
+		log.Printf("Issue reading %s returned: %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
+		return nil, nil
 	}
 	p, err := config.LoadReader(resp.Body)
 
