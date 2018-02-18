@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -76,15 +75,13 @@ func loadURLs(path string) (*config.Project, error) {
 	return nil, fmt.Errorf("goreleaser.yml file not found")
 }
 
-var errNotFound = errors.New("404: not found")
-
 func loadURL(file string) (*config.Project, error) {
 	resp, err := http.Get(file)
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode == 404 {
-		return nil, errNotFound
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("%d: %s", resp.StatusCode, http.StatusText(resp.StatusCode))
 	}
 	p, err := config.LoadReader(resp.Body)
 
