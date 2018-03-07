@@ -29,16 +29,16 @@
   version = "v1.6.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
+  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/google/go-github"
   packages = ["github"]
-  revision = "632a2caf6d3d380753dc7e422748202982ad18a3"
+  revision = "e7bb4b8ce29fb7beaf0765acda602bc516a56dd5"
 
 [[projects]]
   branch = "master"
@@ -53,8 +53,8 @@
     "tar",
     "zip"
   ]
-  revision = "caa5f3f5742eb0535631e94fa5e171c74c0144b7"
-  version = "v1.0.0"
+  revision = "342df38b73c11da7bded76e68a4cfefbe7ed4b6b"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/goreleaser/goreleaser"
@@ -87,8 +87,8 @@
     "pipeline/snapcraft",
     "pipeline/snapshot"
   ]
-  revision = "4139509f436b148e9dc78aaf7ced3aa9ad5b136d"
-  version = "v0.53.0"
+  revision = "7746ed179c87673b7c29494236e7a89ee7f8f24e"
+  version = "v0.59.1"
 
 [[projects]]
   name = "github.com/goreleaser/nfpm"
@@ -97,8 +97,8 @@
     "deb",
     "rpm"
   ]
-  revision = "4f995bd813a38e5271ee1c5287309637fb98bc74"
-  version = "v0.4.1"
+  revision = "0c6b7821812f13134ac062a82b45c863ada261a0"
+  version = "v0.5.7"
 
 [[projects]]
   name = "github.com/masterminds/semver"
@@ -125,7 +125,7 @@
     ".",
     "fastwalk"
   ]
-  revision = "4b74c24375b3b1ee226867156e01996f4e19a8d6"
+  revision = "4959821b481786922ac53e7ef25c61ae19fb7c36"
 
 [[projects]]
   branch = "master"
@@ -146,7 +146,7 @@
     "context",
     "context/ctxhttp"
   ]
-  revision = "dc871a5d77e227f5bbf6545176ef3eeebf87e76e"
+  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
 
 [[projects]]
   branch = "master"
@@ -155,7 +155,7 @@
     ".",
     "internal"
   ]
-  revision = "6a2004c8907a86949d71c664c81574897a4e55a6"
+  revision = "2f32c3ac0fa4fb807a0fcefb0b6f2468a0d99bd0"
 
 [[projects]]
   branch = "master"
@@ -167,7 +167,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
+  revision = "dd2ff4accc098aceecb86b36eaa7829b2a17b1c9"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -184,10 +184,10 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "287cf08546ab5e7e37d55a84f7ed3fd1db036de5"
+  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
+  version = "v2.1.1"
 
 [solve-meta]
   analyzer-name = "dep"
