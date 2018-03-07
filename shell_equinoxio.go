@@ -78,7 +78,7 @@ execute() {
   install "${TMPDIR}/${BINARY}" "${BINDIR}/"
   echo "$PREFIX: installed ${BINDIR}/${BINARY}"
 }` + shellfn + `OWNER={{ .Release.GitHub.Owner }}
-REPO={{ .Release.GitHub.Name }}
+REPO="{{ .Release.GitHub.Name }}"
 BINARY={{ (index .Builds 0).Binary }}
 FORMAT={{ .Archive.Format }}
 BINDIR=${BINDIR:-./bin}

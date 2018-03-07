@@ -104,7 +104,7 @@ execute() {
 }
 ` + shellfn + `
 OWNER={{ .Release.GitHub.Owner }}
-REPO={{ .Release.GitHub.Name }}
+REPO="{{ .Release.GitHub.Name }}"
 BINARY={{ (index .Builds 0).Binary }}
 BINDIR=${BINDIR:-./bin}
 PREFIX="$OWNER/$REPO"

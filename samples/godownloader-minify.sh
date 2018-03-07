@@ -230,7 +230,7 @@ End of functions from https://github.com/client9/shlib
 ------------------------------------------------------------------------
 EOF
 OWNER=tdewolff
-REPO=minify
+REPO="minify"
 BINARY=minify
 FORMAT=tgz
 BINDIR=${BINDIR:-./bin}

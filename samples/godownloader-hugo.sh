@@ -336,7 +336,7 @@ End of functions from https://github.com/client9/shlib
 EOF
 
 OWNER=gohugoio
-REPO=hugo
+REPO="hugo"
 BINARY=hugo
 FORMAT=tar.gz
 OS=$(uname_os)

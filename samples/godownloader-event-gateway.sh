@@ -275,7 +275,7 @@ End of functions from https://github.com/client9/shlib
 EOF
 
 OWNER=serverless
-REPO=event-gateway
+REPO="event-gateway"
 BINARY=event-gateway
 FORMAT=zip
 OS=$(uname_os)

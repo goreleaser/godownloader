@@ -301,7 +301,7 @@ End of functions from https://github.com/client9/shlib
 EOF
 
 OWNER=goreleaser
-REPO=goreleaser
+REPO="goreleaser"
 BINARY=goreleaser
 FORMAT=tar.gz
 OS=$(uname_os)

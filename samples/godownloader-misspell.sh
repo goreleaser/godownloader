@@ -286,7 +286,7 @@ End of functions from https://github.com/client9/shlib
 EOF
 
 OWNER=client9
-REPO=misspell
+REPO="misspell"
 BINARY=misspell
 FORMAT=tar.gz
 OS=$(uname_os)
