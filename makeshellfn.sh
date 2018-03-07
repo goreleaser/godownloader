@@ -11,10 +11,15 @@ git_clone_or_update() {
     (cd "$gitrepo" && git pull >/dev/null)
   fi
 }
+date_iso8601() {
+  date -u +%Y-%m-%dT%H:%M:%SZ
+}
 
 git_clone_or_update https://github.com/client9/shlib.git
 cd shlib
 
+now=$(date_iso8601)
+echo "// Code generated ${now} DO NOT EDIT."
 echo "package main"
 echo ""
 echo 'const shellfn = `'
