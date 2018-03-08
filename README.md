@@ -105,7 +105,7 @@ Other applications have written custom shell downloaders and installers:
 
 ### golang/dep
 
-The [golang/dep](package manager) has a nice downloader, [install.sh](https://github.com/golang/dep/blob/master/install.sh)  Their trick to extract a version number from GitHub Releases is excellent:
+The [golang/dep](https://github.com/golang/dep) package manager has a nice downloader, [install.sh](https://github.com/golang/dep/blob/master/install.sh)  Their trick to extract a version number from GitHub Releases is excellent:
 
 ```sh
 $(echo "${LATEST_RELEASE}" | tr -s '\n' ' ' | sed 's/.*"tag_name":"//' | sed 's/".*//' )
@@ -115,11 +115,11 @@ This is probably based on [masterminds/glide](https://github.com/Masterminds/gli
 
 ### kubernetes/helm
 
-[Helm](https://github.com/kubernetes/helm) is a "Helm is a tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources."
+[Helm](https://github.com/kubernetes/helm) is a "tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources."
 
-It has a [get script](https://github.com/kubernetes/helm/blob/master/scripts/get)
+It has a [get script](https://github.com/kubernetes/helm/blob/master/scripts/get)  Of note is that it won't re-install if the desired version is already present.
 
-### chef(
+### chef
 
 [Chef](https://www.chef.io) has the one of the most complete installers:
 
