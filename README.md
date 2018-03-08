@@ -99,3 +99,42 @@ An example is [tdewolff/minify](https://github.com/tdewolff/minify) on [dl.equin
 
 It's a go program that reads a YAML file that uses a template to make a posix shell script.
 
+## Other Resources and Inspiration
+
+Other applications have written custom shell downloaders and installers:
+
+### [golang/dep](https://github.com/golang/dep)
+
+Golang's package manager has a nice downloader, [install.sh](https://github.com/golang/dep/blob/master/install.sh)  Their trick to extract a version number from GitHub Releases is excellent:
+
+```sh
+$(echo "${LATEST_RELEASE}" | tr -s '\n' ' ' | sed 's/.*"tag_name":"//' | sed 's/".*//' )
+```
+
+This is probably based on [masterminds/glide](https://github.com/Masterminds/glide) and it's installer at https://glide.sh/get
+
+### [kubernetes/helm](https://github.com/kubernetes/helm)
+
+Helm is a "Helm is a tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources."
+
+It also has a [get script](https://github.com/kubernetes/helm/blob/master/scripts/get)
+
+### [chef](https://www.chef.io)
+
+Chef has the one of the most complete installers.  Couldn't find the source but it's easy to download and read:
+
+https://omnitruck.chef.io/install.sh
+
+In particular it has support for
+
+* Support for solaris and aix, and some other less common platforms
+* python or perl as installers if curl or wget isn't present
+* http proxy support
+
+### [Cady](https://caddyserver.com)
+
+[Cady](https://caddyserver.com) is "the HTTP/2 web server with automatic HTTPS" and a NGINX replacement.  It has a clever installer:
+
+https://getcaddy.com
+
+Of note is GPG signature verification.
