@@ -103,9 +103,9 @@ It's a go program that reads a YAML file that uses a template to make a posix sh
 
 Other applications have written custom shell downloaders and installers:
 
-### [golang/dep](https://github.com/golang/dep)
+### golang/dep
 
-Golang's package manager has a nice downloader, [install.sh](https://github.com/golang/dep/blob/master/install.sh)  Their trick to extract a version number from GitHub Releases is excellent:
+The [golang/dep](package manager) has a nice downloader, [install.sh](https://github.com/golang/dep/blob/master/install.sh)  Their trick to extract a version number from GitHub Releases is excellent:
 
 ```sh
 $(echo "${LATEST_RELEASE}" | tr -s '\n' ' ' | sed 's/.*"tag_name":"//' | sed 's/".*//' )
@@ -113,15 +113,15 @@ $(echo "${LATEST_RELEASE}" | tr -s '\n' ' ' | sed 's/.*"tag_name":"//' | sed 's/
 
 This is probably based on [masterminds/glide](https://github.com/Masterminds/glide) and it's installer at https://glide.sh/get
 
-### [kubernetes/helm](https://github.com/kubernetes/helm)
+### kubernetes/helm
 
-Helm is a "Helm is a tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources."
+[Helm](https://github.com/kubernetes/helm) is a "Helm is a tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources."
 
-It also has a [get script](https://github.com/kubernetes/helm/blob/master/scripts/get)
+It has a [get script](https://github.com/kubernetes/helm/blob/master/scripts/get)
 
-### [chef](https://www.chef.io)
+### chef(
 
-Chef has the one of the most complete installers.  Couldn't find the source but it's easy to download and read:
+[Chef](https://www.chef.io) has the one of the most complete installers:
 
 https://omnitruck.chef.io/install.sh
 
@@ -131,9 +131,9 @@ In particular it has support for
 * python or perl as installers if curl or wget isn't present
 * http proxy support
 
-### [Cady](https://caddyserver.com)
+### Caddy
 
-[Cady](https://caddyserver.com) is "the HTTP/2 web server with automatic HTTPS" and a NGINX replacement.  It has a clever installer:
+[Caddy](https://caddyserver.com) is "the HTTP/2 web server with automatic HTTPS" and a NGINX replacement.  It has a clever installer:
 
 https://getcaddy.com
 
