@@ -1,5 +1,6 @@
+dist: trusty
 language: go
-go: 1.8.1
+go: '1.10'
 
 install:
   - make setup
