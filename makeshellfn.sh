@@ -12,7 +12,7 @@ git_clone_or_update() {
   fi
 }
 date_iso8601() {
-  date -u +%Y-%m-%dT%H:%M:%SZ
+  date -u +%Y-%m-%dT%H:%M:%S+0000
 }
 
 git_clone_or_update https://github.com/client9/shlib.git
@@ -26,6 +26,8 @@ echo 'const shellfn = `'
 cat \
   license.sh \
   is_command.sh \
+  echoerr.sh \
+  log.sh \
   uname_os.sh \
   uname_arch.sh \
   uname_os_check.sh \
