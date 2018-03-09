@@ -1,5 +1,16 @@
-# godownloader
-Download Go binaries as fast and easily as possible
+<p align="center">
+  <img alt="GoReleaser Logo" src="https://avatars2.githubusercontent.com/u/24697112?v=3&s=200" height="140" />
+  <h3 align="center">GoDownloader</h3>
+  <p align="center">Download Go binaries as fast and easily as possible.</p>
+  <p align="center">
+    <a href="/LICENSE.md"><img alt="Software License" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square"></a>
+    <a href="https://travis-ci.org/goreleaser/godownloader"><img alt="Travis" src="https://img.shields.io/travis/goreleaser/godownloader/master.svg?style=flat-square"></a>
+    <a href="https://goreportcard.com/report/github.com/goreleaser/godownloader"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/goreleaser/godownloader?style=flat-square"></a>
+    <a href="http://godoc.org/github.com/goreleaser/goreleaser"><img alt="Go Doc" src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square"></a>
+    <a href="https://github.com/goreleaser"><img alt="Powered By: GoReleaser" src="https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square"></a>
+  </p>
+</p>
+---
 
 This is the inverse of [goreleaser](https://github.com/goreleaser/goreleaser).  The goreleaser YAML file is read and creates a custom shell script that can download the right package and the right version for the existing machine.
 
