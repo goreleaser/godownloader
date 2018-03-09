@@ -12,7 +12,7 @@ If you use goreleaser already, this will create scripts suitable for "curl bash"
 This is also useful in CI/CD systems such as [travis-ci.org](https://travis-ci.org).
 
 * Much faster then 'go get' (sometimes up to 100x)
-* Make sure your local environment (macOS) and CI environment (Linux) are using the exact same versions of your go binaries.
+* Make sure your local environment (macOS) and the CI environment (Linux) are using the exact same versions of your go binaries.
 
 ## CI/CD Example
 
@@ -39,7 +39,7 @@ and add `godownloader-hugo.sh` to your GitHub repo.  Edit your `.travis.yml` as 
 
 ```yaml
 install:
-  - ./godownloader-hugo.sh v0.33.1
+  - ./godownloader-hugo.sh v0.37.1
 ```
 
 Without a version number, GitHub is queried to get the latest version number.
@@ -53,7 +53,7 @@ Typical download time is 0.3 seconds, or 100x improvement.
 
 Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `./bin/hugo`. 
 
-The default installation directory can be changed with the `-b` flag.
+The default installation directory can be changed with the `-b` flag or the `BINDIR` environment variable.
 
 ## Notes on Functionality
 
@@ -102,7 +102,7 @@ Other applications have written custom shell downloaders and installers:
 
 ### golang/dep
 
-The [golang/dep](https://github.com/golang/dep) package manager has a nice downloader, [install.sh](https://github.com/golang/dep/blob/master/install.sh)  Their trick to extract a version number from GitHub Releases is excellent:
+The [golang/dep](https://github.com/golang/dep) package manager has a nice downloader, [install.sh](https://github.com/golang/dep/blob/master/install.sh). Their trick to extract a version number from GitHub Releases is excellent:
 
 ```sh
 $(echo "${LATEST_RELEASE}" | tr -s '\n' ' ' | sed 's/.*"tag_name":"//' | sed 's/".*//' )
@@ -114,7 +114,7 @@ This is probably based on [masterminds/glide](https://github.com/Masterminds/gli
 
 [Helm](https://github.com/kubernetes/helm) is a "tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources."
 
-It has a [get script](https://github.com/kubernetes/helm/blob/master/scripts/get)  Of note is that it won't re-install if the desired version is already present.
+It has a [get script](https://github.com/kubernetes/helm/blob/master/scripts/get). Of note is that it won't re-install if the desired version is already present.
 
 ### chef
 
