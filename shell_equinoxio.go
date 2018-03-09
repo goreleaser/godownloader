@@ -70,7 +70,7 @@ execute() {
   TMPDIR=$(mktmpdir)
 
   log_info "seeking '${CHANNEL}' latest from $TARGET"
-  TARBALL_URL=$(http_download - "$TARGET" | grep "$TARBALL" | cut -d '"' -f 2)
+  TARBALL_URL=$(http_copy "$TARGET" | grep "$TARBALL" | cut -d '"' -f 2)
 
   log_info "downloading from ${TARBALL_URL}"
   http_download "${TMPDIR}/${TARBALL}" "$TARBALL_URL"
