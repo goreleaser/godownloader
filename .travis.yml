@@ -4,7 +4,6 @@ go: '1.10'
 
 install:
   - make setup
-  - gem install fpm
 
 addons:
   apt:
