@@ -60,7 +60,6 @@ The default installation directory can be changed with the `-b` flag.
 * Only GitHub Releases are supported right now.
 * Checksums are checked.
 * Binares are installed using `tar.gz` or `zip`. 
-* No support for Windows anything.  I just don't know enough about it.
 * No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via a `tar.gz` or `zip`.  Typically OS installs are done differently anyways (e.g. brew, apt-get, yum, etc).
 
 ## Experimental support
@@ -79,21 +78,19 @@ A naked release is just the raw binary put on GitHub releases.  Limited support 
 
 Where `exe` is the final binary name, and `tpl` is the same type of name template that Goreleaser uses.
 
-An example repo is at [mvdan/sh](https://github.com/mvdan/sh/releases). Note how repo `sh` is different than binary `shfmt`.
+An example repo is at [mvdan/sh](https://github.com/mvdan/sh/releases). Note how the repo `sh` is different than the binary `shfmt`.
 
 ### Equinox.io
 
 [Equinox.io](https://equinox.io) is a really interesting platform.  Take a look.
 
-There is no API, so godownloader scripts screen scrapes to figure out the latest release.  Likewise, checksums are not verified.
+There is no API, so godownloader screen scrapes to figure out the latest release.  Likewise, checksums are not verified.
 
 ```bash
 ./goreleaser -source equinoxio -repo [owner/repo]
 ```
 
-While Equinox.io supports the concepts of channels, it is hardwired to `stable` for now.
-
-An example is [tdewolff/minify](https://github.com/tdewolff/minify) on [dl.equinox.io](https://dl.equinox.io/tdewolff/minify/stable).
+While Equinox.io supports the concept of different release channels, it only `stable` is supported by godownloader.
 
 ## Yes, it's true.
 
