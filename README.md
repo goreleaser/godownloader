@@ -41,7 +41,6 @@ This can take up to 30 seconds!
 
 Hugo doesn't have (yet) a `godownloader.sh` file.  So we will make our own:
 
-
 ```
 # create a godownloader script
 godownloader -repo gohugoio/hugo > ./godownloader-hugo.sh
@@ -76,9 +75,7 @@ The default installation directory can be changed with the `-b` flag or the `BIN
 
 ## Experimental support
 
-Some people do not use Goreleaser!  
-
-There is experimental support for the following alterative distributions.
+Some people do not use Goreleaser (why!), so there is experimental support for the following alterative distributions.
 
 ### "naked" releases on GitHub
 
@@ -102,7 +99,7 @@ There is no API, so godownloader screen scrapes to figure out the latest release
 ./goreleaser -source equinoxio -repo [owner/repo]
 ```
 
-While Equinox.io supports the concept of different release channels, it only `stable` is supported by godownloader.
+While Equinox.io supports the concept of different release channels, only the `stable` channel is supported by godownloader.
 
 ## Yes, it's true.
 
@@ -124,17 +121,13 @@ This is probably based on [masterminds/glide](https://github.com/Masterminds/gli
 
 ### kubernetes/helm
 
-[Helm](https://github.com/kubernetes/helm) is a "tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources."
+[kubernetes/helm](https://github.com/kubernetes/helm) is a "tool for managing Kubernetes charts. Charts are packages of pre-configured Kubernetes resources."
 
 It has a [get script](https://github.com/kubernetes/helm/blob/master/scripts/get). Of note is that it won't re-install if the desired version is already present.
 
 ### chef
 
-[Chef](https://www.chef.io) has the one of the most complete installers:
-
-https://omnitruck.chef.io/install.sh
-
-In particular it has support for
+[Chef](https://www.chef.io) has the one of the most complete installers at https://omnitruck.chef.io/install.sh. In particular it has support for
 
 * Support for solaris and aix, and some other less common platforms
 * python or perl as installers if curl or wget isn't present
@@ -142,8 +135,4 @@ In particular it has support for
 
 ### Caddy
 
-[Caddy](https://caddyserver.com) is "the HTTP/2 web server with automatic HTTPS" and a NGINX replacement.  It has a clever installer:
-
-https://getcaddy.com
-
-Of note is GPG signature verification.
+[Caddy](https://caddyserver.com) is "the HTTP/2 web server with automatic HTTPS" and a NGINX replacement.  It has a clever installer at https://getcaddy.com. Of note is GPG signature verification.
