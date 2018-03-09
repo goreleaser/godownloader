@@ -9,6 +9,7 @@ import (
 	"path"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/goreleaser/goreleaser/config"
 	"github.com/goreleaser/goreleaser/context"
@@ -17,8 +18,13 @@ import (
 
 // given a template, and a config, generate shell script
 func makeShell(tplsrc string, cfg *config.Project) (string, error) {
+	funcMap := template.FuncMap{
+		"timestamp": func() string {
+			return time.Now().UTC().Format(time.RFC3339)
+		},
+	}
 	var out bytes.Buffer
-	t, err := template.New("shell").Parse(tplsrc)
+	t, err := template.New("shell").Funcs(funcMap).Parse(tplsrc)
 	if err != nil {
 		return "", err
 	}
