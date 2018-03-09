@@ -42,7 +42,7 @@ install:
   - ./godownloader-hugo.sh v0.33.1
 ```
 
-Without a version number, GitHub is queried to get the latest version number.  This is subject to the usual [GitHub rate limits](https://developer.github.com/v3/#rate-limiting).  If working on a public machine (like travis-ci), be sure to set `GITHUB_TOKEN`.
+Without a version number, GitHub is queried to get the latest version number.
 
 ```yaml
 install:
