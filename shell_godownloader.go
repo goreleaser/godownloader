@@ -70,14 +70,22 @@ parse_args() {
 # out preventing half-done work
 execute() {
   TMPDIR=$(mktmpdir)
+  {{- if .Archive.WrapInDirectory }}
+  TMPDIR="${TMPDIR}/${NAME}"
+  {{- end }}
   http_download "${TMPDIR}/${TARBALL}" "${TARBALL_URL}"
   http_download "${TMPDIR}/${CHECKSUM}" "${CHECKSUM_URL}"
   hash_sha256_verify "${TMPDIR}/${TARBALL}" "${TMPDIR}/${CHECKSUM}"
 
   (cd "${TMPDIR}" && untar "${TARBALL}")
   install -d "${BINDIR}"
-  install "${TMPDIR}/${BINARY}" "${BINDIR}/"
-  log_info "installed as ${BINDIR}/${BINARY}"
+  for binexe in {{ range .Builds }}"{{ .Binary }}" {{ end }}; do
+    if [ "$OS" = "windows" ]; then
+      binexe="${binexe}.exe"
+    fi
+    install "${TMPDIR}/${binexe}" "${BINDIR}/"
+    log_info "installed as ${BINDIR}/${binexe}"
+  done
 }
 is_supported_platform() {
   platform=$1
@@ -160,6 +168,7 @@ adjust_arch() {
   true
 }
 ` + shellfn + `
+PROJECT_NAME="{{ $.ProjectName }}"
 OWNER={{ $.Release.GitHub.Owner }}
 REPO="{{ $.Release.GitHub.Name }}"
 BINARY={{ (index .Builds 0).Binary }}
@@ -198,10 +207,6 @@ TARBALL_URL=${GITHUB_DOWNLOAD}/${TAG}/${TARBALL}
 {{ .Checksum.NameTemplate }}
 CHECKSUM_URL=${GITHUB_DOWNLOAD}/${TAG}/${CHECKSUM}
 
-# Adjust binary name if windows
-if [ "$OS" = "windows" ]; then
-  BINARY="${BINARY}.exe"
-fi
 
 execute
 `

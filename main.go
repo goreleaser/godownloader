@@ -56,7 +56,7 @@ func makeName(prefix, target string) (string, error) {
 		"Version":     "${VERSION}",
 		"Tag":         "${TAG}",
 		"Binary":      "${BINARY}",
-		"ProjectName": "${BINARY}",
+		"ProjectName": "${PROJECT_NAME}",
 	}
 
 	var out bytes.Buffer

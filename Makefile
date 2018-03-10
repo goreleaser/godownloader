@@ -10,7 +10,6 @@ setup: ## Install all the build and lint dependencies
 
 test: ## Run all the tests
 	gotestcover $(TEST_OPTIONS) -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=30s
-	shellcheck samples/godownloader-goreleaser.sh
 
 cover: test ## Run all the tests and opens the coverage report
 	go tool cover -html=coverage.txt
