@@ -74,13 +74,13 @@ execute() {
   http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}"
   http_download "${tmpdir}/${CHECKSUM}" "${CHECKSUM_URL}"
   hash_sha256_verify "${tmpdir}/${TARBALL}" "${tmpdir}/${CHECKSUM}"
-
-  (cd "${tmpdir}" && untar "${TARBALL}")
   {{- if .Archive.WrapInDirectory }}
   srcdir="${tmpdir}/${NAME}"
+  rm -rf "${srcdir}"
   {{- else }}
   srcdir="${tmpdir}"
   {{- end }}
+  (cd "${tmpdir}" && untar "${TARBALL}")
   install -d "${BINDIR}"
   for binexe in {{ range .Builds }}"{{ .Binary }}" {{ end }}; do
     if [ "$OS" = "windows" ]; then

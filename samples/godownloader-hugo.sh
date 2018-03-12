@@ -43,13 +43,12 @@ parse_args() {
 # out preventing half-done work
 execute() {
   tmpdir=$(mktmpdir)
-  log_debug "will download files to ${tmpdir}"
+  log_debug "downloading files into ${tmpdir}"
   http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}"
   http_download "${tmpdir}/${CHECKSUM}" "${CHECKSUM_URL}"
   hash_sha256_verify "${tmpdir}/${TARBALL}" "${tmpdir}/${CHECKSUM}"
-
-  (cd "${tmpdir}" && untar "${TARBALL}")
   srcdir="${tmpdir}"
+  (cd "${tmpdir}" && untar "${TARBALL}")
   install -d "${BINDIR}"
   for binexe in "hugo" ; do
     if [ "$OS" = "windows" ]; then
