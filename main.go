@@ -18,11 +18,15 @@ import (
 
 // given a template, and a config, generate shell script
 func makeShell(tplsrc string, cfg *config.Project) (string, error) {
+
+	// if we want to add a timestamp in the templates this
+	//  function will generate it
 	funcMap := template.FuncMap{
 		"timestamp": func() string {
 			return time.Now().UTC().Format(time.RFC3339)
 		},
 	}
+
 	var out bytes.Buffer
 	t, err := template.New("shell").Funcs(funcMap).Parse(tplsrc)
 	if err != nil {
@@ -72,7 +76,7 @@ func makeName(prefix, target string) (string, error) {
 func loadURLs(path string) (*config.Project, error) {
 	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml", "goreleaser.yaml", ".goreleaser.yaml"} {
 		var url = fmt.Sprintf("%s/%s", path, file)
-		log.Printf("Reading %s", url)
+		log.Printf("reading %s", url)
 		project, err := loadURL(url)
 		if err != nil {
 			return nil, err
@@ -90,7 +94,7 @@ func loadURL(file string) (*config.Project, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		log.Printf("Issue reading %s returned: %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
+		log.Printf("reading %s returned %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
 		return nil, nil
 	}
 	p, err := config.LoadReader(resp.Body)
@@ -111,14 +115,15 @@ func loadFile(file string) (*config.Project, error) {
 // Load project configuration from a given repo name or filepath/url.
 func Load(repo string, file string) (project *config.Project, err error) {
 	if repo == "" && file == "" {
-		return nil, fmt.Errorf("Need a repo or file")
+		return nil, fmt.Errorf("repo or file not specified")
 	}
 	if file == "" {
+		log.Printf("read repo %q on github", repo)
 		project, err = loadURLs(
 			fmt.Sprintf("https://raw.githubusercontent.com/%s/master", repo),
 		)
 	} else {
-		log.Printf("Reading %s", file)
+		log.Printf("reading file %q", file)
 		project, err = loadFile(file)
 	}
 	if err != nil {
@@ -128,7 +133,7 @@ func Load(repo string, file string) (project *config.Project, err error) {
 	// if not specified add in GitHub owner/repo info
 	if project.Release.GitHub.Owner == "" {
 		if repo == "" {
-			return nil, fmt.Errorf("need to provide owner/name repo")
+			return nil, fmt.Errorf("owner/name repo not specified")
 		}
 		project.Release.GitHub.Owner = path.Dir(repo)
 		project.Release.GitHub.Name = path.Base(repo)
@@ -183,7 +188,7 @@ func main() {
 		//   https://github.com/mvdan/sh/releases
 		out, err = processRaw(*repo, *exe, *nametpl)
 	default:
-		log.Fatalf("Unknown source %q", *source)
+		log.Fatalf("unknown source %q", *source)
 	}
 
 	if err != nil {
