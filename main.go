@@ -73,6 +73,21 @@ func makeName(prefix, target string) (string, error) {
 	return out.String(), err
 }
 
+// returns the owner/name repo from input
+//
+// see https://github.com/goreleaser/godownloader/issues/55
+func normalizeRepo(repo string) string {
+	// handle full or partial URLs
+	repo = strings.TrimPrefix(repo, "https://github.com/")
+	repo = strings.TrimPrefix(repo, "http://github.com/")
+	repo = strings.TrimPrefix(repo, "github.com/")
+
+	// hande /name/repo or name/repo/ cases
+	repo = strings.Trim(repo, "/")
+
+	return repo
+}
+
 func loadURLs(path string) (*config.Project, error) {
 	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml", "goreleaser.yaml", ".goreleaser.yaml"} {
 		var url = fmt.Sprintf("%s/%s", path, file)
@@ -118,7 +133,8 @@ func Load(repo string, file string) (project *config.Project, err error) {
 		return nil, fmt.Errorf("repo or file not specified")
 	}
 	if file == "" {
-		log.Printf("read repo %q on github", repo)
+		repo = normalizeRepo(repo)
+		log.Printf("reading repo %q on github", repo)
 		project, err = loadURLs(
 			fmt.Sprintf("https://raw.githubusercontent.com/%s/master", repo),
 		)
