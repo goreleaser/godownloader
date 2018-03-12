@@ -42,18 +42,20 @@ parse_args() {
 # network, either nothing will happen or will syntax error
 # out preventing half-done work
 execute() {
-  TMPDIR=$(mktmpdir)
-  http_download "${TMPDIR}/${TARBALL}" "${TARBALL_URL}"
-  http_download "${TMPDIR}/${CHECKSUM}" "${CHECKSUM_URL}"
-  hash_sha256_verify "${TMPDIR}/${TARBALL}" "${TMPDIR}/${CHECKSUM}"
+  tmpdir=$(mktmpdir)
+  log_debug "will download files to ${tmpdir}"
+  http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}"
+  http_download "${tmpdir}/${CHECKSUM}" "${CHECKSUM_URL}"
+  hash_sha256_verify "${tmpdir}/${TARBALL}" "${tmpdir}/${CHECKSUM}"
 
-  (cd "${TMPDIR}" && untar "${TARBALL}")
+  (cd "${tmpdir}" && untar "${TARBALL}")
+  srcdir="${tmpdir}"
   install -d "${BINDIR}"
   for binexe in "goreleaser" ; do
     if [ "$OS" = "windows" ]; then
       binexe="${binexe}.exe"
     fi
-    install "${TMPDIR}/${binexe}" "${BINDIR}/"
+    install "${srcdir}/${binexe}" "${BINDIR}/"
     log_info "installed ${BINDIR}/${binexe}"
   done
 }
