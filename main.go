@@ -179,6 +179,7 @@ func main() {
 		repo    = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Required().String()
 		source  = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
 		output  = kingpin.Flag("output", "output file, default stdout").String()
+		force   = kingpin.Flag("force", "force writing of output").Bool()
 		exe     = kingpin.Flag("exe", "name of binary, used only in raw").String()
 		nametpl = kingpin.Flag("nametpl", "name template, used only in raw").String()
 		file    = kingpin.Arg("file", "??").String()
@@ -216,7 +217,34 @@ func main() {
 		return
 	}
 
+	// overwrite any existing file
+	if *force {
+		if err = ioutil.WriteFile(*output, []byte(out), 0666); err != nil {
+			log.Fatalf("unable to write to %s: %s", *output)
+		}
+		return
+	}
+
+	// Conditional Write -- only write file if different than current
+	//
+	// read in current file
+	// if err
+	//    ignore
+	// else if not a shell file
+	//    error
+	// compare current file with new output
+	//   if same, then exit
+	//   if different, then overwrite
+	checkOrig := true
+	orig, err := ioutil.ReadFile(*output)
+	if err != nil {
+		checkOrig = false
+	}
+	// todo -- is shell file?
+	if checkOrig && shellEqual(orig, []byte(out)) {
+		return
+	}
 	if err := ioutil.WriteFile(*output, []byte(out), 0666); err != nil {
-		log.Fatalf("unable to write to %s: %s", *output)
+		log.Fatalf("unable to write to %s: %s", *output, err)
 	}
 }
