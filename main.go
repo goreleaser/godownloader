@@ -19,7 +19,7 @@ import (
 )
 
 // given a template, and a config, generate shell script
-func makeShell(tplsrc string, cfg *config.Project) (string, error) {
+func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 
 	// if we want to add a timestamp in the templates this
 	//  function will generate it
@@ -29,13 +29,13 @@ func makeShell(tplsrc string, cfg *config.Project) (string, error) {
 		},
 	}
 
-	var out bytes.Buffer
+	out := bytes.Buffer{}
 	t, err := template.New("shell").Funcs(funcMap).Parse(tplsrc)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	err = t.Execute(&out, cfg)
-	return out.String(), err
+	return out.Bytes(), err
 }
 
 // converts the given name template to it's equivalent in shell
@@ -187,7 +187,7 @@ func main() {
 
 	kingpin.Parse()
 	var (
-		out string
+		out []byte
 		err error
 	)
 	switch *source {
@@ -219,7 +219,7 @@ func main() {
 
 	// overwrite any existing file
 	if *force {
-		if err = ioutil.WriteFile(*output, []byte(out), 0666); err != nil {
+		if err = ioutil.WriteFile(*output, out, 0666); err != nil {
 			log.Fatalf("unable to write to %s: %s", *output)
 		}
 		return
@@ -241,10 +241,10 @@ func main() {
 		checkOrig = false
 	}
 	// todo -- is shell file?
-	if checkOrig && shellEqual(orig, []byte(out)) {
+	if checkOrig && shellEqual(orig, out) {
 		return
 	}
-	if err := ioutil.WriteFile(*output, []byte(out), 0666); err != nil {
+	if err := ioutil.WriteFile(*output, out, 0666); err != nil {
 		log.Fatalf("unable to write to %s: %s", *output, err)
 	}
 }

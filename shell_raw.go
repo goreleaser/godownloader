@@ -9,9 +9,9 @@ import (
 
 // processEquinoxio create a fake goreleaser config for equinox.io
 // and use a similar template.
-func processRaw(repo string, exe string, nametpl string) (string, error) {
+func processRaw(repo string, exe string, nametpl string) ([]byte, error) {
 	if repo == "" {
-		return "", fmt.Errorf("must have GitHub owner/repo")
+		return nil, fmt.Errorf("must have GitHub owner/repo")
 	}
 	if exe == "" {
 		exe = path.Base(repo)
@@ -23,7 +23,7 @@ func processRaw(repo string, exe string, nametpl string) (string, error) {
 	// translate golang template to shell string
 	name, err := makeName("NAME=", nametpl)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	project := config.Project{}

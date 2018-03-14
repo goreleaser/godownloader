@@ -9,9 +9,9 @@ import (
 
 // processEquinoxio create a fake goreleaser config for equinox.io
 // and use a similar template.
-func processEquinoxio(repo string) (string, error) {
+func processEquinoxio(repo string) ([]byte, error) {
 	if repo == "" {
-		return "", fmt.Errorf("must have repo")
+		return nil, fmt.Errorf("must have repo")
 	}
 	project := config.Project{}
 	project.Release.GitHub.Owner = path.Dir(repo)

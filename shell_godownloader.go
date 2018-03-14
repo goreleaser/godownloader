@@ -4,22 +4,22 @@ import (
 	"fmt"
 )
 
-func processGodownloader(repo string, filename string) (string, error) {
+func processGodownloader(repo string, filename string) ([]byte, error) {
 	cfg, err := Load(repo, filename)
 	if err != nil {
-		return "", fmt.Errorf("unable to parse: %s", err)
+		return nil, fmt.Errorf("unable to parse: %s", err)
 	}
 	// get archive name template
 	archName, err := makeName("NAME=", cfg.Archive.NameTemplate)
 	cfg.Archive.NameTemplate = archName
 	if err != nil {
-		return "", fmt.Errorf("unable generate archive name: %s", err)
+		return nil, fmt.Errorf("unable generate archive name: %s", err)
 	}
 	// get checksum name template
 	checkName, err := makeName("CHECKSUM=", cfg.Checksum.NameTemplate)
 	cfg.Checksum.NameTemplate = checkName
 	if err != nil {
-		return "", fmt.Errorf("unable generate checksum name: %s", err)
+		return nil, fmt.Errorf("unable generate checksum name: %s", err)
 	}
 
 	return makeShell(shellGodownloader, cfg)
