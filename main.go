@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"path"
@@ -177,6 +178,7 @@ func main() {
 	var (
 		repo    = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Required().String()
 		source  = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
+		output  = kingpin.Flag("output", "output file, default stdout").String()
 		exe     = kingpin.Flag("exe", "name of binary, used only in raw").String()
 		nametpl = kingpin.Flag("nametpl", "name template, used only in raw").String()
 		file    = kingpin.Arg("file", "??").String()
@@ -207,5 +209,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed: %s", err)
 	}
-	fmt.Print(out)
+
+	// stdout case
+	if *output == "" {
+		fmt.Print(out)
+		return
+	}
+
+	if err := ioutil.WriteFile(*output, []byte(out), 0666); err != nil {
+		log.Fatalf("unable to write to %s: %s", *output)
+	}
 }
