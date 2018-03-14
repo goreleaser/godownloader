@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
+	"os"
 	"path"
 	"strings"
 	"text/template"
@@ -15,8 +15,20 @@ import (
 	"github.com/goreleaser/goreleaser/context"
 	"github.com/goreleaser/goreleaser/pipeline/defaults"
 
+	"github.com/apex/log"
+	"github.com/apex/log/handlers/cli"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
+
+var (
+	version = "dev"
+	commit  = "none"
+	datestr = "unknown"
+)
+
+func init() {
+	log.SetHandler(cli.Default)
+}
 
 // given a template, and a config, generate shell script
 func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
@@ -93,7 +105,7 @@ func normalizeRepo(repo string) string {
 func loadURLs(path string) (*config.Project, error) {
 	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml", "goreleaser.yaml", ".goreleaser.yaml"} {
 		url := fmt.Sprintf("%s/%s", path, file)
-		log.Printf("reading %s", url)
+		log.Infof("reading %s", url)
 		project, err := loadURL(url)
 		if err != nil {
 			return nil, err
@@ -111,7 +123,7 @@ func loadURL(file string) (*config.Project, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		log.Printf("reading %s returned %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
+		log.Errorf("reading %s returned %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
 		return nil, nil
 	}
 	p, err := config.LoadReader(resp.Body)
@@ -136,12 +148,12 @@ func Load(repo string, file string) (project *config.Project, err error) {
 	}
 	if file == "" {
 		repo = normalizeRepo(repo)
-		log.Printf("reading repo %q on github", repo)
+		log.Infof("reading repo %q on github", repo)
 		project, err = loadURLs(
 			fmt.Sprintf("https://raw.githubusercontent.com/%s/master", repo),
 		)
 	} else {
-		log.Printf("reading file %q", file)
+		log.Infof("reading file %q", file)
 		project, err = loadFile(file)
 	}
 	if err != nil {
@@ -176,13 +188,14 @@ func Load(repo string, file string) (project *config.Project, err error) {
 
 func main() {
 	var (
-		repo    = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Required().String()
-		source  = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
-		output  = kingpin.Flag("output", "output file, default stdout").String()
-		force   = kingpin.Flag("force", "force writing of output").Bool()
-		exe     = kingpin.Flag("exe", "name of binary, used only in raw").String()
-		nametpl = kingpin.Flag("nametpl", "name template, used only in raw").String()
-		file    = kingpin.Arg("file", "??").String()
+		repo        = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Required().String()
+		source      = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
+		output      = kingpin.Flag("output", "output file, default stdout").String()
+		force       = kingpin.Flag("force", "force writing of output").Short('f').Bool()
+		exe         = kingpin.Flag("exe", "name of binary, used only in raw").String()
+		nametpl     = kingpin.Flag("nametpl", "name template, used only in raw").String()
+		showVersion = kingpin.Flag("version", "show version and exit").Short('v').Bool()
+		file        = kingpin.Arg("file", "??").String()
 	)
 
 	var (
@@ -191,6 +204,11 @@ func main() {
 	)
 
 	kingpin.Parse()
+
+	if *showVersion {
+		fmt.Printf("%v, commit %v, built at %v", version, commit, datestr)
+		os.Exit(0)
+	}
 
 	switch *source {
 	case "godownloader":
@@ -206,23 +224,29 @@ func main() {
 		//   https://github.com/mvdan/sh/releases
 		out, err = processRaw(*repo, *exe, *nametpl)
 	default:
-		log.Fatalf("unknown source %q", *source)
+		log.Errorf("unknown source %q", *source)
+		os.Exit(1)
 	}
 
 	if err != nil {
-		log.Fatalf("failed: %s", err)
+		log.WithError(err).Error("failed")
+		os.Exit(1)
 	}
 
 	// stdout case
 	if *output == "" {
-		fmt.Print(out)
+		if _, err = os.Stdout.Write(out); err != nil {
+			log.WithError(err).Error("unable to write")
+			os.Exit(1)
+		}
 		return
 	}
 
 	// overwrite any existing file
 	if *force {
 		if err = ioutil.WriteFile(*output, out, 0666); err != nil {
-			log.Fatalf("unable to write to %s: %s", *output)
+			log.WithError(err).Errorf("unable to write to %s: %s", *output)
+			os.Exit(1)
 		}
 		return
 	}
@@ -247,6 +271,7 @@ func main() {
 		return
 	}
 	if err := ioutil.WriteFile(*output, out, 0666); err != nil {
-		log.Fatalf("unable to write to %s: %s", *output, err)
+		log.WithError(err).Errorf("unable to write to %s", *output)
+		os.Exit(1)
 	}
 }
