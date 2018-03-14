@@ -56,7 +56,7 @@ func makeName(prefix, target string) (string, error) {
 		return "", fmt.Errorf("name_template %q contains unknown conditional or ARM format.  Please file bug at https://github.com/goreleaser/godownloader", target)
 	}
 
-	var varmap = map[string]string{
+	varmap := map[string]string{
 		"Os":          "${OS}",
 		"Arch":        "${ARCH}",
 		"Version":     "${VERSION}",
@@ -65,7 +65,7 @@ func makeName(prefix, target string) (string, error) {
 		"ProjectName": "${PROJECT_NAME}",
 	}
 
-	var out bytes.Buffer
+	out := bytes.Buffer{}
 	out.WriteString(prefix)
 	t, err := template.New("name").Parse(target)
 	if err != nil {
@@ -92,7 +92,7 @@ func normalizeRepo(repo string) string {
 
 func loadURLs(path string) (*config.Project, error) {
 	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml", "goreleaser.yaml", ".goreleaser.yaml"} {
-		var url = fmt.Sprintf("%s/%s", path, file)
+		url := fmt.Sprintf("%s/%s", path, file)
 		log.Printf("reading %s", url)
 		project, err := loadURL(url)
 		if err != nil {
@@ -157,7 +157,7 @@ func Load(repo string, file string) (project *config.Project, err error) {
 		project.Release.GitHub.Name = path.Base(repo)
 	}
 
-	var ctx = context.New(*project)
+	ctx := context.New(*project)
 	err = defaults.Pipe{}.Run(ctx)
 	project = &ctx.Config
 
@@ -185,11 +185,13 @@ func main() {
 		file    = kingpin.Arg("file", "??").String()
 	)
 
-	kingpin.Parse()
 	var (
 		out []byte
 		err error
 	)
+
+	kingpin.Parse()
+
 	switch *source {
 	case "godownloader":
 		// https://github.com/goreleaser/godownloader
