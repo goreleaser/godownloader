@@ -3,6 +3,21 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/alecthomas/template"
+  packages = [
+    ".",
+    "parse"
+  ]
+  revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/alecthomas/units"
+  packages = ["."]
+  revision = "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
+
+[[projects]]
+  branch = "master"
   name = "github.com/apex/log"
   packages = [
     ".",
@@ -38,7 +53,7 @@
   branch = "master"
   name = "github.com/google/go-github"
   packages = ["github"]
-  revision = "e7bb4b8ce29fb7beaf0765acda602bc516a56dd5"
+  revision = "d2b80df1e3eeccae96eb1cb489e65372cc9550c8"
 
 [[projects]]
   branch = "master"
@@ -81,14 +96,15 @@
     "pipeline/env",
     "pipeline/fpm",
     "pipeline/nfpm",
+    "pipeline/project",
     "pipeline/release",
     "pipeline/scoop",
     "pipeline/sign",
     "pipeline/snapcraft",
     "pipeline/snapshot"
   ]
-  revision = "7746ed179c87673b7c29494236e7a89ee7f8f24e"
-  version = "v0.59.1"
+  revision = "b895caeb3601ea20488c675e7324ac742abbe7fd"
+  version = "v0.62.3"
 
 [[projects]]
   name = "github.com/goreleaser/nfpm"
@@ -97,8 +113,8 @@
     "deb",
     "rpm"
   ]
-  revision = "0c6b7821812f13134ac062a82b45c863ada261a0"
-  version = "v0.5.7"
+  revision = "3db9ba1cd1f794244fbcb6139dda2c72775b8407"
+  version = "v0.5.10"
 
 [[projects]]
   name = "github.com/masterminds/semver"
@@ -146,7 +162,7 @@
     "context",
     "context/ctxhttp"
   ]
-  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
+  revision = "892bf7b0c6e2f93b51166bf3882e50277fa5afc6"
 
 [[projects]]
   branch = "master"
@@ -155,7 +171,7 @@
     ".",
     "internal"
   ]
-  revision = "2f32c3ac0fa4fb807a0fcefb0b6f2468a0d99bd0"
+  revision = "7af32f14d0a25aec7873e0683e8e48dcead159a8"
 
 [[projects]]
   branch = "master"
@@ -167,7 +183,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "dd2ff4accc098aceecb86b36eaa7829b2a17b1c9"
+  revision = "8c0ece68c28377f4c326d85b94f8df0dace46f80"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -184,6 +200,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "gopkg.in/alecthomas/kingpin.v2"
+  packages = ["."]
+  revision = "947dcec5ba9c011838740e680966fd7087a71d0d"
+  version = "v2.2.6"
+
+[[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
@@ -192,6 +214,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "163f1c73e044d96155004b33881f1e1c4c4b80eab60b168e228f7e483ce15319"
+  inputs-digest = "4d35bb4dfec291825eb29302e1170d72b396312cfa73e4ab2bf5729634b0f9fc"
   solver-name = "gps-cdcl"
   solver-version = 1

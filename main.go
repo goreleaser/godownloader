@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,6 +13,8 @@ import (
 	"github.com/goreleaser/goreleaser/config"
 	"github.com/goreleaser/goreleaser/context"
 	"github.com/goreleaser/goreleaser/pipeline/defaults"
+
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 // given a template, and a config, generate shell script
@@ -174,18 +175,14 @@ func Load(repo string, file string) (project *config.Project, err error) {
 
 func main() {
 	var (
-		source  = flag.String("source", "godownloader", "download source")
-		exe     = flag.String("exe", "", "name of binary, used only in raw")
-		nametpl = flag.String("nametpl", "", "name template, used only in raw")
-		repo    = flag.String("repo", "", "owner/name of repository")
+		repo    = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Required().String()
+		source  = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
+		exe     = kingpin.Flag("exe", "name of binary, used only in raw").String()
+		nametpl = kingpin.Flag("nametpl", "name template, used only in raw").String()
+		file    = kingpin.Arg("file", "??").String()
 	)
 
-	flag.Parse()
-	args := flag.Args()
-	file := ""
-	if len(args) > 0 {
-		file = args[0]
-	}
+	kingpin.Parse()
 	var (
 		out string
 		err error
@@ -193,7 +190,7 @@ func main() {
 	switch *source {
 	case "godownloader":
 		// https://github.com/goreleaser/godownloader
-		out, err = processGodownloader(*repo, file)
+		out, err = processGodownloader(*repo, *file)
 	case "equinoxio":
 		// https://equinox.io
 		out, err = processEquinoxio(*repo)
