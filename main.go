@@ -188,14 +188,13 @@ func Load(repo string, file string) (project *config.Project, err error) {
 
 func main() {
 	var (
-		repo        = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Required().String()
-		source      = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
-		output      = kingpin.Flag("output", "output file, default stdout").String()
-		force       = kingpin.Flag("force", "force writing of output").Short('f').Bool()
-		exe         = kingpin.Flag("exe", "name of binary, used only in raw").String()
-		nametpl     = kingpin.Flag("nametpl", "name template, used only in raw").String()
-		showVersion = kingpin.Flag("version", "show version and exit").Short('v').Bool()
-		file        = kingpin.Arg("file", "??").String()
+		repo    = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Short('r').String()
+		output  = kingpin.Flag("output", "output file, default stdout").Short('o').String()
+		force   = kingpin.Flag("force", "force writing of output").Short('f').Bool()
+		source  = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
+		exe     = kingpin.Flag("exe", "name of binary, used only in raw").String()
+		nametpl = kingpin.Flag("nametpl", "name template, used only in raw").String()
+		file    = kingpin.Arg("file", "??").String()
 	)
 
 	var (
@@ -203,12 +202,10 @@ func main() {
 		err error
 	)
 
+	kingpin.CommandLine.Version(fmt.Sprintf("%v, commit %v, built at %v", version, commit, datestr))
+	kingpin.CommandLine.VersionFlag.Short('v')
+	kingpin.CommandLine.HelpFlag.Short('h')
 	kingpin.Parse()
-
-	if *showVersion {
-		fmt.Printf("%v, commit %v, built at %v", version, commit, datestr)
-		os.Exit(0)
-	}
 
 	switch *source {
 	case "godownloader":
