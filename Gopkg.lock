@@ -38,6 +38,15 @@
   revision = "88950e537e7e644cd746a3102037b5d2b723e9f5"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/client9/codegen"
+  packages = [
+    ".",
+    "shell"
+  ]
+  revision = "92480ce66a064b7e4d17a310ff942dafd69980e4"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
@@ -214,6 +223,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4d35bb4dfec291825eb29302e1170d72b396312cfa73e4ab2bf5729634b0f9fc"
+  inputs-digest = "373ff371db4463ba304af2f5cf288ea2b8901dee7ed4e8b42b79b0c4f0aabdfb"
   solver-name = "gps-cdcl"
   solver-version = 1

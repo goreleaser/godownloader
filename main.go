@@ -17,6 +17,7 @@ import (
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
+	"github.com/client9/codegen/shell"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -239,8 +240,9 @@ func main() {
 		return
 	}
 
-	// overwrite any existing file
-	if *force {
+	// only write out if forced to, OR if output is effectively different
+	// than what the file has.
+	if *force || shell.ShouldWriteFile(*output, out) {
 		if err = ioutil.WriteFile(*output, out, 0666); err != nil {
 			log.WithError(err).Errorf("unable to write to %s: %s", *output)
 			os.Exit(1)
@@ -248,27 +250,7 @@ func main() {
 		return
 	}
 
-	// Conditional Write -- only write file if different than current
-	//
-	// read in current file
-	// if err
-	//    ignore
-	// else if not a shell file
-	//    error
-	// compare current file with new output
-	//   if same, then exit
-	//   if different, then overwrite
-	checkOrig := true
-	orig, err := ioutil.ReadFile(*output)
-	if err != nil {
-		checkOrig = false
-	}
-	// todo -- is shell file?
-	if checkOrig && shellEqual(orig, out) {
-		return
-	}
-	if err := ioutil.WriteFile(*output, out, 0666); err != nil {
-		log.WithError(err).Errorf("unable to write to %s", *output)
-		os.Exit(1)
-	}
+	// output is effectively the same as new content
+	// (comments and most whitespace doesn't matter)
+	// nothing to do
 }
