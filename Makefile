@@ -28,7 +28,7 @@ ci: build lint test  ## travis-ci entrypoint
 	git diff .
 	./bin/goreleaser --snapshot
 
-build: install_hooks ## Build a beta version of goreleaser
+build: hooks ## Build a beta version of goreleaser
 	go build
 	./scripts/build_samples.sh
 
@@ -45,8 +45,10 @@ clean: ## clean up everything
 	rm -rf ./bin ./dist
 	git gc --aggressive
 
-install_hooks:  ## install precommit hooks for git
+# https://www.client9.com/automatically-install-git-hooks/
+.git/hooks/pre-commit: scripts/lint.sh
 	cp -f scripts/lint.sh .git/hooks/pre-commit
+hooks:  .git/hooks/pre-commit
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
