@@ -112,18 +112,19 @@
     "pipeline/snapcraft",
     "pipeline/snapshot"
   ]
-  revision = "b895caeb3601ea20488c675e7324ac742abbe7fd"
-  version = "v0.62.3"
+  revision = "d8e8af13b55c05b5d472273ebc442a7f24287dd0"
+  version = "v0.66.1"
 
 [[projects]]
   name = "github.com/goreleaser/nfpm"
   packages = [
     ".",
     "deb",
+    "glob",
     "rpm"
   ]
-  revision = "3db9ba1cd1f794244fbcb6139dda2c72775b8407"
-  version = "v0.5.10"
+  revision = "672aa2bd659a22558aa5d727bd6e76ec5d3aafb2"
+  version = "v0.6.3"
 
 [[projects]]
   name = "github.com/masterminds/semver"
@@ -217,8 +218,8 @@
 [[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
-  version = "v2.1.1"
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
