@@ -1,4 +1,4 @@
-// Code generated 2018-03-09T06:46:19+0000 DO NOT EDIT.
+// Code generated 2018-04-10T15:35:32+0000 DO NOT EDIT.
 package main
 
 const shellfn = `
@@ -74,9 +74,9 @@ uname_arch() {
     i686) arch="386" ;;
     i386) arch="386" ;;
     aarch64) arch="arm64" ;;
-    armv5*) arch="arm5" ;;
-    armv6*) arch="arm6" ;;
-    armv7*) arch="arm7" ;;
+    armv5*) arch="armv5" ;;
+    armv6*) arch="armv6" ;;
+    armv7*) arch="armv7" ;;
   esac
   echo ${arch}
 }
