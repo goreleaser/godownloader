@@ -62,7 +62,7 @@
   branch = "master"
   name = "github.com/google/go-github"
   packages = ["github"]
-  revision = "d2b80df1e3eeccae96eb1cb489e65372cc9550c8"
+  revision = "88eb4e9dc91cb2db1bbc56c936f1ee39bbe72ba5"
 
 [[projects]]
   branch = "master"
@@ -129,8 +129,8 @@
 [[projects]]
   name = "github.com/masterminds/semver"
   packages = ["."]
-  revision = "15d8430ab86497c5c0da827b748823945e1cf1e1"
-  version = "v1.4.0"
+  revision = "8d82589cda2d7b5b9167396841975c4535c9bec6"
+  version = "v1.4.1"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -172,7 +172,7 @@
     "context",
     "context/ctxhttp"
   ]
-  revision = "892bf7b0c6e2f93b51166bf3882e50277fa5afc6"
+  revision = "61147c48b25b599e5b561d2e9c4f3e1ef489ca41"
 
 [[projects]]
   branch = "master"
@@ -181,19 +181,19 @@
     ".",
     "internal"
   ]
-  revision = "7af32f14d0a25aec7873e0683e8e48dcead159a8"
+  revision = "921ae394b9430ed4fb549668d7b087601bd60a81"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sync"
   packages = ["errgroup"]
-  revision = "fd80eb99c8f653c847d294a001bdf2a3a6f768f5"
+  revision = "1d60e4601c6fd243af51cc01ddf169918a5407ca"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "8c0ece68c28377f4c326d85b94f8df0dace46f80"
+  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -224,6 +224,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "373ff371db4463ba304af2f5cf288ea2b8901dee7ed4e8b42b79b0c4f0aabdfb"
+  inputs-digest = "a61272aa455a358b871512f7e2f2df705e688fa99532761b3cac0dc2dd159dc4"
   solver-name = "gps-cdcl"
   solver-version = 1

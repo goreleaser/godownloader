@@ -42,7 +42,7 @@ generate: ## regenerate shell code from client9/shlib
 clean: ## clean up everything
 	go clean ./...
 	rm -f godownloader
-	rm -rf ./bin ./dist
+	rm -rf ./bin ./dist ./vendor
 	git gc --aggressive
 
 # https://www.client9.com/automatically-install-git-hooks/
