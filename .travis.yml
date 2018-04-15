@@ -9,8 +9,6 @@ addons:
   apt:
     sources:
     - debian-sid
-    packages:
-    - shellcheck
 
 script:
   - make ci
