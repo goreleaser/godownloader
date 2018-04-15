@@ -195,12 +195,8 @@ func main() {
 		source  = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
 		exe     = kingpin.Flag("exe", "name of binary, used only in raw").String()
 		nametpl = kingpin.Flag("nametpl", "name template, used only in raw").String()
+		tree    = kingpin.Flag("tree", "use tree to generate multiple outputs").String()
 		file    = kingpin.Arg("file", "??").String()
-	)
-
-	var (
-		out []byte
-		err error
 	)
 
 	kingpin.CommandLine.Version(fmt.Sprintf("%v, commit %v, built at %v", version, commit, datestr))
@@ -208,23 +204,17 @@ func main() {
 	kingpin.CommandLine.HelpFlag.Short('h')
 	kingpin.Parse()
 
-	switch *source {
-	case "godownloader":
-		// https://github.com/goreleaser/godownloader
-		out, err = processGodownloader(*repo, *file)
-	case "equinoxio":
-		// https://equinox.io
-		out, err = processEquinoxio(*repo)
-	case "raw":
-		// raw mode is when people upload direct binaries
-		// to GitHub releases that are not  not tar'ed or zip'ed.
-		// For example:
-		//   https://github.com/mvdan/sh/releases
-		out, err = processRaw(*repo, *exe, *nametpl)
-	default:
-		log.Errorf("unknown source %q", *source)
-		os.Exit(1)
+	if *tree != "" {
+		err := treewalk(*tree, *file, *force)
+		if err != nil {
+			log.WithError(err).Error("treewalker failed")
+			os.Exit(1)
+		}
+		return
 	}
+
+	// gross.. need config
+	out, err := processSource(*source, *repo, *file, *exe, *nametpl)
 
 	if err != nil {
 		log.WithError(err).Error("failed")
