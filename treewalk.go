@@ -2,22 +2,49 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/apex/log"
 	"github.com/client9/codegen/shell"
+	"gopkg.in/yaml.v2"
 )
 
-type sourceConfig struct {
-	source  string // type of downloader to make
-	org     string // github.com for now
-	owner   string // ^ github username
-	repo    string // repo name
-	exe     string // stuff for "raw"
-	nametpl string // stuff for "raw"
+type treeConfig struct {
+	// these can be set by config
+	Source  string `yaml:"source,omitempty"`  // type of downloader to make
+	Exe     string `yaml:"exe,omitempty"`     // stuff for "raw"
+	Nametpl string `yaml:"nametpl,omitempty"` // stuff for "raw"
+
+	// these can not be set by config file
+	// and are set by the url/path
+	org   string // github.com for now
+	owner string // ^ github username
+	name  string // repo name
+}
+
+// Load config file
+func LoadTreeConfig(file string) (config treeConfig, err error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return
+	}
+	log.WithField("file", file).Debug("loading config file")
+	return LoadTreeConfigReader(f)
+}
+
+// LoadReader config via io.Reader
+func LoadTreeConfigReader(fd io.Reader) (config treeConfig, err error) {
+	data, err := ioutil.ReadAll(fd)
+	if err != nil {
+		return config, err
+	}
+	err = yaml.UnmarshalStrict(data, &config)
+	log.WithField("config", config).Debug("loaded config file")
+	return config, err
 }
 
 // for many files, this might be slow since golang reads and sorts
@@ -36,7 +63,7 @@ func treewalk(root string, treeout string, forceWrite bool) error {
 		}
 		suffix := filepath.Ext(path)
 		// ignore non-yaml stuff
-		if suffix != ".yaml" {
+		if suffix != ".yaml" && suffix != ".yml" {
 			return nil
 		}
 
@@ -69,21 +96,22 @@ func treewalk(root string, treeout string, forceWrite bool) error {
 		//  owner == you
 		//  repo  == your project
 
-		log.Printf("PATH: %s %s %s", org, owner, repo)
-
-		c := sourceConfig{}
-
-		// REAL PATH AS YAML
+		c, err := LoadTreeConfig(path)
+		if err != nil {
+			return err
+		}
 
 		// hacking for now and just hardwiring
-		c.source = "godownloader"
+		if c.Source == "" {
+			c.Source = "godownloader"
+		}
 
 		// overwrite what exists for security
 		c.org = org
 		c.owner = owner
-		c.repo = repo
+		c.name = repo
 
-		shellcode, err := processSource(c.source, owner+"/"+repo, "", c.exe, c.nametpl)
+		shellcode, err := processSource(c.Source, owner+"/"+repo, "", c.Exe, c.Nametpl)
 		if err != nil {
 			return err
 		}
