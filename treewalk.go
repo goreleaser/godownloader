@@ -117,12 +117,12 @@ func treewalk(root string, treeout string, forceWrite bool) error {
 		}
 
 		// now write back
-		outdir := filepath.Join(treeout, org, repo)
+		outdir := filepath.Join(treeout, org, owner)
 		err = os.MkdirAll(outdir, 0755)
 		if err != nil {
 			return err
 		}
-		shellpath := filepath.Join(outdir, owner+".sh")
+		shellpath := filepath.Join(outdir, repo+".sh")
 
 		// only write out if forced to, OR if output is effectively different
 		// than what the file has.
