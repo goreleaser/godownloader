@@ -2,8 +2,8 @@
 
 # clean up
 rm -rf ./www/public
-rm -rf www/static/github.com
-rm ./www/data/projects
+rm -rf ./www/static/github.com
+rm -rf ./www/data/projects
 
 # generate the sh files
 ./godownloader --tree=tree www/static/
