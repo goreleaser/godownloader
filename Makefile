@@ -1,15 +1,26 @@
-SOURCE_FILES?=$$(go list ./... | grep -v /vendor/)
+SOURCE_FILES?=./...
 TEST_PATTERN?=.
 TEST_OPTIONS?=
+OS=$(shell uname -s)
+
+
+setup: ## Install all the build and lint dependencies
+	go get -u golang.org/x/tools/cmd/cover
+	go get -u gopkg.in/alecthomas/gometalinter.v2
+ifeq ($(OS), Darwin)
+	brew install dep
+else
+	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+endif
+	dep ensure
+	gometalinter.v2 --install
+.PHONY: setup
 
 install: build ## build and install
 	go install .
 
-setup: ## Install all the build and lint dependencies
-	./scripts/setup.sh
-
 test: ## Run all the tests
-	gotestcover $(TEST_OPTIONS) -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=30s
+	go test $(TEST_OPTIONS) -failfast -race -coverpkg=./... -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=2m
 
 cover: test ## Run all the tests and opens the coverage report
 	go tool cover -html=coverage.txt
@@ -47,6 +58,8 @@ clean: ## clean up everything
 
 # https://www.client9.com/automatically-install-git-hooks/
 .git/hooks/pre-commit: scripts/lint.sh
+	# TODO: this could be echo 'make lint' >> .git/hooks/pre-commit and we
+	# could remove the lint.sh script
 	cp -f scripts/lint.sh .git/hooks/pre-commit
 hooks:  .git/hooks/pre-commit
 

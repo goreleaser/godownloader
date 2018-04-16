@@ -234,7 +234,7 @@ func main() {
 	// than what the file has.
 	if *force || shell.ShouldWriteFile(*output, out) {
 		if err = ioutil.WriteFile(*output, out, 0666); err != nil {
-			log.WithError(err).Errorf("unable to write to %s: %s", *output)
+			log.WithError(err).Errorf("unable to write to %s", *output)
 			os.Exit(1)
 		}
 		return
