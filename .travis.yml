@@ -15,3 +15,14 @@ script:
 
 notifications:
   email: false
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: treeout
+  target_branch: master
+  repo: goreleaser/goinstall
+  verbose: true
+  on:
+    branch: master
