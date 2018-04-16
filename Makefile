@@ -8,7 +8,7 @@ export PATH := ./bin:$(PATH)
 setup: ## Install all the build and lint dependencies
 	mkdir -p bin
 	go get -u golang.org/x/tools/cmd/cover
-	go get -u gopkg.in/alecthomas/gometalinter.v2
+	curl -sfL https://install.goreleaser.com/github.com/gohugoio/hugo.sh | bash
 	curl -sfL https://install.goreleaser.com/github.com/alecthomas/gometalinter.sh | bash
 ifeq ($(OS), Darwin)
 	brew install dep
