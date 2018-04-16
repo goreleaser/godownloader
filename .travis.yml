@@ -24,5 +24,6 @@ deploy:
   target_branch: master
   repo: goreleaser/goinstall
   verbose: true
+  fqdn: install.goreleaser.com
   on:
     branch: master
