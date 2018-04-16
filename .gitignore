@@ -5,3 +5,4 @@ shlib/
 tmp/
 dist/
 treeout
+coverage.txt
