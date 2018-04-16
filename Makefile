@@ -16,7 +16,6 @@ else
 	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 endif
 	dep ensure
-	gometalinter --install
 .PHONY: setup
 
 install: build ## build and install
