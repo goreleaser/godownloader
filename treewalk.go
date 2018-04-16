@@ -48,10 +48,15 @@ func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 	return config, err
 }
 
-// for many files, this might be slow since golang reads and sorts
-// everything.  If it's a problem, investigate:
+// treewalk walks the directory looking for .yaml files and generates
+// downloader scripts from them.  These are published to
+// https://install.goreleaser.com
+//
+// see the following for performance improvement ideas:
+// https://github.com/goreleaser/godownloader/issues/64
 //
 func treewalk(root string, treeout string, forceWrite bool) error { // nolint: gocyclo
+
 	rooterr := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		// weird case where filewalk failed
 		if err != nil {
