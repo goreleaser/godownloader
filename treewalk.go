@@ -13,7 +13,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type treeConfig struct {
+// TreeConfig is the project configuration
+type TreeConfig struct {
 	// these can be set by config
 	Source  string `yaml:"source,omitempty"`  // type of downloader to make
 	Exe     string `yaml:"exe,omitempty"`     // stuff for "raw"
@@ -26,8 +27,8 @@ type treeConfig struct {
 	name  string // repo name
 }
 
-// Load config file
-func LoadTreeConfig(file string) (config treeConfig, err error) {
+// LoadTreeConfig Loads config file
+func LoadTreeConfig(file string) (config TreeConfig, err error) {
 	f, err := os.Open(file)
 	if err != nil {
 		return
@@ -36,8 +37,8 @@ func LoadTreeConfig(file string) (config treeConfig, err error) {
 	return LoadTreeConfigReader(f)
 }
 
-// LoadReader config via io.Reader
-func LoadTreeConfigReader(fd io.Reader) (config treeConfig, err error) {
+// LoadTreeConfigReader config via io.Reader
+func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 	data, err := ioutil.ReadAll(fd)
 	if err != nil {
 		return config, err
@@ -50,7 +51,7 @@ func LoadTreeConfigReader(fd io.Reader) (config treeConfig, err error) {
 // for many files, this might be slow since golang reads and sorts
 // everything.  If it's a problem, investigate:
 //
-func treewalk(root string, treeout string, forceWrite bool) error {
+func treewalk(root string, treeout string, forceWrite bool) error { // nolint: gocyclo
 	rooterr := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		// weird case where filewalk failed
 		if err != nil {
@@ -118,7 +119,7 @@ func treewalk(root string, treeout string, forceWrite bool) error {
 
 		// now write back
 		outdir := filepath.Join(treeout, org, owner)
-		err = os.MkdirAll(outdir, 0755)
+		err = os.MkdirAll(outdir, 0700)
 		if err != nil {
 			return err
 		}
@@ -127,7 +128,7 @@ func treewalk(root string, treeout string, forceWrite bool) error {
 		// only write out if forced to, OR if output is effectively different
 		// than what the file has.
 		if forceWrite || shell.ShouldWriteFile(shellpath, shellcode) {
-			if err = ioutil.WriteFile(shellpath, shellcode, 0755); err != nil {
+			if err = ioutil.WriteFile(shellpath, shellcode, 0644); err != nil {
 				return err
 			}
 		}
