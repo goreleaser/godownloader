@@ -3,17 +3,20 @@ TEST_PATTERN?=.
 TEST_OPTIONS?=
 OS=$(shell uname -s)
 
+export PATH := ./bin:$(PATH)
 
 setup: ## Install all the build and lint dependencies
+	mkdir -p bin
 	go get -u golang.org/x/tools/cmd/cover
 	go get -u gopkg.in/alecthomas/gometalinter.v2
+	curl -sfL https://install.goreleaser.com/github.com/alecthomas/gometalinter.sh | bash
 ifeq ($(OS), Darwin)
 	brew install dep
 else
 	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 endif
 	dep ensure
-	gometalinter.v2 --install
+	gometalinter --install
 .PHONY: setup
 
 install: build ## build and install
@@ -29,10 +32,9 @@ fmt: ## gofmt and goimports all go files
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
 
 lint: ## Run all the linters
-	./scripts/lint.sh
+	gometalinter.v2 --vendor ./...
 
-precommit:  ## Run precommit hook
-	./scripts/lint.sh
+precommit: lint  ## Run precommit hook
 
 ci: build lint test  ## travis-ci entrypoint
 	./samples/godownloader-goreleaser.sh
@@ -41,7 +43,7 @@ ci: build lint test  ## travis-ci entrypoint
 
 build: hooks ## Build a beta version of goreleaser
 	go build
-	./scripts/build_samples.sh
+	./scripts/build-site.sh
 
 .DEFAULT_GOAL := build
 
@@ -56,12 +58,9 @@ clean: ## clean up everything
 	rm -rf ./bin ./dist ./vendor
 	git gc --aggressive
 
-# https://www.client9.com/automatically-install-git-hooks/
-.git/hooks/pre-commit: scripts/lint.sh
-	# TODO: this could be echo 'make lint' >> .git/hooks/pre-commit and we
-	# could remove the lint.sh script
-	cp -f scripts/lint.sh .git/hooks/pre-commit
-hooks:  .git/hooks/pre-commit
+hooks:
+	echo "make lint" > .git/hooks/pre-commit
+	chmod +x .git/hooks/pre-commit
 
 # Absolutely awesome: http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
