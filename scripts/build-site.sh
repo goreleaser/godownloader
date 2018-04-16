@@ -3,7 +3,7 @@
 # clean up
 rm -rf ./www/public
 rm -rf www/static/github.com
-rm ./www/data/projects/*.yaml
+rm ./www/data/projects
 
 # generate the sh files
 ./godownloader --tree=tree www/static/
