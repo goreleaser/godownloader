@@ -4,12 +4,16 @@
 rm -rf ./www/public
 rm -rf ./www/static/github.com
 rm -rf ./www/data/projects
+mkdir -p ./www/data/projects
 
 # generate the sh files
 ./godownloader --tree=tree www/static/
 
 # generate the hugo data files
-gfind tree -name '*.yaml' -printf '%P\n' | while read -r f; do
+if which gfind >/dev/null 2>&1; then
+	alias find=gfind
+fi
+find tree -name '*.yaml' -printf '%P\n' | while read -r f; do
 	ff="$(echo "$f" | sed -e 's/\.yaml//' -e 's/\./-/g' -e 's/\//-/g')"
 	echo "path: $f" | sed 's/\.yaml//' > ./www/data/projects/"$ff.yaml"
 done
