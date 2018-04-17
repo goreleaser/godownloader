@@ -1,9 +1,11 @@
 <div class="Sidebar">
 	<div class="Menu">
-    {{ range .Pages }}
+    {{ range .Site.Pages }}
+      {{ if .Params.menu }}
 			<div class="item">
 				<a href="{{ .Permalink }}">{{ .Title }}</a>
       </div>
+      {{ end }}
 		{{ end }}
 	</div>
 </div>

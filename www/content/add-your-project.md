@@ -1,6 +1,7 @@
 ---
 title: Add your project
 weight: 10
+menu: true
 ---
 
 This will guide you on how to add your own project to this site.
