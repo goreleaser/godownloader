@@ -20,7 +20,7 @@ deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: treeout
+  local_dir: www/public
   target_branch: master
   repo: goreleaser/goinstall
   verbose: true

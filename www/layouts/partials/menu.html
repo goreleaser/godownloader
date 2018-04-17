@@ -1,0 +1,9 @@
+<div class="Sidebar">
+	<div class="Menu">
+    {{ range .Pages }}
+			<div class="item">
+				<a href="{{ .Permalink }}">{{ .Title }}</a>
+      </div>
+		{{ end }}
+	</div>
+</div>

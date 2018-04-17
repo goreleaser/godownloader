@@ -1,0 +1,15 @@
+{{ partial "head" . }}
+	<body>
+		<div class="Wrapper">
+			<div class="Container">
+				{{ partial "header" . }}
+				<div class="Content-wrapper">
+					{{ partial "menu" . }}
+					<div class="Content">
+						{{ block "main" . }}{{ end }}
+						{{ partial "footer" . }}
+					</div>
+				</div>
+		</div>
+	</body>
+</html>

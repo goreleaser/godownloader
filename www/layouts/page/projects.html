@@ -1,0 +1,9 @@
+{{ define "main" }}
+	{{ .Content }}
+	{{ range sort .Site.Data.projects "path" "asc" }}
+		<div class="Page">
+				<h1><a href="https://{{.path}}">{{ .path }}</a></h1>
+				<pre><code>curl -sfL https://install.goreleaser.com/{{ .path }}.sh | bash</code></pre>
+		</div>
+	{{ end }}
+{{ end }}

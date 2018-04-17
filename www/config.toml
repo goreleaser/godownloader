@@ -1,0 +1,5 @@
+baseURL = "http://install.goreleaser.com/"
+languageCode = "en-us"
+title = "Install | GoReleaser"
+pygmentsCodeFences = true
+pygmentsStyle = "dracula"
