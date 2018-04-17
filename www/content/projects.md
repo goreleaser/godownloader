@@ -2,7 +2,7 @@
 title: Projects
 weight: 100
 layout: projects
-hide: true
+hideFromIndex: true
 menu: true
 ---
 
