@@ -3,7 +3,17 @@
 	{{ range sort .Site.Data.projects "path" "asc" }}
 		<div class="Page">
 				<h1><a href="https://{{.path}}">{{ .path }}</a></h1>
-				<pre><code>curl -sfL https://install.goreleaser.com/{{ .path }}.sh | bash</code></pre>
+				{{ $cmd := delimit (slice "curl -sfL https://install.goreleaser.com/" .path ".sh | bash") "" }}
+				{{ highlight $cmd "bash" "" }}
+				<a href="javascript:void(0);" data-clipboard-text="{{ $cmd }}" class="btn-clip">Copy to clipboard</a>
 		</div>
 	{{ end }}
+
+	<script src="https://unpkg.com/clipboard@2.0.0/dist/clipboard.min.js"></script>
+	<script>
+		new ClipboardJS('.btn-clip');
+	</script>
+	<style>
+		a.btn-clip { float: right; }
+	</style>
 {{ end }}
