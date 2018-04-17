@@ -117,7 +117,7 @@ The [golang/dep](https://github.com/golang/dep) package manager has a nice downl
 $(echo "${LATEST_RELEASE}" | tr -s '\n' ' ' | sed 's/.*"tag_name":"//' | sed 's/".*//' )
 ```
 
-This is probably based on [masterminds/glide](https://github.com/Masterminds/glide) and it's installer at https://glide.sh/get
+This is probably based on [masterminds/glide](https://github.com/Masterminds/glide) and its installer at https://glide.sh/get
 
 ### kubernetes/helm
 
