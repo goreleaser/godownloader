@@ -8,13 +8,17 @@ export PATH := ./bin:$(PATH)
 setup: ## Install all the build and lint dependencies
 	mkdir -p bin
 	go get -u golang.org/x/tools/cmd/cover
+	curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | bash
 	curl -sfL https://install.goreleaser.com/github.com/gohugoio/hugo.sh | bash
 	curl -sfL https://install.goreleaser.com/github.com/alecthomas/gometalinter.sh | bash
 ifeq ($(OS), Darwin)
 	brew install dep
+	curl -sfL -o ./bin/shellcheck https://github.com/caarlos0/shellcheck-docker/releases/download/v0.4.6/shellcheck_darwin
 else
+	curl -sfL -o ./bin/shellcheck https://github.com/caarlos0/shellcheck-docker/releases/download/v0.4.6/shellcheck
 	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 endif
+	chmod +x ./bin/shellcheck
 	dep ensure
 .PHONY: setup
 
@@ -36,7 +40,6 @@ lint: ## Run all the linters
 precommit: lint  ## Run precommit hook
 
 ci: build lint test  ## travis-ci entrypoint
-	./samples/godownloader-goreleaser.sh
 	git diff .
 	./bin/goreleaser --snapshot
 
@@ -49,7 +52,7 @@ build: hooks ## Build a beta version of goreleaser
 generate: ## regenerate shell code from client9/shlib
 	./makeshellfn.sh > shellfn.go
 
-.PHONY: ci help generate samples clean
+.PHONY: ci help generate clean
 
 clean: ## clean up everything
 	go clean ./...
