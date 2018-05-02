@@ -63,6 +63,10 @@ func makeName(prefix, target string) (string, error) {
 	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 	target = strings.Replace(target, armversion, "{{ .Arch }}", -1)
 
+	// hack for https://github.com/goreleaser/godownloader/issues/70
+	armversion = "{{ .Arch }}{{ if .Arm }}{{ .Arm }}{{ end }}"
+	target = strings.Replace(target, armversion, "{{ .Arch }}", -1)
+
 	// otherwise if it contains a conditional, we can't (easily)
 	// translate that to bash.  Ask for bug report.
 	if strings.Contains(target, "{{ if") || strings.Contains(target, "{{if") || strings.Contains(target, "{{ .Arm") || strings.Contains(target, "{{.Arm") {
