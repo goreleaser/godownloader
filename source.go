@@ -5,11 +5,11 @@ import (
 )
 
 // ugh, needs to be turned into a config
-func processSource(source, repo, file, exe, nametpl string) (out []byte, err error) {
+func processSource(source, repo, path, file, exe, nametpl string) (out []byte, err error) {
 	switch source {
 	case "godownloader":
 		// https://github.com/goreleaser/godownloader
-		out, err = processGodownloader(repo, file)
+		out, err = processGodownloader(repo, path, file)
 	case "equinoxio":
 		// https://equinox.io
 		out, err = processEquinoxio(repo)
