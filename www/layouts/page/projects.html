@@ -3,7 +3,7 @@
 	{{ range sort .Site.Data.projects "path" "asc" }}
 		<div class="Page">
 				<h1><a href="https://{{.path}}">{{ .path }}</a></h1>
-				{{ $cmd := delimit (slice "curl -sfL https://install.goreleaser.com/" .path ".sh | bash") "" }}
+				{{ $cmd := delimit (slice "curl -sfL https://install.goreleaser.com/" .path ".sh | sh") "" }}
 				{{ highlight $cmd "bash" "" }}
 				<a href="javascript:void(0);" data-clipboard-text="{{ $cmd }}" class="btn-clip">Copy to clipboard</a>
 		</div>
