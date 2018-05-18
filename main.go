@@ -107,8 +107,11 @@ func normalizeRepo(repo string) string {
 	return repo
 }
 
-func loadURLs(path string) (*config.Project, error) {
-	for _, file := range []string{"goreleaser.yml", ".goreleaser.yml", "goreleaser.yaml", ".goreleaser.yaml"} {
+func loadURLs(path, configPath string) (*config.Project, error) {
+	for _, file := range []string{configPath, "goreleaser.yml", ".goreleaser.yml", "goreleaser.yaml", ".goreleaser.yaml"} {
+		if file == "" {
+			continue
+		}
 		url := fmt.Sprintf("%s/%s", path, file)
 		log.Infof("reading %s", url)
 		project, err := loadURL(url)
@@ -147,7 +150,7 @@ func loadFile(file string) (*config.Project, error) {
 }
 
 // Load project configuration from a given repo name or filepath/url.
-func Load(repo string, file string) (project *config.Project, err error) {
+func Load(repo, configPath, file string) (project *config.Project, err error) {
 	if repo == "" && file == "" {
 		return nil, fmt.Errorf("repo or file not specified")
 	}
@@ -156,6 +159,7 @@ func Load(repo string, file string) (project *config.Project, err error) {
 		log.Infof("reading repo %q on github", repo)
 		project, err = loadURLs(
 			fmt.Sprintf("https://raw.githubusercontent.com/%s/master", repo),
+			configPath,
 		)
 	} else {
 		log.Infof("reading file %q", file)
@@ -218,7 +222,7 @@ func main() {
 	}
 
 	// gross.. need config
-	out, err := processSource(*source, *repo, *file, *exe, *nametpl)
+	out, err := processSource(*source, *repo, "", *file, *exe, *nametpl)
 
 	if err != nil {
 		log.WithError(err).Error("failed")

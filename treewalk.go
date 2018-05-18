@@ -19,6 +19,7 @@ type TreeConfig struct {
 	Source  string `yaml:"source,omitempty"`  // type of downloader to make
 	Exe     string `yaml:"exe,omitempty"`     // stuff for "raw"
 	Nametpl string `yaml:"nametpl,omitempty"` // stuff for "raw"
+	Config  string `yaml:"config,omitempty"`  // sets a custom location for goreleaser.yml config file
 
 	// these can not be set by config file
 	// and are set by the url/path
@@ -117,7 +118,7 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		c.owner = owner
 		c.name = repo
 
-		shellcode, err := processSource(c.Source, owner+"/"+repo, "", c.Exe, c.Nametpl)
+		shellcode, err := processSource(c.Source, owner+"/"+repo, c.Config, "", c.Exe, c.Nametpl)
 		if err != nil {
 			return err
 		}
