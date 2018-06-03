@@ -7,9 +7,9 @@ export PATH := ./bin:$(PATH)
 
 setup: ## Install all the build and lint dependencies
 	mkdir -p bin
+	curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+	curl -sfL https://install.goreleaser.com/github.com/gohugoio/hugo.sh | sh
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
-	curl -sfL https://install.goreleaser.com/github.com/gohugoio/hugo.sh | bash
-	curl -sfL https://install.goreleaser.com/github.com/alecthomas/gometalinter.sh | bash
 ifeq ($(OS), Darwin)
 	brew install dep
 	curl -sfL -o ./bin/shellcheck https://github.com/caarlos0/shellcheck-docker/releases/download/v0.4.6/shellcheck_darwin
