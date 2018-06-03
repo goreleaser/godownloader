@@ -7,8 +7,7 @@ export PATH := ./bin:$(PATH)
 
 setup: ## Install all the build and lint dependencies
 	mkdir -p bin
-	go get -u golang.org/x/tools/cmd/cover
-	curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | bash
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
 	curl -sfL https://install.goreleaser.com/github.com/gohugoio/hugo.sh | bash
 	curl -sfL https://install.goreleaser.com/github.com/alecthomas/gometalinter.sh | bash
 ifeq ($(OS), Darwin)
@@ -19,7 +18,7 @@ else
 	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 endif
 	chmod +x ./bin/shellcheck
-	dep ensure
+	dep ensure -vendor-only
 .PHONY: setup
 
 install: build ## build and install
@@ -35,7 +34,7 @@ fmt: ## gofmt and goimports all go files
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
 
 lint: ## Run all the linters
-	gometalinter --vendor ./...
+	golangci-lint run --enable-all ./...
 
 precommit: lint  ## Run precommit hook
 
