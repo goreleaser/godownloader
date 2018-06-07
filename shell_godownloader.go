@@ -71,8 +71,8 @@ parse_args() {
 execute() {
   tmpdir=$(mktmpdir)
   log_debug "downloading files into ${tmpdir}"
-  http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}"
-  http_download "${tmpdir}/${CHECKSUM}" "${CHECKSUM_URL}"
+  http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}" "Accept:application/octet-stream"
+  http_download "${tmpdir}/${CHECKSUM}" "${CHECKSUM_URL}" "Accept:application/octet-stream"
   hash_sha256_verify "${tmpdir}/${TARBALL}" "${tmpdir}/${CHECKSUM}"
   {{- if .Archive.WrapInDirectory }}
   srcdir="${tmpdir}/${NAME}"
@@ -185,7 +185,6 @@ log_prefix() {
 	echo "$PREFIX"
 }
 PLATFORM="${OS}/${ARCH}"
-GITHUB_DOWNLOAD=https://github.com/${OWNER}/${REPO}/releases/download
 
 uname_os_check "$OS"
 uname_arch_check "$ARCH"
@@ -205,10 +204,11 @@ adjust_arch
 log_info "found version: ${VERSION} for ${TAG}/${OS}/${ARCH}"
 
 {{ .Archive.NameTemplate }}
+GITHUB_DOWNLOAD=https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${TAG}
 TARBALL=${NAME}.${FORMAT}
-TARBALL_URL=${GITHUB_DOWNLOAD}/${TAG}/${TARBALL}
+TARBALL_URL=$(curl -n -sL ${GITHUB_DOWNLOAD} | grep -B 3 "\"name\": \"${TARBALL}\"" | grep '"url"' | sed 's/.*"url": "\(.*\)",/\1/')
 {{ .Checksum.NameTemplate }}
-CHECKSUM_URL=${GITHUB_DOWNLOAD}/${TAG}/${CHECKSUM}
+CHECKSUM_URL=$(curl -n -sL ${GITHUB_DOWNLOAD} | grep -B 3 "\"name\": \"${CHECKSUM}\"" | grep '"url"' | sed 's/.*"url": "\(.*\)",/\1/')
 
 
 execute

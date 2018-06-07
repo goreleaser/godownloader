@@ -27,7 +27,7 @@
 
 [[constraint]]
   name = "github.com/goreleaser/goreleaser"
-  version = ">=0.66.0"
+  version = ">=0.77.1"
 [prune]
   go-tests = true
   unused-packages = true

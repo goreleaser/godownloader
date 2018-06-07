@@ -26,6 +26,49 @@
   revision = "ff0f66940b829dc66c81dad34746d4349b83eb9e"
 
 [[projects]]
+  name = "github.com/aws/aws-sdk-go"
+  packages = [
+    "aws",
+    "aws/awserr",
+    "aws/awsutil",
+    "aws/client",
+    "aws/client/metadata",
+    "aws/corehandlers",
+    "aws/credentials",
+    "aws/credentials/ec2rolecreds",
+    "aws/credentials/endpointcreds",
+    "aws/credentials/stscreds",
+    "aws/csm",
+    "aws/defaults",
+    "aws/ec2metadata",
+    "aws/endpoints",
+    "aws/request",
+    "aws/session",
+    "aws/signer/v4",
+    "internal/sdkio",
+    "internal/sdkrand",
+    "internal/shareddefaults",
+    "private/protocol",
+    "private/protocol/eventstream",
+    "private/protocol/eventstream/eventstreamapi",
+    "private/protocol/query",
+    "private/protocol/query/queryutil",
+    "private/protocol/rest",
+    "private/protocol/restxml",
+    "private/protocol/xml/xmlutil",
+    "service/s3",
+    "service/sts"
+  ]
+  revision = "47309c012812d9e9c488a54313e5cdfa7479df93"
+  version = "v1.14.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/bgentry/go-netrc"
+  packages = ["netrc"]
+  revision = "9fd32a8b3d3d3f9d43c341bfe098430e07609480"
+
+[[projects]]
   branch = "master"
   name = "github.com/blakesmith/ar"
   packages = ["."]
@@ -51,6 +94,12 @@
   packages = ["."]
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
   version = "v1.6.0"
+
+[[projects]]
+  name = "github.com/go-ini/ini"
+  packages = ["."]
+  revision = "06f5f3d67269ccec1fe5fe4134ba6e982984f7f5"
+  version = "v1.37.0"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -94,6 +143,7 @@
     "internal/filenametemplate",
     "internal/git",
     "internal/linux",
+    "internal/nametemplate",
     "pipeline",
     "pipeline/archive",
     "pipeline/artifactory",
@@ -107,13 +157,14 @@
     "pipeline/nfpm",
     "pipeline/project",
     "pipeline/release",
+    "pipeline/s3",
     "pipeline/scoop",
     "pipeline/sign",
     "pipeline/snapcraft",
     "pipeline/snapshot"
   ]
-  revision = "d8e8af13b55c05b5d472273ebc442a7f24287dd0"
-  version = "v0.66.1"
+  revision = "d2e880cb2cca134f1e835b91e18c1e050b9df412"
+  version = "v0.77.1"
 
 [[projects]]
   name = "github.com/goreleaser/nfpm"
@@ -123,8 +174,19 @@
     "glob",
     "rpm"
   ]
-  revision = "672aa2bd659a22558aa5d727bd6e76ec5d3aafb2"
-  version = "v0.6.3"
+  revision = "a0f04ab682cdfcc312468ac01730e6c64ac65a27"
+  version = "v0.9.1"
+
+[[projects]]
+  name = "github.com/imdario/mergo"
+  packages = ["."]
+  revision = "9d5f1277e9a8ed20c3684bda8fde67c05628518c"
+  version = "v0.3.4"
+
+[[projects]]
+  name = "github.com/jmespath/go-jmespath"
+  packages = ["."]
+  revision = "0b12d6b5"
 
 [[projects]]
   name = "github.com/masterminds/semver"
@@ -224,6 +286,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c84fbca6dc77176123c873f6bf46213ed6980e9eb92117514cb88af6e7eae232"
+  inputs-digest = "3a8c8e81054679fb353e6b8c61b2d5c72d07d5965c890d9f836208128c2bb702"
   solver-name = "gps-cdcl"
   solver-version = 1

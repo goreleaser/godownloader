@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"strings"
@@ -17,7 +18,10 @@ import (
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
+	"github.com/bgentry/go-netrc/netrc"
 	"github.com/client9/codegen/shell"
+	"github.com/mitchellh/go-homedir"
+	"golang.org/x/oauth2"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -112,7 +116,7 @@ func loadURLs(path, configPath string) (*config.Project, error) {
 		if file == "" {
 			continue
 		}
-		url := fmt.Sprintf("%s/%s", path, file)
+		url := fmt.Sprintf("%s/%s?ref=master", path, file)
 		log.Infof("reading %s", url)
 		project, err := loadURL(url)
 		if err != nil {
@@ -126,7 +130,16 @@ func loadURLs(path, configPath string) (*config.Project, error) {
 }
 
 func loadURL(file string) (*config.Project, error) {
-	resp, err := http.Get(file)
+	client, err := buildSecureHTTPClient(file)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest("GET", file, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "application/vnd.github.raw")
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -144,6 +157,46 @@ func loadURL(file string) (*config.Project, error) {
 	return &p, err
 }
 
+func buildSecureHTTPClient(file string) (*http.Client, error) {
+	// Read GITHUB_TOKEN env var
+	token := os.Getenv("GITHUB_TOKEN")
+	if token != "" {
+		return buildHTTPClient(token), nil
+	}
+
+	// Read ~/.netrc login info
+	netrcFile, err := homedir.Expand("~/.netrc")
+	if err != nil {
+		return nil, err
+	}
+	if _, err = os.Stat(netrcFile); !os.IsNotExist(err) {
+		fileURL, err := url.Parse(file)
+		if err != nil {
+			return nil, err
+		}
+		m, err := netrc.FindMachine(netrcFile, fileURL.Host)
+		if err != nil {
+			return nil, err
+		}
+		if m.Password != "" {
+			token = m.Password
+		} else if m.Login != "" {
+			token = m.Login
+		}
+		if token != "" {
+			return buildHTTPClient(token), nil
+		}
+	}
+
+	return http.DefaultClient, nil
+}
+
+func buildHTTPClient(token string) *http.Client {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+	client := oauth2.NewClient(nil, ts)
+	return client
+}
+
 func loadFile(file string) (*config.Project, error) {
 	p, err := config.Load(file)
 	return &p, err
@@ -158,7 +211,7 @@ func Load(repo, configPath, file string) (project *config.Project, err error) {
 		repo = normalizeRepo(repo)
 		log.Infof("reading repo %q on github", repo)
 		project, err = loadURLs(
-			fmt.Sprintf("https://raw.githubusercontent.com/%s/master", repo),
+			fmt.Sprintf("https://api.github.com/repos/%s/contents", repo),
 			configPath,
 		)
 	} else {

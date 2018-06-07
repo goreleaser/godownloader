@@ -141,9 +141,9 @@ http_download_curl() {
   source_url=$2
   header=$3
   if [ -z "$header" ]; then
-    code=$(curl -w '%{http_code}' -sL -o "$local_file" "$source_url")
+    code=$(curl -n -w '%{http_code}' -sL -o "$local_file" "$source_url")
   else
-    code=$(curl -w '%{http_code}' -sL -H "$header" -o "$local_file" "$source_url")
+    code=$(curl -n -w '%{http_code}' -sL -H "$header" -o "$local_file" "$source_url")
   fi
   if [ "$code" != "200" ]; then
     log_debug "http_download_curl received HTTP status $code"
@@ -184,10 +184,10 @@ github_release() {
   owner_repo=$1
   version=$2
   test -z "$version" && version="latest"
-  giturl="https://github.com/${owner_repo}/releases/${version}"
+  giturl="https://api.github.com/repos/${owner_repo}/releases/${version}"
   json=$(http_copy "$giturl" "Accept:application/json")
   test -z "$json" && return 1
-  version=$(echo "$json" | tr -s '\n' ' ' | sed 's/.*"tag_name":"//' | sed 's/".*//')
+  version=$(echo "$json" | tr -s '\n' ' ' | sed 's/.*"tag_name": "//' | sed 's/".*//')
   test -z "$version" && return 1
   echo "$version"
 }
