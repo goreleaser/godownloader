@@ -89,6 +89,7 @@ execute() {
     install "${srcdir}/${binexe}" "${BINDIR}/"
     log_info "installed ${BINDIR}/${binexe}"
   done
+  rm -rf "${tmpdir}"
 }
 is_supported_platform() {
   platform=$1
