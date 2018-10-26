@@ -11,13 +11,13 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/goreleaser/goreleaser/config"
-	"github.com/goreleaser/goreleaser/context"
-	"github.com/goreleaser/goreleaser/pipeline/defaults"
-
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
 	"github.com/client9/codegen/shell"
+	"github.com/goreleaser/goreleaser/pkg/config"
+	"github.com/goreleaser/goreleaser/pkg/context"
+	"github.com/goreleaser/goreleaser/pkg/defaults"
+	"github.com/pkg/errors"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -178,8 +178,13 @@ func Load(repo, configPath, file string) (project *config.Project, err error) {
 		project.Release.GitHub.Name = path.Base(repo)
 	}
 
-	ctx := context.New(*project)
-	err = defaults.Pipe{}.Run(ctx)
+	var ctx = context.New(*project)
+	for _, defaulter := range defaults.Defaulters {
+		log.Infof("setting defaults for %s", defaulter)
+		if err := defaulter.Default(ctx); err != nil {
+			return nil, errors.Wrap(err, "failed to set defaults")
+		}
+	}
 	project = &ctx.Config
 
 	// set default binary name
