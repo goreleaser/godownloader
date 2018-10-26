@@ -11,13 +11,13 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/goreleaser/goreleaser/config"
-	"github.com/goreleaser/goreleaser/context"
-	"github.com/goreleaser/goreleaser/pipeline/defaults"
-
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
 	"github.com/client9/codegen/shell"
+	"github.com/goreleaser/goreleaser/pkg/config"
+	"github.com/goreleaser/goreleaser/pkg/context"
+	"github.com/goreleaser/goreleaser/pkg/defaults"
+	"github.com/pkg/errors"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -69,8 +69,12 @@ func makeName(prefix, target string) (string, error) {
 
 	// otherwise if it contains a conditional, we can't (easily)
 	// translate that to bash.  Ask for bug report.
-	if strings.Contains(target, "{{ if") || strings.Contains(target, "{{if") || strings.Contains(target, "{{ .Arm") || strings.Contains(target, "{{.Arm") {
-		return "", fmt.Errorf("name_template %q contains unknown conditional or ARM format.  Please file bug at https://github.com/goreleaser/godownloader", target)
+	if strings.Contains(target, "{{ if") ||
+		strings.Contains(target, "{{if") ||
+		strings.Contains(target, "{{ .Arm") ||
+		strings.Contains(target, "{{.Arm") {
+		//nolint: lll
+		return "", fmt.Errorf("name_template %q contains unknown conditional or ARM format. Please file bug at https://github.com/goreleaser/godownloader", target)
 	}
 
 	varmap := map[string]string{
@@ -83,7 +87,9 @@ func makeName(prefix, target string) (string, error) {
 	}
 
 	out := bytes.Buffer{}
-	out.WriteString(prefix)
+	if _, err := out.WriteString(prefix); err != nil {
+		return "", err
+	}
 	t, err := template.New("name").Parse(target)
 	if err != nil {
 		return "", err
@@ -178,8 +184,13 @@ func Load(repo, configPath, file string) (project *config.Project, err error) {
 		project.Release.GitHub.Name = path.Base(repo)
 	}
 
-	ctx := context.New(*project)
-	err = defaults.Pipe{}.Run(ctx)
+	var ctx = context.New(*project)
+	for _, defaulter := range defaults.Defaulters {
+		log.Infof("setting defaults for %s", defaulter)
+		if err := defaulter.Default(ctx); err != nil {
+			return nil, errors.Wrap(err, "failed to set defaults")
+		}
+	}
 	project = &ctx.Config
 
 	// set default binary name

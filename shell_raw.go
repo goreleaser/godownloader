@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/goreleaser/goreleaser/config"
+	"github.com/goreleaser/goreleaser/pkg/config"
 )
 
 // processEquinoxio create a fake goreleaser config for equinox.io

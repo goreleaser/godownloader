@@ -30,6 +30,7 @@ type TreeConfig struct {
 
 // LoadTreeConfig Loads config file
 func LoadTreeConfig(file string) (config TreeConfig, err error) {
+	// nolint: gosec
 	f, err := os.Open(file)
 	if err != nil {
 		return

@@ -26,8 +26,29 @@
 
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/apex/log"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/client9/codegen"
+
+[[constraint]]
   name = "github.com/goreleaser/goreleaser"
-  version = ">=0.66.0"
+  version = "0.91.3"
+
+[[constraint]]
+  name = "github.com/pkg/errors"
+  version = "0.8.0"
+
+[[constraint]]
+  name = "gopkg.in/alecthomas/kingpin.v2"
+  version = "2.2.6"
+
+[[constraint]]
+  branch = "v2"
+  name = "gopkg.in/yaml.v2"
+
 [prune]
   go-tests = true
   unused-packages = true
