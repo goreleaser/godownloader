@@ -1,17 +1,18 @@
 dist: trusty
 language: go
-go: '1.10'
+go: '1.11.x'
 
-install:
-  - make setup
+env:
+- GO111MODULE=on
+
+install: make setup
 
 addons:
   apt:
     sources:
     - debian-sid
 
-script:
-  - make ci
+script: make ci
 
 notifications:
   email: false
