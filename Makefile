@@ -4,6 +4,7 @@ TEST_OPTIONS?=
 OS=$(shell uname -s)
 
 export PATH := ./bin:$(PATH)
+export GO111MODULE := on
 
 setup: ## Install all the build and lint dependencies
 	mkdir -p bin
@@ -11,14 +12,12 @@ setup: ## Install all the build and lint dependencies
 	curl -sfL https://install.goreleaser.com/github.com/gohugoio/hugo.sh | sh
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
 ifeq ($(OS), Darwin)
-	brew install dep
 	curl -sfL -o ./bin/shellcheck https://github.com/caarlos0/shellcheck-docker/releases/download/v0.4.6/shellcheck_darwin
 else
 	curl -sfL -o ./bin/shellcheck https://github.com/caarlos0/shellcheck-docker/releases/download/v0.4.6/shellcheck
-	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 endif
 	chmod +x ./bin/shellcheck
-	dep ensure -vendor-only
+	go mod download
 .PHONY: setup
 
 install: build ## build and install
