@@ -43,7 +43,7 @@ Hugo doesn't have (yet) a `godownloader.sh` file.  So we will make our own:
 
 ```
 # create a godownloader script
-godownloader -repo gohugoio/hugo > ./godownloader-hugo.sh
+godownloader --repo=gohugoio/hugo > ./godownloader-hugo.sh
 ```
 
 and add `godownloader-hugo.sh` to your GitHub repo.  Edit your `.travis.yml` as such
