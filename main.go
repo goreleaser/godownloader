@@ -21,15 +21,12 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
+// nolint: gochecknoglobals
 var (
 	version = "dev"
 	commit  = "none"
 	datestr = "unknown"
 )
-
-func init() {
-	log.SetHandler(cli.Default)
-}
 
 // given a template, and a config, generate shell script
 func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
@@ -207,6 +204,8 @@ func Load(repo, configPath, file string) (project *config.Project, err error) {
 }
 
 func main() {
+	log.SetHandler(cli.Default)
+
 	var (
 		repo    = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Short('r').String()
 		output  = kingpin.Flag("output", "output file, default stdout").Short('o').String()
