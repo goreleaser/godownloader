@@ -10,7 +10,7 @@ import (
 
 	"github.com/apex/log"
 	"github.com/client9/codegen/shell"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // TreeConfig is the project configuration
