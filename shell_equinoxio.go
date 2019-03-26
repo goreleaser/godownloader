@@ -77,7 +77,7 @@ execute() {
   http_download "${TMPDIR}/${TARBALL}" "$TARBALL_URL"
 
   (cd "$TMPDIR" && untar "$TARBALL")
-  install -d "${BINDIR}"
+  test ! -d "${BINDIR} && install -d "${BINDIR}"
   install "${TMPDIR}/${BINARY}" "${BINDIR}/"
   log_info "installed ${BINDIR}/${BINARY}"
 }` + shellfn + `OWNER={{ .Release.GitHub.Owner }}

@@ -103,7 +103,7 @@ execute() {
   TMPDIR=$(mktmpdir)
   log_info "downloading from ${TARBALL_URL}"
   http_download "${TMPDIR}/${NAME}" "$TARBALL_URL"
-  install -d "${BINDIR}"
+  test ! -d "${BINDIR} && install -d "${BINDIR}"
   install "${TMPDIR}/${NAME}" "${BINDIR}/${BINARY}"
   log_info "installed ${BINDIR}/${BINARY}"
 }
