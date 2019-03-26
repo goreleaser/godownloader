@@ -83,7 +83,7 @@ execute() {
   srcdir="${tmpdir}"
   {{- end }}
   (cd "${tmpdir}" && untar "${TARBALL}")
-  install -d "${BINDIR}"
+  test ! -d "${BINDIR} && install -d "${BINDIR}"
   for binexe in {{ range .Builds }}"{{ .Binary }}" {{ end }}; do
     if [ "$OS" = "windows" ]; then
       binexe="${binexe}.exe"
