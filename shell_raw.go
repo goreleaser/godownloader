@@ -100,7 +100,7 @@ adjust_binary() {
 # wrap all destructive operations into a function
 # to prevent curl|bash network truncation and disaster
 execute() {
-  TMPDIR=$(mktmpdir)
+  TMPDIR=$(mktemp -d)
   log_info "downloading from ${TARBALL_URL}"
   http_download "${TMPDIR}/${NAME}" "$TARBALL_URL"
   test ! -d "${BINDIR}" && install -d "${BINDIR}"

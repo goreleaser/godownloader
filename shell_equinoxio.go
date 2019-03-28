@@ -68,7 +68,7 @@ parse_args() {
 # wrap all destructive operations into a function
 # to prevent curl|bash network truncation and disaster
 execute() {
-  TMPDIR=$(mktmpdir)
+  TMPDIR=$(mktemp -d)
 
   log_info "seeking '${CHANNEL}' latest from $TARGET"
   TARBALL_URL=$(http_copy "$TARGET" | grep "$TARBALL" | cut -d '"' -f 2)

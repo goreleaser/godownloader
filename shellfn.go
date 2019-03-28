@@ -1,4 +1,4 @@
-// Code generated 2018-04-10T15:35:32+0000 DO NOT EDIT.
+// Code generated 2019-03-28T16:23:31+0000 DO NOT EDIT.
 package main
 
 const shellfn = `
@@ -130,11 +130,6 @@ untar() {
       return 1
       ;;
   esac
-}
-mktmpdir() {
-  test -z "$TMPDIR" && TMPDIR="$(mktemp -d)"
-  mkdir -p "${TMPDIR}"
-  echo "${TMPDIR}"
 }
 http_download_curl() {
   local_file=$1

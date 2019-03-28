@@ -33,7 +33,6 @@ cat \
   uname_os_check.sh \
   uname_arch_check.sh \
   untar.sh \
-  mktmpdir.sh \
   http_download.sh \
   github_release.sh \
   hash_sha256.sh \
