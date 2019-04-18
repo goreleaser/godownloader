@@ -141,9 +141,9 @@ tag_to_version() {
   VERSION=${TAG#v}
 }
 adjust_format() {
-  # change format (tar.gz or zip) based on ARCH
+  # change format (tar.gz or zip) based on OS
   {{- with .Archive.FormatOverrides }}
-  case ${ARCH} in
+  case ${OS} in
   {{- range . }}
     {{ .Goos }}) FORMAT={{ .Format }} ;;
   esac
