@@ -58,7 +58,6 @@ func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 // https://github.com/goreleaser/godownloader/issues/64
 //
 func treewalk(root string, treeout string, forceWrite bool) error { // nolint: gocyclo
-
 	rooterr := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		// weird case where filewalk failed
 		if err != nil {
@@ -97,6 +96,23 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		// only github.com for now
 		if org != "github.com" {
 			return fmt.Errorf("only github.com supported, got %s", org)
+		}
+
+		type repoConf struct {
+			Ignore bool `yaml:"ignore"`
+		}
+
+		var conf repoConf
+		bts, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		if err := yaml.Unmarshal(bts, &conf); err != nil {
+			return err
+		}
+		if conf.Ignore {
+			log.WithField("repo", rel).Warn("ignoring repo as instructed")
+			return nil
 		}
 
 		// nice and clean
