@@ -9,6 +9,12 @@ func processGodownloader(repo, path, filename string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse: %s", err)
 	}
+	// hacky way for when the project has multiple archives.
+	// for now this only handles the first archive.
+	// TODO: support this once multiple archives is done on goreleaser side.
+	if len(cfg.Archives) > 0 {
+		cfg.Archive = cfg.Archives[0]
+	}
 	// get archive name template
 	archName, err := makeName("NAME=", cfg.Archive.NameTemplate)
 	cfg.Archive.NameTemplate = archName
@@ -146,8 +152,8 @@ adjust_format() {
   case ${OS} in
   {{- range . }}
     {{ .Goos }}) FORMAT={{ .Format }} ;;
+	{{- end }}
   esac
-  {{- end }}
   {{- end }}
   true
 }
