@@ -101,26 +101,12 @@ execute() {
 }
 is_supported_platform() {
   platform=$1
-  found=1
   case "$platform" in
-  {{- range $goos := (index $.Builds 0).Goos }}{{ range $goarch := (index $.Builds 0).Goarch }}
-{{ if not (eq $goarch "arm") }}    {{ $goos }}/{{ $goarch }}) found=0 ;;{{ end }}
-  {{- end }}{{ end }}
-  {{- if (index $.Builds 0).Goarm }}
-  {{- range $goos := (index $.Builds 0).Goos }}{{ range $goarch := (index $.Builds 0).Goarch }}{{ range $goarm := (index $.Builds 0).Goarm }}
-{{- if eq $goarch "arm" }}
-    {{ $goos }}/armv{{ $goarm }}) found=0 ;;
+{{- range $platform, $binaries := (platformBinaries .) }}
+    {{ $platform }}) return 0 ;;
 {{- end }}
-  {{- end }}{{ end }}{{ end }}
-  {{- end }}
+    *) return 1 ;;
   esac
-  {{- if (index $.Builds 0).Ignore }}
-  case "$platform" in
-    {{- range $ignore := (index $.Builds 0).Ignore }}
-    {{ $ignore.Goos }}/{{ $ignore.Goarch }}{{ if $ignore.Goarm }}v{{ $ignore.Goarm }}{{ end }}) found=1 ;;{{ end }}
-  esac
-  {{- end }}
-  return $found
 }
 check_platform() {
   if is_supported_platform "$PLATFORM"; then
