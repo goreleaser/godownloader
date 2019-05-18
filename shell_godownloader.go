@@ -169,7 +169,6 @@ adjust_arch() {
 PROJECT_NAME="{{ $.ProjectName }}"
 OWNER={{ $.Release.GitHub.Owner }}
 REPO="{{ $.Release.GitHub.Name }}"
-BINARY={{ (index .Builds 0).Binary }}
 FORMAT={{ .Archive.Format }}
 OS=$(uname_os)
 ARCH=$(uname_arch)
