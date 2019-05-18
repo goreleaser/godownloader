@@ -34,6 +34,7 @@ func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 	// if we want to add a timestamp in the templates this
 	//  function will generate it
 	funcMap := template.FuncMap{
+		"join":             strings.Join,
 		"platformBinaries": makePlatformBinaries,
 		"timestamp": func() string {
 			return time.Now().UTC().Format(time.RFC3339)

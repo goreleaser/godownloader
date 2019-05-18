@@ -90,7 +90,7 @@ execute() {
   {{- end }}
   (cd "${tmpdir}" && untar "${TARBALL}")
   test ! -d "${BINDIR}" && install -d "${BINDIR}"
-  for binexe in {{ range .Builds }}"{{ .Binary }}" {{ end }}; do
+  for binexe in $BINARIES; do
     if [ "$OS" = "windows" ]; then
       binexe="${binexe}.exe"
     fi
@@ -99,23 +99,16 @@ execute() {
   done
   rm -rf "${tmpdir}"
 }
-is_supported_platform() {
-  platform=$1
-  case "$platform" in
-{{- range $platform, $binaries := (platformBinaries .) }}
-    {{ $platform }}) return 0 ;;
-{{- end }}
-    *) return 1 ;;
+get_binaries() {
+  case "$PLATFORM" in
+  {{- range $platform, $binaries := (platformBinaries .) }}
+    {{ $platform }}) BINARIES="{{ join $binaries " " }}" ;;
+  {{- end }}
+    *)
+      log_crit "platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
+      exit 1
+      ;;
   esac
-}
-check_platform() {
-  if is_supported_platform "$PLATFORM"; then
-    # optional logging goes here
-    true
-  else
-    log_crit "platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
-    exit 1
-  fi
 }
 tag_to_version() {
   if [ -z "${TAG}" ]; then
@@ -186,7 +179,7 @@ uname_arch_check "$ARCH"
 
 parse_args "$@"
 
-check_platform
+get_binaries
 
 tag_to_version
 
