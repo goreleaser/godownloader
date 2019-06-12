@@ -34,6 +34,8 @@ func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 	// if we want to add a timestamp in the templates this
 	//  function will generate it
 	funcMap := template.FuncMap{
+		"join":             strings.Join,
+		"platformBinaries": makePlatformBinaries,
 		"timestamp": func() string {
 			return time.Now().UTC().Format(time.RFC3339)
 		},
@@ -46,6 +48,47 @@ func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 	}
 	err = t.Execute(&out, cfg)
 	return out.Bytes(), err
+}
+
+// makePlatform returns a platform string combining goos, goarch, and goarm.
+func makePlatform(goos, goarch, goarm string) string {
+	platform := goos + "/" + goarch
+	if goarch == "arm" && goarm != "" {
+		platform += "v" + goarm
+	}
+	return platform
+}
+
+// makePlatformBinaries returns a map from platforms to a slice of binaries
+// built for that platform.
+func makePlatformBinaries(cfg *config.Project) map[string][]string {
+	platformBinaries := make(map[string][]string)
+	for _, build := range cfg.Builds {
+		ignore := make(map[string]bool)
+		for _, ignoredBuild := range build.Ignore {
+			platform := makePlatform(ignoredBuild.Goos, ignoredBuild.Goarch, ignoredBuild.Goarm)
+			ignore[platform] = true
+		}
+		for _, goos := range build.Goos {
+			for _, goarch := range build.Goarch {
+				switch goarch {
+				case "arm":
+					for _, goarm := range build.Goarm {
+						platform := makePlatform(goos, goarch, goarm)
+						if !ignore[platform] {
+							platformBinaries[platform] = append(platformBinaries[platform], build.Binary)
+						}
+					}
+				default:
+					platform := makePlatform(goos, goarch, "")
+					if !ignore[platform] {
+						platformBinaries[platform] = append(platformBinaries[platform], build.Binary)
+					}
+				}
+			}
+		}
+	}
+	return platformBinaries
 }
 
 // converts the given name template to it's equivalent in shell

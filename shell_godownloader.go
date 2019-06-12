@@ -90,7 +90,7 @@ execute() {
   {{- end }}
   (cd "${tmpdir}" && untar "${TARBALL}")
   test ! -d "${BINDIR}" && install -d "${BINDIR}"
-  for binexe in {{ range .Builds }}"{{ .Binary }}" {{ end }}; do
+  for binexe in $BINARIES; do
     if [ "$OS" = "windows" ]; then
       binexe="${binexe}.exe"
     fi
@@ -99,37 +99,16 @@ execute() {
   done
   rm -rf "${tmpdir}"
 }
-is_supported_platform() {
-  platform=$1
-  found=1
-  case "$platform" in
-  {{- range $goos := (index $.Builds 0).Goos }}{{ range $goarch := (index $.Builds 0).Goarch }}
-{{ if not (eq $goarch "arm") }}    {{ $goos }}/{{ $goarch }}) found=0 ;;{{ end }}
-  {{- end }}{{ end }}
-  {{- if (index $.Builds 0).Goarm }}
-  {{- range $goos := (index $.Builds 0).Goos }}{{ range $goarch := (index $.Builds 0).Goarch }}{{ range $goarm := (index $.Builds 0).Goarm }}
-{{- if eq $goarch "arm" }}
-    {{ $goos }}/armv{{ $goarm }}) found=0 ;;
-{{- end }}
-  {{- end }}{{ end }}{{ end }}
+get_binaries() {
+  case "$PLATFORM" in
+  {{- range $platform, $binaries := (platformBinaries .) }}
+    {{ $platform }}) BINARIES="{{ join $binaries " " }}" ;;
   {{- end }}
+    *)
+      log_crit "platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
+      exit 1
+      ;;
   esac
-  {{- if (index $.Builds 0).Ignore }}
-  case "$platform" in
-    {{- range $ignore := (index $.Builds 0).Ignore }}
-    {{ $ignore.Goos }}/{{ $ignore.Goarch }}{{ if $ignore.Goarm }}v{{ $ignore.Goarm }}{{ end }}) found=1 ;;{{ end }}
-  esac
-  {{- end }}
-  return $found
-}
-check_platform() {
-  if is_supported_platform "$PLATFORM"; then
-    # optional logging goes here
-    true
-  else
-    log_crit "platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
-    exit 1
-  fi
 }
 tag_to_version() {
   if [ -z "${TAG}" ]; then
@@ -183,7 +162,6 @@ adjust_arch() {
 PROJECT_NAME="{{ $.ProjectName }}"
 OWNER={{ $.Release.GitHub.Owner }}
 REPO="{{ $.Release.GitHub.Name }}"
-BINARY={{ (index .Builds 0).Binary }}
 FORMAT={{ .Archive.Format }}
 OS=$(uname_os)
 ARCH=$(uname_arch)
@@ -201,7 +179,7 @@ uname_arch_check "$ARCH"
 
 parse_args "$@"
 
-check_platform
+get_binaries
 
 tag_to_version
 
