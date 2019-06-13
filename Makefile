@@ -10,7 +10,9 @@ setup: ## Install all the build and lint dependencies
 	mkdir -p bin
 	curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
 	curl -sfL https://install.goreleaser.com/github.com/gohugoio/hugo.sh | sh
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
+	# FIXME golangci-lint.sh is currently broken, restore installation with curl when it is fixed
+	# curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
+	( cd $$(mktemp -d) && go mod init tmp && go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.17.1 )
 ifeq ($(OS), Darwin)
 	curl -sfL -o ./bin/shellcheck https://github.com/caarlos0/shellcheck-docker/releases/download/v0.4.6/shellcheck_darwin
 else
