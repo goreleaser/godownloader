@@ -1,5 +1,7 @@
 module github.com/goreleaser/godownloader
 
+replace git.apache.org/thrift.git => github.com/apache/thrift v0.12.0
+
 require (
 	github.com/apex/log v1.1.0
 	github.com/client9/codegen v0.0.0-20180316044450-92480ce66a06
