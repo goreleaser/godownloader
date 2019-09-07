@@ -2,8 +2,6 @@ module github.com/goreleaser/godownloader
 
 go 1.12
 
-replace git.apache.org/thrift.git => github.com/apache/thrift v0.12.0
-
 // related to an invalid pseudo version in code.gitea.io/gitea v1.10.0-dev.0.20190711052757-a0820e09fbf7
 replace github.com/go-macaron/cors => github.com/go-macaron/cors v0.0.0-20190418220122-6fd6a9bfe14e
 
