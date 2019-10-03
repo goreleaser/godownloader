@@ -8,7 +8,7 @@ require (
 	github.com/goreleaser/goreleaser v0.118.2
 	github.com/pkg/errors v0.8.1
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
-	gopkg.in/yaml.v2 v2.2.2
+	gopkg.in/yaml.v2 v2.2.4
 )
 
 // Fix invalid pseudo-version: revision is longer than canonical (6fd6a9bfe14e)
