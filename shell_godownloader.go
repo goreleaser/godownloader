@@ -11,6 +11,7 @@ func processGodownloader(repo, path, filename string) ([]byte, error) {
 	}
 	// hacky way for when the project has multiple archives.
 	// for now this only handles the first archive.
+	// nolint: godox
 	// TODO: support this once multiple archives is done on goreleaser side.
 	if len(cfg.Archives) > 0 {
 		cfg.Archive = cfg.Archives[0]

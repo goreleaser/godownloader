@@ -30,7 +30,6 @@ var (
 
 // given a template, and a config, generate shell script
 func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
-
 	// if we want to add a timestamp in the templates this
 	//  function will generate it
 	funcMap := template.FuncMap{
@@ -107,12 +106,13 @@ func makeName(prefix, target string) (string, error) {
 	armversion = "{{ .Arch }}{{ if .Arm }}{{ .Arm }}{{ end }}"
 	target = strings.Replace(target, armversion, "{{ .Arch }}", -1)
 
+	target = strings.Replace(target, "{{.Arm}}", "{{ .Arch }}", -1)
+	target = strings.Replace(target, "{{ .Arm }}", "{{ .Arch }}", -1)
+
 	// otherwise if it contains a conditional, we can't (easily)
 	// translate that to bash.  Ask for bug report.
 	if strings.Contains(target, "{{ if") ||
-		strings.Contains(target, "{{if") ||
-		strings.Contains(target, "{{ .Arm") ||
-		strings.Contains(target, "{{.Arm") {
+		strings.Contains(target, "{{if") {
 		//nolint: lll
 		return "", fmt.Errorf("name_template %q contains unknown conditional or ARM format. Please file bug at https://github.com/goreleaser/godownloader", target)
 	}

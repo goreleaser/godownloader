@@ -1,7 +1,7 @@
 #!/bin/sh -ex
 
 # use gfind on osx
-if which gfind >/dev/null 2>&1; then
+if command -v gfind >/dev/null 2>&1; then
 	alias find=gfind
 fi
 
@@ -16,6 +16,15 @@ mkdir -p ./www/data/projects
 
 # generate the sh files
 ./godownloader --tree=tree ./www/static/
+
+# backup of disabled/broken/archived projects
+mkdir -p www/static/github.com/alecthomas
+wget -O www/static/github.com/alecthomas/gometalinter.sh \
+	https://install.goreleaser.com/github.com/alecthomas/gometalinter.sh
+
+mkdir -p www/static/github.com/kaihendry
+wget -O www/static/github.com/kaihendry/lk2.sh \
+	https://install.goreleaser.com/github.com/kaihendry/lk2.sh
 
 # lint generated files
 # SC2034 is unused variable
