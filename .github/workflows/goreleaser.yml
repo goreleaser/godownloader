@@ -1,0 +1,29 @@
+name: goreleaser
+
+on:
+  create:
+    tags:
+      - v*.*.*
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go 1.13
+        id: go
+        uses: actions/setup-go@v1
+        with:
+            go-version: 1.13
+      - name: Get dependencies
+        run: make setup
+      - name: Build
+        run: make ci
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v1
+        with:
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
