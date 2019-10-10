@@ -225,6 +225,11 @@ func Load(repo, configPath, file string) (project *config.Project, err error) {
 		project.Release.GitHub.Name = path.Base(repo)
 	}
 
+	// avoid errors in docker defaulter
+	for i := range project.Dockers {
+		project.Dockers[i].Files = []string{}
+	}
+
 	var ctx = context.New(*project)
 	for _, defaulter := range defaults.Defaulters {
 		log.Infof("setting defaults for %s", defaulter)
