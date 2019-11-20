@@ -1,15 +1,15 @@
 module github.com/goreleaser/godownloader
 
-go 1.12
+go 1.13
 
 require (
 	github.com/apex/log v1.1.1
 	github.com/client9/codegen v0.0.0-20180316044450-92480ce66a06
-	github.com/goreleaser/goreleaser v0.120.5
+	github.com/goreleaser/goreleaser v0.122.0
 	github.com/pkg/errors v0.8.1
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
-	gopkg.in/yaml.v2 v2.2.4
+	gopkg.in/yaml.v2 v2.2.7
 )
 
-// Fix invalid pseudo-version: revision is longer than canonical (6fd6a9bfe14e)
-replace github.com/go-macaron/cors => github.com/go-macaron/cors v0.0.0-20190418220122-6fd6a9bfe14e
+// TODO: remove this when https://github.com/google/rpmpack/pull/33 gets merged in.
+replace github.com/google/rpmpack => github.com/caarlos0/rpmpack v0.0.0-20191106130752-24a815bfaee0
