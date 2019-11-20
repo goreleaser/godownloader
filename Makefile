@@ -42,7 +42,7 @@ precommit: lint  ## Run precommit hook
 
 ci: build lint test  ## travis-ci entrypoint
 	git diff .
-	./bin/goreleaser --snapshot
+	./bin/goreleaser --snapshot --rm-dist
 
 build: hooks ## Build a beta version of goreleaser
 	go build
