@@ -38,6 +38,13 @@ func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 		"timestamp": func() string {
 			return time.Now().UTC().Format(time.RFC3339)
 		},
+		"replace": strings.ReplaceAll,
+		"time": func(s string) string {
+			return time.Now().UTC().Format(s)
+		},
+		"tolower": strings.ToLower,
+		"toupper": strings.ToUpper,
+		"trim":    strings.TrimSpace,
 	}
 
 	out := bytes.Buffer{}
