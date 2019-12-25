@@ -1,3 +1,9 @@
+# Warning: this is no longer actively maintained.
+
+See [#161](https://github.com/goreleaser/godownloader/issues/161) for details.
+
+--------
+
 <p align="center">
   <img alt="GoReleaser Logo" src="https://avatars2.githubusercontent.com/u/24697112?v=3&s=200" height="140" />
   <h3 align="center">GoDownloader</h3>
@@ -30,14 +36,14 @@ This is also useful in CI/CD systems such as [travis-ci.org](https://travis-ci.o
 
 Let's say you are using [hugo](https://gohugo.io), the static website generator, with [travis-ci](https://travis-ci.org).
 
-Your old `.travis.yml` file might have 
+Your old `.travis.yml` file might have
 
 ```yaml
 install:
   - go get github.com/gohugoio/hugo
 ```
 
-This can take up to 30 seconds! 
+This can take up to 30 seconds!
 
 Hugo doesn't have (yet) a `godownloader.sh` file.  So we will make our own:
 
@@ -60,9 +66,9 @@ install:
   - ./godownloader-hugo.sh
 ```
 
-Typical download time is 0.3 seconds, or 100x improvement. 
+Typical download time is 0.3 seconds, or 100x improvement.
 
-Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `./bin/hugo`. 
+Your new `hugo` binary is in `./bin`, so change your Makefie or scripts to use `./bin/hugo`.
 
 The default installation directory can be changed with the `-b` flag or the `BINDIR` environment variable.
 
@@ -70,7 +76,7 @@ The default installation directory can be changed with the `-b` flag or the `BIN
 
 * Only GitHub Releases are supported right now.
 * Checksums are checked.
-* Binares are installed using `tar.gz` or `zip`. 
+* Binares are installed using `tar.gz` or `zip`.
 * No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via a `tar.gz` or `zip`.  Typically OS installs are done differently anyways (e.g. brew, apt-get, yum, etc).
 
 ## Experimental support
