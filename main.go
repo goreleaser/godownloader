@@ -293,6 +293,7 @@ func main() {
 	if err != nil {
 		log.WithError(err).Error("failed")
 		os.Exit(1)
+		os.Exit(1)
 	}
 
 	// stdout case
