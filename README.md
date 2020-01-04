@@ -32,6 +32,20 @@ This is also useful in CI/CD systems such as [travis-ci.org](https://travis-ci.o
 * Much faster then 'go get' (sometimes up to 100x)
 * Make sure your local environment (macOS) and the CI environment (Linux) are using the exact same versions of your go binaries.
 
+## Installation
+
+**godownaloder Shell script**:
+
+```sh
+$ curl -sfL https://raw.githubusercontent.com/goreleaser/godownloader/master/godownloader.sh | sh
+```
+
+**homebrew tap**:
+
+```sh
+$ brew install goreleaser/tap/goreleaser
+```
+
 ## CI/CD Example
 
 Let's say you are using [hugo](https://gohugo.io), the static website generator, with [travis-ci](https://travis-ci.org).
