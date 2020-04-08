@@ -87,7 +87,9 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		// Now: github.com/owner/repo
 		// better way of doing this?
 		parts := strings.Split(rel, string(os.PathSeparator))
-		if len(parts) != 3 {
+
+		const expectedNumParts = 3
+		if len(parts) != expectedNumParts {
 			return fmt.Errorf("invalid path: %s", path)
 		}
 
