@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// ugh, needs to be turned into a config
+// ugh, needs to be turned into a config.
 func processSource(source, repo, path, file, exe, nametpl string) (out []byte, err error) {
 	switch source {
 	case "godownloader":

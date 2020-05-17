@@ -28,7 +28,7 @@ var (
 	datestr = "unknown"
 )
 
-// given a template, and a config, generate shell script
+// given a template, and a config, generate shell script.
 func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 	// if we want to add a timestamp in the templates this
 	//  function will generate it
@@ -184,7 +184,7 @@ func loadURL(file string) (*config.Project, error) {
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		log.Errorf("reading %s returned %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
 		return nil, nil
 	}
@@ -307,7 +307,7 @@ func main() {
 	// only write out if forced to, OR if output is effectively different
 	// than what the file has.
 	if *force || shell.ShouldWriteFile(*output, out) {
-		if err = ioutil.WriteFile(*output, out, 0666); err != nil {
+		if err = ioutil.WriteFile(*output, out, 0666); err != nil { //nolint: gosec
 			log.WithError(err).Errorf("unable to write to %s", *output)
 			os.Exit(1)
 		}
