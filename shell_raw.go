@@ -7,8 +7,8 @@ import (
 	"github.com/goreleaser/goreleaser/pkg/config"
 )
 
-// processEquinoxio create a fake goreleaser config for equinox.io
-// and use a similar template.
+// processEquinoxio creates a fake goreleaser config for equinox.io
+// and uses a similar template.
 func processRaw(repo string, exe string, nametpl string) ([]byte, error) {
 	if repo == "" {
 		return nil, fmt.Errorf("must have GitHub owner/repo")
@@ -61,8 +61,8 @@ EOF
   exit 2
 }
 parse_args() {
-  #BINDIR is ./bin unless set be ENV
-  # over-ridden by flag below
+  #BINDIR is ./bin unless set by ENV
+  # overridden by flag below
 
   BINDIR=${BINDIR:-./bin}
   while getopts "b:dh?x" arg; do
@@ -113,7 +113,7 @@ REPO="{{ .Release.GitHub.Name }}"
 BINARY={{ (index .Builds 0).Binary }}
 BINDIR=${BINDIR:-./bin}
 PREFIX="$OWNER/$REPO"
-# use in logging routines
+# used in logging routines
 log_prefix() {
         echo "$PREFIX"
 }
@@ -128,7 +128,7 @@ uname_arch_check "$ARCH"
 # parse_args, show usage and exit if necessary
 parse_args "$@"
 
-# setup version from tag
+# set up version from tag
 tag_to_version
 
 log_info "found version ${VERSION} for ${TAG}/${OS}/${ARCH}"

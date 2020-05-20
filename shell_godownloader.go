@@ -9,10 +9,11 @@ func processGodownloader(repo, path, filename string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse: %s", err)
 	}
-	// hacky way for when the project has multiple archives.
-	// for now this only handles the first archive.
+	// a hack for when the project has multiple archives.
+	// for now, this only handles the first archive.
 	// nolint: godox
-	// TODO: support this once multiple archives is done on goreleaser side.
+	// TODO: support this once multiple archive support is
+	// done on the goreleaser side.
 	if len(cfg.Archives) > 0 {
 		cfg.Archive = cfg.Archives[0]
 	}
@@ -20,13 +21,13 @@ func processGodownloader(repo, path, filename string) ([]byte, error) {
 	archName, err := makeName("NAME=", cfg.Archive.NameTemplate)
 	cfg.Archive.NameTemplate = archName
 	if err != nil {
-		return nil, fmt.Errorf("unable generate archive name: %s", err)
+		return nil, fmt.Errorf("unable to generate archive name: %s", err)
 	}
 	// get checksum name template
 	checkName, err := makeName("CHECKSUM=", cfg.Checksum.NameTemplate)
 	cfg.Checksum.NameTemplate = checkName
 	if err != nil {
-		return nil, fmt.Errorf("unable generate checksum name: %s", err)
+		return nil, fmt.Errorf("unable to generate checksum name: %s", err)
 	}
 
 	return makeShell(shellGodownloader, cfg)
@@ -58,8 +59,8 @@ EOF
 }
 
 parse_args() {
-  #BINDIR is ./bin unless set be ENV
-  # over-ridden by flag below
+  #BINDIR is ./bin unless set by ENV
+  # overridden by flag below
 
   BINDIR=${BINDIR:-./bin}
   while getopts "b:dh?x" arg; do

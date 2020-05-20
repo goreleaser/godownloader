@@ -7,8 +7,8 @@ import (
 	"github.com/goreleaser/goreleaser/pkg/config"
 )
 
-// processEquinoxio create a fake goreleaser config for equinox.io
-// and use a similar template.
+// processEquinoxio creates a fake goreleaser config for equinox.io
+// and uses a similar template.
 func processEquinoxio(repo string) ([]byte, error) {
 	if repo == "" {
 		return nil, fmt.Errorf("must have repo")
@@ -49,8 +49,8 @@ EOF
 }
 
 parse_args() {
-  #BINDIR is ./bin unless set be ENV
-  # over-ridden by flag below
+  #BINDIR is ./bin unless set by ENV
+  # overridden by flag below
 
   BINDIR=${BINDIR:-./bin}
   while getopts "b:dh?x" arg; do
@@ -62,7 +62,7 @@ parse_args() {
     esac
   done
   shift $((OPTIND - 1))
-  # VERSION currently unused
+  # VERSION is currently unused
   #VERSION=$1
 }
 # wrap all destructive operations into a function
@@ -87,7 +87,7 @@ FORMAT={{ .Archive.Format }}
 BINDIR=${BINDIR:-./bin}
 CHANNEL=stable
 PREFIX="$OWNER/$REPO"
-# use in logging routines
+# used in logging routines
 log_prefix() {
         echo "$PREFIX"
 }
