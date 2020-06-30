@@ -79,34 +79,6 @@ The default installation directory can be changed with the `-b` flag or the `BIN
 * Binares are installed using `tar.gz` or `zip`.
 * No OS-specific installs such as homebrew, deb, rpm.  Everything is installed locally via a `tar.gz` or `zip`.  Typically OS installs are done differently anyways (e.g. brew, apt-get, yum, etc).
 
-## Experimental support
-
-Some people do not use Goreleaser (why!), so there is experimental support for the following alterative distributions.
-
-### "naked" releases on GitHub
-
-A naked release is just the raw binary put on GitHub releases.  Limited support can be done by
-
-```bash
-./goreleaser -source raw -repo [owner/repo] -exe [name] -nametpl [tpl]
-```
-
-Where `exe` is the final binary name, and `tpl` is the same type of name template that Goreleaser uses.
-
-An example repo is at [mvdan/sh](https://github.com/mvdan/sh/releases). Note how the repo `sh` is different than the binary `shfmt`.
-
-### Equinox.io
-
-[Equinox.io](https://equinox.io) is a really interesting platform.  Take a look.
-
-There is no API, so godownloader screen scrapes to figure out the latest release.  Likewise, checksums are not verified.
-
-```bash
-./goreleaser -source equinoxio -repo [owner/repo]
-```
-
-While Equinox.io supports the concept of different release channels, only the `stable` channel is supported by godownloader.
-
 ## Yes, it's true.
 
 It's a go program that reads a YAML file that uses a template to make a posix shell script.

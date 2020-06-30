@@ -266,9 +266,6 @@ func main() {
 		repo    = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Short('r').String()
 		output  = kingpin.Flag("output", "output file, default stdout").Short('o').String()
 		force   = kingpin.Flag("force", "force writing of output").Short('f').Bool()
-		source  = kingpin.Flag("source", "source type [godownloader|raw|equinoxio]").Default("godownloader").String()
-		exe     = kingpin.Flag("exe", "name of binary, used only in raw").String()
-		nametpl = kingpin.Flag("nametpl", "name template, used only in raw").String()
 		tree    = kingpin.Flag("tree", "use tree to generate multiple outputs").String()
 		file    = kingpin.Arg("file", "??").String()
 	)
@@ -287,8 +284,7 @@ func main() {
 		return
 	}
 
-	// gross.. need config
-	out, err := processSource(*source, *repo, "", *file, *exe, *nametpl)
+	out, err := processGodownloader(*repo, "", *file)
 
 	if err != nil {
 		log.WithError(err).Error("failed")
