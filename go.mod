@@ -8,7 +8,7 @@ require (
 	github.com/goreleaser/goreleaser v0.123.1
 	github.com/pkg/errors v0.8.1
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
-	gopkg.in/yaml.v2 v2.2.7
+	gopkg.in/yaml.v2 v2.3.0
 )
 
 // TODO: remove this when https://github.com/google/rpmpack/pull/33 gets merged in.
