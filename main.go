@@ -237,7 +237,7 @@ func Load(repo, configPath, file string) (project *config.Project, err error) {
 		project.Dockers[i].Files = []string{}
 	}
 
-	var ctx = context.New(*project)
+	ctx := context.New(*project)
 	for _, defaulter := range defaults.Defaulters {
 		log.Infof("setting defaults for %s", defaulter)
 		if err := defaulter.Default(ctx); err != nil {
@@ -285,7 +285,6 @@ func main() {
 	}
 
 	out, err := processGodownloader(*repo, "", *file)
-
 	if err != nil {
 		log.WithError(err).Error("failed")
 		os.Exit(1)
