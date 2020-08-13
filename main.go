@@ -179,7 +179,7 @@ func loadURLs(path, configPath string) (*config.Project, error) {
 }
 
 func loadURL(file string) (*config.Project, error) {
-	// nolint: gosec
+	// nolint: gosec,noctx
 	resp, err := http.Get(file)
 	if err != nil {
 		return nil, err
