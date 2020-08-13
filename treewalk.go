@@ -13,7 +13,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// TreeConfig is the project configuration
+// TreeConfig is the project configuration.
 type TreeConfig struct {
 	// these can be set by config
 	Source string `yaml:"source,omitempty"` // type of downloader to make
@@ -26,18 +26,18 @@ type TreeConfig struct {
 	name  string // repo name
 }
 
-// LoadTreeConfig Loads config file
+// LoadTreeConfig Loads config file.
 func LoadTreeConfig(file string) (config TreeConfig, err error) {
-	// nolint: gosec
 	f, err := os.Open(file)
 	if err != nil {
 		return
 	}
 	log.WithField("file", file).Debug("loading config file")
+
 	return LoadTreeConfigReader(f)
 }
 
-// LoadTreeConfigReader config via io.Reader
+// LoadTreeConfigReader config via io.Reader.
 func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 	data, err := ioutil.ReadAll(fd)
 	if err != nil {
@@ -45,6 +45,7 @@ func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 	}
 	err = yaml.UnmarshalStrict(data, &config)
 	log.WithField("config", config).Debug("loaded config file")
+
 	return config, err
 }
 
@@ -56,7 +57,7 @@ func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 // https://github.com/goreleaser/godownloader/issues/64
 //
 // nolint: funlen
-func treewalk(root string, treeout string, forceWrite bool) error { // nolint: gocyclo,gocognit
+func treewalk(root string, treeout string, forceWrite bool) error { // nolint: gocognit
 	rooterr := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		// weird case where filewalk failed
 		if err != nil {
@@ -85,7 +86,7 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		// Now: github.com/owner/repo
 		// better way of doing this?
 		parts := strings.Split(rel, string(os.PathSeparator))
-		if len(parts) != 3 {
+		if len(parts) != 3 { // nolint: gomnd
 			return fmt.Errorf("invalid path: %s", path)
 		}
 
@@ -111,6 +112,7 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		}
 		if conf.Ignore {
 			log.WithField("repo", rel).Warn("ignoring repo as instructed")
+
 			return nil
 		}
 
@@ -145,7 +147,7 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		// only write out if forced to, OR if output is effectively different
 		// than what the file has.
 		if forceWrite || shell.ShouldWriteFile(shellpath, shellcode) {
-			if err = ioutil.WriteFile(shellpath, shellcode, 0644); err != nil {
+			if err = ioutil.WriteFile(shellpath, shellcode, 0600); err != nil {
 				return err
 			}
 		}
@@ -153,5 +155,6 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		// we did it!
 		return nil
 	})
+
 	return rooterr
 }

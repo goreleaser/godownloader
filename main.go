@@ -28,7 +28,7 @@ var (
 	datestr = "unknown"
 )
 
-// given a template, and a config, generate shell script
+// given a template, and a config, generate shell script.
 func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 	// if we want to add a timestamp in the templates this
 	//  function will generate it
@@ -53,6 +53,7 @@ func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 		return nil, err
 	}
 	err = t.Execute(&out, cfg)
+
 	return out.Bytes(), err
 }
 
@@ -62,6 +63,7 @@ func makePlatform(goos, goarch, goarm string) string {
 	if goarch == "arm" && goarm != "" {
 		platform += "v" + goarm
 	}
+
 	return platform
 }
 
@@ -94,6 +96,7 @@ func makePlatformBinaries(cfg *config.Project) map[string][]string {
 			}
 		}
 	}
+
 	return platformBinaries
 }
 
@@ -143,6 +146,7 @@ func makeName(prefix, target string) (string, error) {
 		return "", err
 	}
 	err = t.Execute(&out, varmap)
+
 	return out.String(), err
 }
 
@@ -176,17 +180,19 @@ func loadURLs(path, configPath string) (*config.Project, error) {
 			return project, nil
 		}
 	}
+
 	return nil, fmt.Errorf("could not fetch a goreleaser configuration file")
 }
 
 func loadURL(file string) (*config.Project, error) {
-	// nolint: gosec
+	// nolint: gosec,noctx
 	resp, err := http.Get(file)
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		log.Errorf("reading %s returned %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
+
 		return nil, nil
 	}
 	p, err := config.LoadReader(resp.Body)
@@ -196,11 +202,13 @@ func loadURL(file string) (*config.Project, error) {
 	if errc != nil {
 		return nil, errc
 	}
+
 	return &p, err
 }
 
 func loadFile(file string) (*config.Project, error) {
 	p, err := config.Load(file)
+
 	return &p, err
 }
 
@@ -238,7 +246,7 @@ func Load(repo, configPath, file string) (project *config.Project, err error) {
 		project.Dockers[i].Files = []string{}
 	}
 
-	var ctx = context.New(*project)
+	ctx := context.New(*project)
 	for _, defaulter := range defaults.Defaulters {
 		log.Infof("setting defaults for %s", defaulter)
 		if err := defaulter.Default(ctx); err != nil {
@@ -282,11 +290,11 @@ func main() {
 			log.WithError(err).Error("treewalker failed")
 			os.Exit(1)
 		}
+
 		return
 	}
 
 	out, err := processGodownloader(*repo, "", *file)
-
 	if err != nil {
 		log.WithError(err).Error("failed")
 		os.Exit(1)
@@ -298,16 +306,18 @@ func main() {
 			log.WithError(err).Error("unable to write")
 			os.Exit(1)
 		}
+
 		return
 	}
 
 	// only write out if forced to, OR if output is effectively different
 	// than what the file has.
 	if *force || shell.ShouldWriteFile(*output, out) {
-		if err = ioutil.WriteFile(*output, out, 0666); err != nil {
+		if err = ioutil.WriteFile(*output, out, 0600); err != nil {
 			log.WithError(err).Errorf("unable to write to %s", *output)
 			os.Exit(1)
 		}
+
 		return
 	}
 
