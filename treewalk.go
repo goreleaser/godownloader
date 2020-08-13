@@ -28,7 +28,6 @@ type TreeConfig struct {
 
 // LoadTreeConfig Loads config file.
 func LoadTreeConfig(file string) (config TreeConfig, err error) {
-	// nolint: gosec
 	f, err := os.Open(file)
 	if err != nil {
 		return
@@ -56,7 +55,7 @@ func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 // https://github.com/goreleaser/godownloader/issues/64
 //
 // nolint: funlen
-func treewalk(root string, treeout string, forceWrite bool) error { // nolint: gocyclo,gocognit
+func treewalk(root string, treeout string, forceWrite bool) error { // nolint: gocognit
 	rooterr := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		// weird case where filewalk failed
 		if err != nil {
