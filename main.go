@@ -28,7 +28,7 @@ var (
 	datestr = "unknown"
 )
 
-// given a template, and a config, generate shell script
+// given a template, and a config, generate shell script.
 func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 	// if we want to add a timestamp in the templates this
 	//  function will generate it

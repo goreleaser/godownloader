@@ -13,7 +13,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// TreeConfig is the project configuration
+// TreeConfig is the project configuration.
 type TreeConfig struct {
 	// these can be set by config
 	Source  string `yaml:"source,omitempty"`  // type of downloader to make
@@ -26,7 +26,7 @@ type TreeConfig struct {
 	name  string // repo name
 }
 
-// LoadTreeConfig Loads config file
+// LoadTreeConfig Loads config file.
 func LoadTreeConfig(file string) (config TreeConfig, err error) {
 	// nolint: gosec
 	f, err := os.Open(file)
@@ -37,7 +37,7 @@ func LoadTreeConfig(file string) (config TreeConfig, err error) {
 	return LoadTreeConfigReader(f)
 }
 
-// LoadTreeConfigReader config via io.Reader
+// LoadTreeConfigReader config via io.Reader.
 func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 	data, err := ioutil.ReadAll(fd)
 	if err != nil {
