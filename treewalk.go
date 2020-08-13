@@ -33,6 +33,7 @@ func LoadTreeConfig(file string) (config TreeConfig, err error) {
 		return
 	}
 	log.WithField("file", file).Debug("loading config file")
+
 	return LoadTreeConfigReader(f)
 }
 
@@ -44,6 +45,7 @@ func LoadTreeConfigReader(fd io.Reader) (config TreeConfig, err error) {
 	}
 	err = yaml.UnmarshalStrict(data, &config)
 	log.WithField("config", config).Debug("loaded config file")
+
 	return config, err
 }
 
@@ -110,6 +112,7 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		}
 		if conf.Ignore {
 			log.WithField("repo", rel).Warn("ignoring repo as instructed")
+
 			return nil
 		}
 
@@ -152,5 +155,6 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		// we did it!
 		return nil
 	})
+
 	return rooterr
 }

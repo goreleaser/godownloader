@@ -53,6 +53,7 @@ func makeShell(tplsrc string, cfg *config.Project) ([]byte, error) {
 		return nil, err
 	}
 	err = t.Execute(&out, cfg)
+
 	return out.Bytes(), err
 }
 
@@ -62,6 +63,7 @@ func makePlatform(goos, goarch, goarm string) string {
 	if goarch == "arm" && goarm != "" {
 		platform += "v" + goarm
 	}
+
 	return platform
 }
 
@@ -94,6 +96,7 @@ func makePlatformBinaries(cfg *config.Project) map[string][]string {
 			}
 		}
 	}
+
 	return platformBinaries
 }
 
@@ -142,6 +145,7 @@ func makeName(prefix, target string) (string, error) {
 		return "", err
 	}
 	err = t.Execute(&out, varmap)
+
 	return out.String(), err
 }
 
@@ -175,6 +179,7 @@ func loadURLs(path, configPath string) (*config.Project, error) {
 			return project, nil
 		}
 	}
+
 	return nil, fmt.Errorf("could not fetch a goreleaser configuration file")
 }
 
@@ -186,6 +191,7 @@ func loadURL(file string) (*config.Project, error) {
 	}
 	if resp.StatusCode != http.StatusOK {
 		log.Errorf("reading %s returned %d %s\n", file, resp.StatusCode, http.StatusText(resp.StatusCode))
+
 		return nil, nil
 	}
 	p, err := config.LoadReader(resp.Body)
@@ -195,11 +201,13 @@ func loadURL(file string) (*config.Project, error) {
 	if errc != nil {
 		return nil, errc
 	}
+
 	return &p, err
 }
 
 func loadFile(file string) (*config.Project, error) {
 	p, err := config.Load(file)
+
 	return &p, err
 }
 
@@ -281,6 +289,7 @@ func main() {
 			log.WithError(err).Error("treewalker failed")
 			os.Exit(1)
 		}
+
 		return
 	}
 
@@ -296,6 +305,7 @@ func main() {
 			log.WithError(err).Error("unable to write")
 			os.Exit(1)
 		}
+
 		return
 	}
 
@@ -306,6 +316,7 @@ func main() {
 			log.WithError(err).Errorf("unable to write to %s", *output)
 			os.Exit(1)
 		}
+
 		return
 	}
 
