@@ -302,7 +302,7 @@ func main() {
 	// only write out if forced to, OR if output is effectively different
 	// than what the file has.
 	if *force || shell.ShouldWriteFile(*output, out) {
-		if err = ioutil.WriteFile(*output, out, 0666); err != nil {
+		if err = ioutil.WriteFile(*output, out, 0600); err != nil {
 			log.WithError(err).Errorf("unable to write to %s", *output)
 			os.Exit(1)
 		}

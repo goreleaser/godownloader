@@ -144,7 +144,7 @@ func treewalk(root string, treeout string, forceWrite bool) error { // nolint: g
 		// only write out if forced to, OR if output is effectively different
 		// than what the file has.
 		if forceWrite || shell.ShouldWriteFile(shellpath, shellcode) {
-			if err = ioutil.WriteFile(shellpath, shellcode, 0644); err != nil {
+			if err = ioutil.WriteFile(shellpath, shellcode, 0600); err != nil {
 				return err
 			}
 		}
