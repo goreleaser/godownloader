@@ -263,11 +263,11 @@ func main() {
 	log.SetHandler(cli.Default)
 
 	var (
-		repo    = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Short('r').String()
-		output  = kingpin.Flag("output", "output file, default stdout").Short('o').String()
-		force   = kingpin.Flag("force", "force writing of output").Short('f').Bool()
-		tree    = kingpin.Flag("tree", "use tree to generate multiple outputs").String()
-		file    = kingpin.Arg("file", "??").String()
+		repo   = kingpin.Flag("repo", "owner/name or URL of GitHub repository").Short('r').String()
+		output = kingpin.Flag("output", "output file, default stdout").Short('o').String()
+		force  = kingpin.Flag("force", "force writing of output").Short('f').Bool()
+		tree   = kingpin.Flag("tree", "use tree to generate multiple outputs").String()
+		file   = kingpin.Arg("file", "??").String()
 	)
 
 	kingpin.CommandLine.Version(fmt.Sprintf("%v, commit %v, built at %v", version, commit, datestr))
