@@ -16,8 +16,8 @@ import (
 // TreeConfig is the project configuration
 type TreeConfig struct {
 	// these can be set by config
-	Source  string `yaml:"source,omitempty"`  // type of downloader to make
-	Config  string `yaml:"config,omitempty"`  // sets a custom location for goreleaser.yml config file
+	Source string `yaml:"source,omitempty"` // type of downloader to make
+	Config string `yaml:"config,omitempty"` // sets a custom location for goreleaser.yml config file
 
 	// these can not be set by config file
 	// and are set by the url/path
