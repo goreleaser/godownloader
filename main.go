@@ -106,7 +106,7 @@ func makePlatformBinaries(cfg *config.Project) map[string][]string {
 func makeName(prefix, target string) (string, error) {
 	// armv6 is the default in the shell script
 	// so do not need special template condition for ARM
-	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 	target = strings.Replace(target, armversion, "{{ .Arch }}", -1)
 
 	// hack for https://github.com/goreleaser/godownloader/issues/70
@@ -115,6 +115,7 @@ func makeName(prefix, target string) (string, error) {
 
 	target = strings.Replace(target, "{{.Arm}}", "{{ .Arch }}", -1)
 	target = strings.Replace(target, "{{ .Arm }}", "{{ .Arch }}", -1)
+	target = strings.TrimSuffix(target, "{{ if .Mips }}_{{ .Mips }}{{ end }}")
 
 	// otherwise if it contains a conditional, we can't (easily)
 	// translate that to bash.  Ask for bug report.
