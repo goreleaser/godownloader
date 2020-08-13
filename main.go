@@ -106,7 +106,7 @@ func makePlatformBinaries(cfg *config.Project) map[string][]string {
 func makeName(prefix, target string) (string, error) {
 	// armv6 is the default in the shell script
 	// so do not need special template condition for ARM
-	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+	armversion := "{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
 	target = strings.Replace(target, armversion, "{{ .Arch }}", -1)
 
 	// hack for https://github.com/goreleaser/godownloader/issues/70

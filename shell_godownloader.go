@@ -10,12 +10,10 @@ func processGodownloader(repo, path, filename string) ([]byte, error) {
 		return nil, fmt.Errorf("unable to parse: %s", err)
 	}
 	// get archive name template
-	for i := range cfg.Archives {
-		archName, err := makeName("NAME=", cfg.Archives[i].NameTemplate)
-		cfg.Archives[i].NameTemplate = archName
-		if err != nil {
-			return nil, fmt.Errorf("unable generate archive name: %s", err)
-		}
+	archName, err := makeName("NAME=", cfg.Archives[0].NameTemplate)
+	cfg.Archives[0].NameTemplate = archName
+	if err != nil {
+		return nil, fmt.Errorf("unable generate archive name: %s", err)
 	}
 	// get checksum name template
 	checkName, err := makeName("CHECKSUM=", cfg.Checksum.NameTemplate)
@@ -78,7 +76,7 @@ execute() {
   http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}"
   http_download "${tmpdir}/${CHECKSUM}" "${CHECKSUM_URL}"
   hash_sha256_verify "${tmpdir}/${TARBALL}" "${tmpdir}/${CHECKSUM}"
-  {{- if .Archive.WrapInDirectory }}
+  {{- if (index .Archives 0).WrapInDirectory }}
   srcdir="${tmpdir}/${NAME}"
   rm -rf "${srcdir}"
   {{- else }}
@@ -123,7 +121,7 @@ tag_to_version() {
 }
 adjust_format() {
   # change format (tar.gz or zip) based on OS
-  {{- with .Archive.FormatOverrides }}
+  {{- with (index .Archives 0).FormatOverrides }}
   case ${OS} in
   {{- range . }}
     {{ .Goos }}) FORMAT={{ .Format }} ;;
@@ -134,7 +132,7 @@ adjust_format() {
 }
 adjust_os() {
   # adjust archive name based on OS
-  {{- with .Archive.Replacements }}
+  {{- with (index .Archives 0).Replacements }}
   case ${OS} in
   {{- range $k, $v := . }}
     {{ $k }}) OS={{ $v }} ;;
@@ -145,7 +143,7 @@ adjust_os() {
 }
 adjust_arch() {
   # adjust archive name based on ARCH
-  {{- with .Archive.Replacements }}
+  {{- with (index .Archives 0).Replacements }}
   case ${ARCH} in
   {{- range $k, $v := . }}
     {{ $k }}) ARCH={{ $v }} ;;
@@ -159,7 +157,7 @@ PROJECT_NAME="{{ $.ProjectName }}"
 OWNER={{ $.Release.GitHub.Owner }}
 REPO="{{ $.Release.GitHub.Name }}"
 BINARY={{ (index .Builds 0).Binary }}
-FORMAT={{ .Archive.Format }}
+FORMAT={{ (index .Archives 0).Format }}
 OS=$(uname_os)
 ARCH=$(uname_arch)
 PREFIX="$OWNER/$REPO"
@@ -188,7 +186,7 @@ adjust_arch
 
 log_info "found version: ${VERSION} for ${TAG}/${OS}/${ARCH}"
 
-{{ .Archive.NameTemplate }}
+{{ (index .Archives 0).NameTemplate }}
 TARBALL=${NAME}.${FORMAT}
 TARBALL_URL=${GITHUB_DOWNLOAD}/${TAG}/${TARBALL}
 {{ .Checksum.NameTemplate }}
