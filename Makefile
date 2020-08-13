@@ -36,7 +36,7 @@ fmt: ## gofmt and goimports all go files
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
 
 lint: ## Run all the linters
-	./bin/golangci-lint run --enable-all --disable wsl ./...
+	./bin/golangci-lint run --enable-all --disable wsl,goerr113 ./...
 
 precommit: lint  ## Run precommit hook
 
